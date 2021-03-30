@@ -1,5 +1,11 @@
 # Bazy Danych 1 Projekt
 
+### Skład grupy
+
+Zuzanna Jasińska (252760)  
+Karol Baraniecki (252726)  
+Dominika Kmiecik (252628)  
+
 ### Historia użtkownika
 Dwóch współwłaścicieli sieci aptek zostało zmuszonych zakończyć współpracę. Ze względu na burzliwy koniec wspólnej działalności, wszystkie dane dotyczące asortymentu i zależności występujących między sprzedawanymi lekami oraz wystawionych recept, a także zrealizowanych recept uległy zniszczeniu. Po ochłodzeniu emocji, jeden z nich zrozumiał, że został pozbawiony źródła utrzymania. Z ostatnich oszczędności postanowił wykupić pozostałe udziały w firmie i zacząć wszystko od początku. Baza będzie wykorzystywana do obsługi systemu aptecznego przez aptekarza. Zadaniem aptekarza ma być wydawanie leków i wykonywanie czynności z nim związanymi - realizowaniem recept, zmianą stanu zasobów apteki, zamawianiem leków, sprawdzaniem ich dostępności w innych aptekach. Klient obsługiwany przez aptekarza będzie mógł także sam uprzednio sprawdzać listę leków zamieszczoną w recepcie oraz dostępność poszukiwanych leków w aptece i stan zrealizowania recepty. Apteka będzie zaopatrywana przez dostawcę weryfikującego stan realizowanego zamówienia.
 
