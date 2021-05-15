@@ -5,7 +5,8 @@ create type prescription_type as enum('OTC', 'RPW', 'RPZ', 'RP');
 create table medicine(
     medicine_id serial primary key,
     trade_name text not null,
-    grammage int not null,
+    dosage text,
+    pack_size text not null,
     contraindications text not null,
     recommendations text not null,
     prescription_type prescription_type not null
