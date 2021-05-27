@@ -1197,7 +1197,106 @@ insert into prescription(expiration_date, client_id, prescription_type) values
     ('08/01/2022', 96, 'OTC');
 
 insert into active_substance(international_name, "name", description) values
-    ('Estradiol', 'Estradiol', 'Estrogen.'),
+    ('Acarbose', 'Akarboza', 'Doustny lek przeciwcukrzycowy - inhibitor alfa-glukozydaz.  '),
+    ('Acebutolol', 'Acebutolol', 'Selektywny lek beta-adrenolityczny.'),
+    ('Acenocoumarol', 'Acenokumarol', 'Lek przeciwzakrzepowy - antagonista witaminy K.'),
+    ('Acetylcysteine', 'Acetylocysteina', 'Lek mukolityczny. Lek stosowany w przypadku przedawkowania paracetamolu.'),
+    ('Acetylsalicylic acid', 'Kwas acetylosalicylowy', 'Lek przeciwbólowy i przeciwgorączkowy z grupy pochodnych kwasu salicylowego. Lek przeciwzakrzepowy.'),
+    ('Aciclovir', 'Acyklowir', 'Lek przeciwwirusowy aktywny wobec wirusa opyszczki typu 1 i 2, wirusa ospy wietrznej i półpaśca - analog nukleozydowy.'),
+    ('Acitretin', 'Acytretyna', 'Lek przeciwłuszczycowy - pochodna retinoidowa.'),
+    ('Adalimumab', 'Adalimumab', 'Lek immunosupresyjny - inhibitor TNF-alfa.'),
+    ('Adapalene', 'Adapalen', 'Lek przeciwtrądzikowy - pochodna retinoidowa.'),
+    ('Adenosine', 'Adenozyna', 'Lek przeciwarytmiczny klasy IV.'),
+    ('Aesculus hippocastanum', 'Kasztanowiec zwyczajny', 'Lek zmniejszający przepuszczalność i uszczelniający naczynia włosowate.'),
+    ('Agomelatine', 'Agomelatyna', ''),
+    ('Alclometasone', 'Alklometazon', 'Glikokortykosteroid.'),
+    ('Alectinib', 'Alektynib', 'Lek przeciwnowotworowy - inhibitor kinazy chłoniaka anaplastycznego (ALK).'),
+    ('Alfacalcidol', 'Alfakalcydol', 'Analog witaminy D.'),
+    ('Alfuzosin', 'Alfuzosyna', 'Lek stosowany w łagodnym rozroście gruczołu krokowego - selektywny antagonista postsynaptycznych receptorów alfa-adrenergicznych.'),
+    ('Allantoine', 'Alantoina', 'Lek o działaniu przeciwzapalnym i przyspieszającym gojenie ran.'),
+    ('Allium sativum', 'Czosnek pospolity', 'Surowiec roślinny o właściwościach przeciwbakteryjnych, przeciwgrzybiczych, żółciopędnych i obniżających stężenie cholesterolu we krwi.'),
+    ('Allopurinol', 'Allopurynol', 'Lek zmniejszający stężenie kwasu moczowego.'),
+    ('Almotriptan', 'Almotryptan', 'Lek przeciwmigrenowy - swoisty i wybiórczy agonista receptorów serotoninowych 5-HT1D.  '),
+    ('Aloe arborescens', 'Aloes drzewiasty', 'Surowiec roślinny o właściwościach immunostymulujących.'),
+    ('Aloe vera', 'Aloes zwyczajny', 'Surowiec roślinny o właściwościach immunostymulujących.'),
+    ('Aloe', 'Alona', 'Lek przeczyszczający kontaktowy.'),
+    ('Alprazolam', 'Alprazolam', 'Anksjolityk z grupy pochodnych benzodiazepiny.'),
+    ('Amantadine', 'Amantadyna', 'Lek przeciwparkinsonowski - pochodna adamantanu.'),
+    ('Ambroxol', 'Ambroksol', 'Lek mukolityczny.'),
+    ('Amikacin', 'Amikacyna', 'Antybiotyk aminoglikozydowy.'),
+    ('Amiodarone', 'Amiodaron', 'Lek przeciwarytmiczny klasy III.'),
+    ('Amisulpride', 'Amisulpryd', 'Lek przeciwpsychotyczny z grupy pochodnych benzamidu.'),
+    ('Amitriptyline', 'Amitryptylina', 'Lek przeciwdepresyjny - nieselektywny inibitor wychwytu zwrotnego monoamin.'),
+    ('Amlodipine', 'Amlodypina', 'Lek blokujący kanały wapniowe o selektywnym działaniu naczyniowym - pochodna dihydropirydiny.'),
+    ('Amorolfine', 'Amorolfina', 'Lek przeciwgrzybiczy - pochodna morfoliny.'),
+    ('Amoxicillin and clavulanic acid', 'Amoksycylina i kwas klawulanowy', 'Antybiotyk z grupy penicylin w połączeniu z inhibitorem beta-laktamazy.'),
+    ('Amoxicillin', 'Amoksycylina', 'Antybiotyk z grupy penicylin o szerokim spektrum działania.'),
+    ('Ampicillin and sulbactam', 'Ampicylina i sulbaktam', 'Antybiotyk z grupy penicylin w połączeniu z inhibitorem beta-laktamazy.'),
+    ('Ampicillin', 'Ampicylina', 'Antybiotyk z grupy penicylin o szerokim spektrum działania.'),
+    ('Anagrelide', 'Anagrelid', 'Lek zmniejszający liczbę trombocytów we krwi.'),
+    ('Anastrozole', 'Anastrozol', 'Lek przeciwnowotworowy - niesteroidowy inhibitor aromatazy.'),
+    ('Anidulafungin', 'Anidulafungina', 'Lek przeciwgrzybiczy - półsyntetyczna echizokandyna.'),
+    ('Aripiprazole', 'Arypiprazol', 'Lek przeciwpsychotyczny.'),
+    ('Ascorbic acid - vitamin C', 'Kwas askorbowy - witamina C', 'Witamina C.'),
+    ('Atorvastatin', 'Atorwastatyna', 'Lek modyfikujący stężenie lipidów - inhibitor reduktazy HMG-CoA.'),
+    ('Azelastine', 'Azelastyna', 'Lek przeciwhistaminowy.'),
+    ('Bacitracin', 'Bacytracyna', 'Antybiotyk polipeptydowy.'),
+    ('Benzydamine', 'Benzydamina', 'Niesteroidowy lek przeciwzapalny.'),
+    ('Betahistine', 'Betahistyna', 'Lek stosowany przeciw zawrotom głowy.'),
+    ('Bifidobacterium lactis', 'Bifidobacterium lactis', ''),
+    ('Biperiden', 'Biperyden', 'Lek przeciwparkinsonowski o działaniu cholinolitycznym.'),
+    ('Boric acid', 'Kwas borowy', 'Środek antyseptyczny.'),
+    ('Brigatinib', 'Brygatynib', 'Lek przeciwnowotworowy - inhibitor kinazy chłoniaka anaplastycznego (ALK).'),
+    ('Brimonidine', 'Brymonidyna', 'Lek obniżający ciśnienie śródgałkowe - selektywny agonista receptora alfa-2-adrenergicznego.'),
+    ('Budesonide', 'Budezonid', 'Glikokortykosteroid.'),
+    ('Caffeine', 'Kofeina', 'Lek działający pobudzająco na OUN.'),
+    ('Calcium and magnesium compounds', 'Związki wapnia i magnezu', 'Lek zobojętniający nadmiar kwasu solnego w soku żołądkowym.'),
+    ('Calcium chloride', 'Chlorek wapnia', ''),
+    ('Calcium compounds', 'Związki wapnia', 'Lek zobojętniający nadmiar kwasu solnego w soku żołądkowym.'),
+    ('Calcium dobesilate', 'Dobezylan wapnia', 'Lek regulujący czynność naczyń włosowatych.'),
+    ('Calcium pantothenate', 'Pantotenian wapnia', 'Witamina B5.'),
+    ('Calcium', 'Wapń', ''),
+    ('Carbamazepine', 'Karbamazepina', 'Lek przeciwpadaczkowy z grupy pochodnych karboksamidu.'),
+    ('Caryophyllus oil', 'Olejek goździkowy', 'Surowiec roślinny o właściwościach antyseptycznych, przeciwzapalnych, znieczulających i znoszących wzdęcia.'),
+    ('Celecoxib', 'Celekoksyb', 'Selektywny inhibitor COX-2.'),
+    ('Cetirizine', 'Cetyryzyna', 'Lek przeciwhistaminowy z grupy pochodnych piperazyny.'),
+    ('Chlorhexidine', 'Chlorheksydyna', 'Środek antyseptyczny.'),
+    ('Chloroprocaine', 'Chloroprokaina', 'Środek miejscowo znieczulający z grupy estrów kwasu aminobenzoesowego.'),
+    ('Chlorpheniramine', 'Chlorfenyramina', 'Lek przeciwhistaminowy z grupy pochodnych alkiloaminy.'),
+    ('Ciclesonide', 'Cyklezonid', 'Glikokortykosteroid.'),
+    ('Cinnamon oil', 'Olejek cynamonowy', 'Surowiec roślinny o właściwościach przeciwbakteryjnych, pobudzających wydzielanie soków trawiennych. Stosowany na skórę działa rozgrzewająco.'),
+    ('Citicoline', 'Cytykolina', 'Lek psychostymulujący.'),
+    ('Citronella oil', 'Olejek cytronelowy', 'Surowiec roślinny o właściwościach pobudzających, łagodnie rozgrzewających.'),
+    ('Clarithromycin', 'Klarytromycyna', 'Antybiotyk makrolidowy.'),
+    ('Clindamycin', 'Klindamycyna', ''),
+    ('Clomipramine', 'Klomipramina', 'Lek przeciwdepresyjny - nieselektywny inibitor wychwytu zwrotnego monoamin.'),
+    ('Clopidogrel', 'Klopidogrel', 'Lek przeciwzakrzepowy - inhibitor krzepnięcia.'),
+    ('Codeine', 'Kodeina', 'Lek przeciwkaszlowy.'),
+    ('Colecalciferol - vitamin D3', 'Cholekalcyferol - witamina D3', 'Witamina D3.'),
+    ('Crataegus sp.', 'Głóg', 'Surowiec roślinny o działaniu tonizującym na mięsień sercowy oraz przeciwskurczowym na mięśnie gładkie jelit i naczyń krwionośnych (w tym naczyń wieńcowych i naczyń mózgowych).'),
+    ('Crocus sativus', 'Szafran uprawny', ''),
+    ('Cyproterone', 'Cyproteron', 'Antyandrogen.'),
+    ('Cytarabine', 'Cytarabina', 'Lek przeciwnowotworowy z grupy antymetabolitów - analog pirymidyn.'),
+    ('DHA - docosahexaenoic acid', 'DHA - kwas dokozaheksaenowy', 'Związek chemiczny z grupy wielonienasyconych kwasów tłuszczowych typu omega-3.'),
+    ('Darvadstrocel', 'Darwadstrocel', 'Darwadstrocel zawiera namnożone komórki macierzyste pobrane z tkanki tłuszczowej, wykazujące działanie immunomodulacyjne i przeciwzapalne w miejscach ze stanem zapalnym.'),
+    ('Desloratadine', 'Desloratadyna', 'Lek przeciwhistaminowy.'),
+    ('Dexpanthenol', 'Dekspantenol', ''),
+    ('Dextromethorphan', 'Dekstrometorfan', 'Lek przeciwkaszlowy.'),
+    ('Diethylamine salicylate', 'Salicylan dietyloaminy', 'Niesteroidowy lek przeciwzapalny - pochodna kwasu salicylowego.'),
+    ('Diosmin', 'Diosmina', 'Lek wpływający na elastyczność naczyń.'),
+    ('Diphenhydramine', 'Difenhydramina', ''),
+    ('Diphtheria toxoid', 'Szczepionka przeciw błonicy', 'Szczepionka przeciwbłonicza.'),
+    ('Disulfiram', 'Disulfiram', 'Lek stosowany w leczeniu uzależnienia od alkoholu.'),
+    ('Doxazosin', 'Doksazosyna', 'Lek przeciwnadciśnieniowy - selektywny i kompetycyjny antagonista postsynaptycznych receptorów alfa-1-adrenergicznych.'),
+    ('Dutasteride', 'Dutasteryd', 'Lek stosowany w łagodnym rozroście gruczołu krokowego - wybiórczy inhibitor 5-alfa reduktazy testosteronu.'),
+    ('Ectoin', 'Ektoina', 'Substancja pochodzenia naturalnego, wykazująca właściwości stabilizujące błony komórkowe oraz zmniejszające stan zapalny.'),
+    ('Electrolytes and glucose', 'Elektrolity i glukoza', ''),
+    ('Electrolytes', 'Elektrolity', ''),
+    ('Epinephrine', 'Epinefryna', 'Lek pobudzający układ sercowo-naczyniowy.'),
+    ('Erenumab', 'Erenumab', 'Lek przeciwmigrenowy - przeciwciało monoklonalne.'),
+    ('Erythromycin', 'Erytromycyna', 'Antybiotyk makrolidowy.'),
+    ('Escin', 'Escyna', 'Lek wpływający na elastyczność naczyń.'),
+    ('Escitalopram', 'Escytalopram', 'Lek przeciwdepresyjny - selektywny inhibitor wychwytu zwrotnego serotoniny.'),
     ('Estradiol and dienogest', 'Estradiol i dienogest', ''),
     ('Estradiol and drospirenone', 'Estradiol i drospirenon', ''),
     ('Estradiol and dydrogesterone', 'Estradiol i dydrogesteron', ''),
@@ -1206,175 +1305,414 @@ insert into active_substance(international_name, "name", description) values
     ('Estradiol and norethisterone', 'Estradiol i noretysteron', ''),
     ('Estradiol and norgestrel', 'Estradiol i norgestrel', ''),
     ('Estradiol and prasterone', 'Estradiol i prasteron', ''),
-    ('Budesonide', 'Budezonid', 'Glikokortykosteroid.'),
+    ('Estradiol', 'Estradiol', 'Estrogen.'),
+    ('Everolimus', 'Ewerolimus', 'Lek przeciwnowotworowy - inhibitor kinazy mTOR. Lek immunosupresyjny selektywny.'),
+    ('Febuxostat', 'Febuksostat', ''),
+    ('Ferrous', 'Żelazo', ''),
+    ('Fexofenadine', 'Feksofenadyna', 'Lek przeciwhistaminowy.'),
+    ('Filgrastim', 'Filgrastym', 'Lek immunostymulujący - ludzki czynnik wzrostu granulocytów.'),
+    ('Finasteride', 'Finasteryd', 'Lek stosowany w łagodnym rozroście gruczołu krokowego - wybiórczy inhibitor 5-alfa reduktazy testosteronu. Lek pobudzający wzrost włosów.'),
+    ('Flucytosine', 'Flucytozyna', 'Lek przeciwgrzybiczy.'),
+    ('Fluoxetine', 'Fluoksetyna', 'Lek przeciwdepresyjny - selektywny inhibitor wychwytu zwrotnego serotoniny.'),
+    ('Fluticasone furoate', 'Furoinian flutykazonu', 'Glikokortykosteroid.'),
+    ('Fluticasone', 'Flutykazon', 'Glikokortykosteroid.'),
+    ('Foeniculum vulgare', 'Koper włoski', ''),
+    ('Folic acid', 'Kwas foliowy', 'Kwas foliowy.'),
+    ('Formoterol', 'Formoterol', ''),
+    ('Fosfomycin', 'Fosfomycyna', 'Antybiotyk - pochodna kwasu fosfonowego.'),
+    ('Fremanezumab', 'Fremanezumab', 'Lek przeciwmigrenowy - przeciwciało monoklonalne.'),
+    ('Glimepiride', 'Glimepiryd', 'Doustny lek przeciwcukrzycowy - pochodna sulfonylomocznika.'),
     ('Heparin', 'Heparyna', 'Lek przeciwzakrzepowy.'),
     ('Heparinoid', 'Heparynoid', ''),
-    ('Everolimus', 'Ewerolimus', 'Lek przeciwnowotworowy - inhibitor kinazy mTOR. Lek immunosupresyjny selektywny.'),
-    ('Naproxen', 'Naproksen', 'Niesteroidowy lek przeciwzapalny - pochodna kwasu propionowego.'),
-    ('Pseudoephedrine', 'Pseudoefedryna', 'Sympatykomimetyk.'),
-    ('Laronidase', 'Laronidaza', 'Lek stosowany w zaburzeniach metabolicznych.'),
-    ('Prilocaine', 'Prylokaina', 'Środek miejscowo znieczulający o budowie amidowej.'),
-    ('Desloratadine', 'Desloratadyna', 'Lek przeciwhistaminowy.'),
-    ('Telmisartan', 'Telmisartan', 'Bloker receptora angiotensyny II.'),
-    ('Chlorpheniramine', 'Chlorfenyramina', 'Lek przeciwhistaminowy z grupy pochodnych alkiloaminy.'),
-    ('Alfacalcidol', 'Alfakalcydol', 'Analog witaminy D.'),
-    ('Amiodarone', 'Amiodaron', 'Lek przeciwarytmiczny klasy III.'),
-    ('Oxymetazoline', 'Oksymetazolina', 'Sympatykomimetyk.'),
-    ('Perindopril', 'Peryndopryl', 'Inhibitor konwertazy angiotensyny.'),
-    ('Rupatadine', 'Rupatadyna', ''),
-    ('Tadalafil', 'Tadalafil', 'Inhibitor fosfodiesterazy typu 5 - stosowany w zaburzeniach erekcji oraz w nadciśnieniu płucnym.'),
-    ('Anagrelide', 'Anagrelid', 'Lek zmniejszający liczbę trombocytów we krwi.'),
-    ('Febuxostat', 'Febuksostat', ''),
-    ('Calcium', 'Wapń', ''),
-    ('Calcium and magnesium compounds', 'Związki wapnia i magnezu', 'Lek zobojętniający nadmiar kwasu solnego w soku żołądkowym.'),
-    ('Calcium chloride', 'Chlorek wapnia', ''),
-    ('Calcium compounds', 'Związki wapnia', 'Lek zobojętniający nadmiar kwasu solnego w soku żołądkowym.'),
-    ('Calcium dobesilate', 'Dobezylan wapnia', 'Lek regulujący czynność naczyń włosowatych.'),
-    ('Calcium pantothenate', 'Pantotenian wapnia', 'Witamina B5.'),
-    ('Aloe', 'Alona', 'Lek przeczyszczający kontaktowy.'),
-    ('Aloe arborescens', 'Aloes drzewiasty', 'Surowiec roślinny o właściwościach immunostymulujących.'),
-    ('Aloe vera', 'Aloes zwyczajny', 'Surowiec roślinny o właściwościach immunostymulujących.'),
-    ('Erenumab', 'Erenumab', 'Lek przeciwmigrenowy - przeciwciało monoklonalne.'),
-    ('Benzydamine', 'Benzydamina', 'Niesteroidowy lek przeciwzapalny.'),
-    ('Adalimumab', 'Adalimumab', 'Lek immunosupresyjny - inhibitor TNF-alfa.'),
-    ('Citicoline', 'Cytykolina', 'Lek psychostymulujący.'),
-    ('Fosfomycin', 'Fosfomycyna', 'Antybiotyk - pochodna kwasu fosfonowego.'),
-    ('Allopurinol', 'Allopurynol', 'Lek zmniejszający stężenie kwasu moczowego.'),
-    ('Carbamazepine', 'Karbamazepina', 'Lek przeciwpadaczkowy z grupy pochodnych karboksamidu.'),
-    ('Naltrexone', 'Naltrekson', 'Lek stosowany w leczeniu uzależnienia od alkoholu.'),
     ('Hydrochlorothiazide', 'Hydrochlorotiazyd', 'Lek moczopędny tiazydowy.'),
+    ('Ibuprofen', 'Ibuprofen', 'Niesteroidowy lek przeciwzapalny - pochodna kwasu propionowego.'),
+    ('Imiquimod', 'Imikwimod', 'Lek przeciwwirusowy.'),
+    ('Isotretinoin', 'Izotretynoina', 'Lek przeciwtrądzikowy - pochodna retinoidowa.'),
+    ('Ketorolac', 'Ketorolak', 'Niesteroidowy lek przeciwzapalny.'),
+    ('Lactobacillus acidophilus', 'Lactobacillus acidophilus', ''),
+    ('Lactobacillus salivarius', 'Lactobacillus salivarius', ''),
+    ('Lactoferrin', 'Laktoferyna', 'Wielofunkcyjne białko z grupy transferyn, wykazujące duże powinowactwo do jonów żelaza.'),
+    ('Laronidase', 'Laronidaza', 'Lek stosowany w zaburzeniach metabolicznych.'),
+    ('Latanoprost', 'Latanoprost', 'Lek obniżający ciśnienie śródgałkowe - analog prostaglandyny F2alfa.'),
+    ('Lemon oil', 'Olejek cytrynowy', 'Surowiec roślinny o właściwościach odkażających i przeciwzapalnych. Stosowany na skórę działa rozgrzewająco.'),
+    ('Levocetirizine', 'Lewocetyryzyna', 'Lek przeciwhistaminowy z grupy pochodnych piperazyny.'),
+    ('Levomenthol', 'Lewomentol', 'Surowiec roślinny o właściwościach rozszerzających oskrzela i ułatwiających oddychanie, upłynniających wydzieliny śluzowe. Stosowany na skórę działa przeciwświądowo, znieczulająco, słabo antyseptycznie.'),
+    ('Lidocaine', 'Lidokaina', 'Środek miejscowo znieczulający o budowie amidowej. Lek przeciwarytmiczny klasy IB.'),
+    ('Losartan', 'Losartan', 'Bloker receptora angiotensyny II.'),
+    ('Marrubium vulgare', 'Szanta zwyczajna', ''),
+    ('Matricaria recutita', 'Rumianek pospolity', 'Surowiec roślinny o właściwościach przeciwzapalnych na błonę śluzową przewodu pokarmowego (zwłaszcza żołądka) i spazmolitycznych (głównie na mięśnie jelit).'),
+    ('Melissa officinalis', 'Melisa lekarska', 'Surowiec roślinny o właściwościach uspokajających oraz przeciwskurczowych i zwiększających wydzielanie soków trawiennych.'),
+    ('Meloxicam', 'Meloksykam', 'Niesteroidowy lek przeciwzapalny z grupy oksykamów.'),
+    ('Melphalan', 'Melfalan', 'Cytostatyk z grupy związków alkilujących.'),
+    ('Mentha piperita oil', 'Olejek mięty pieprzowej', 'Surowiec roślinny o właściwościach pobudzających wydzielanie soków trawiennych, głównie żołądka, rozkurczowych, żółciopędnych i wiatropędnych. Stosowany na skórę wywiera działanie przeciwzapalne, antyseptyczne i chłodzące.'),
+    ('Menthol', 'Mentol', 'Surowiec roślinny o właściwościach rozszerzających oskrzela i ułatwiających oddychanie, upłynniających wydzieliny śluzowe. Stosowany na skórę działa przeciwświądowo, znieczulająco, słabo antyseptycznie.'),
+    ('Minoxidil', 'Minoksydyl', 'Lek przeciwnadciśnieniowy działający bezpośrednio na mięśnie gładkie naczyń krwionośnych. Lek pobudzający wzrost włosów.'),
+    ('Mometasone', 'Mometazon', 'Glikokortykosteroid.'),
+    ('Naltrexone', 'Naltrekson', 'Lek stosowany w leczeniu uzależnienia od alkoholu.'),
+    ('Nanocolloidal silver', 'Nanokoloid srebra', ''),
+    ('Naproxen', 'Naproksen', 'Niesteroidowy lek przeciwzapalny - pochodna kwasu propionowego.'),
+    ('Neomycin', 'Neomycyna', 'Antybiotyk aminoglikozydowy.'),
+    ('Netupitant', 'Netupitant', 'Lek przeciwwymiotny - wybiórczy antagonista działający na ludzkie receptory neurokininowe 1 (NK1) substancji P.'),
+    ('Olanzapine', 'Olanzapina', 'Lek przeciwpsychotyczny z grupy pochodnych benzodiazepiny.'),
+    ('Omeprazole', 'Omeprazol', 'Lek hamujący wydzielanie kwasu solnego w żołądku - inibitor pompy protonowej.'),
+    ('Opatrunek regulujący poziom wilgotności rany z dodatkami', 'Opatrunek regulujący poziom wilgotności rany z dodatkami', ''),
+    ('Oxycodone', 'Oksykodon', 'Opioidowy lek przeciwbólowy.'),
+    ('Oxymetazoline', 'Oksymetazolina', 'Sympatykomimetyk.'),
+    ('Palonosetron', 'Palonosetron', 'Lek przeciwwymiotny - silny i wybiórczy antagonista receptorów serotoninowych typu 3 (5-HT3). '),
+    ('Pantoprazole', 'Pantoprazol', 'Lek hamujący wydzielanie kwasu solnego w żołądku - inibitor pompy protonowej.'),
+    ('Paracetamol', 'Paracetamol', 'Lek przeciwbólowy i przeciwgorączkowy z grupy anilidów.'),
+    ('Pediococcus pentosaceus', 'Pediococcus pentosaceus', ''),
+    ('Pefloxacin', 'Pefloksacyna', 'Chemioterapeutyk z grupy fluorochinolonów.'),
+    ('Pentoxifylline', 'Pentoksyfilina', 'Lek rozszerzający naczynia obwodowe - pochodna puryny.'),
+    ('Perilla frutescens', 'Pachnotka zwyczajna', ''),
+    ('Perindopril', 'Peryndopryl', 'Inhibitor konwertazy angiotensyny.'),
+    ('Pertussis vaccine', 'Szczepionka przeciw krztuścowi', 'Szczepionka przeciw krztuścowi.'),
+    ('Phenylephrine', 'Fenylefryna', 'Sympatykomimetyk.'),
+    ('Policresulen', 'Polikrezulen', 'Chemioterapeutyk.'),
+    ('Polidocanol', 'Polidokanol', 'Lek stosowany w leczeniu żylaków - środek do skleroterapii.'),
     ('Prednisolone', 'Prednizolon', 'Glikokortykosteroid.'),
-    ('Zinc', 'Cynk', ''),
+    ('Prilocaine', 'Prylokaina', 'Środek miejscowo znieczulający o budowie amidowej.'),
+    ('Proxymetacaine', 'Proksymetakaina', 'Środek miejscowo znieczulający.'),
+    ('Pseudoephedrine', 'Pseudoefedryna', 'Sympatykomimetyk.'),
+    ('Pyridoxine - vitamin B6', 'Pirydoksyna - witamina B6', 'Witamina B6.'),
+    ('Quercetin', 'Kwercetyna', ''),
+    ('Quinapril', 'Chinapryl', 'Inhibitor konwertazy angiotensyny.'),
+    ('Ramipril', 'Ramipryl', 'Inhibitor konwertazy angiotensyny.'),
+    ('Resorcinol', 'Rezorcyna', 'Lek o działaniu keratolitycznym i antyseptycznym.'),
+    ('Riociguat', 'Riocyguat', 'Lek obniżający ciśnienie stosowany w tętniczym nadciśnieniu płucnym.'),
+    ('Ropinirole', 'Ropinirol', 'Lek przeciwparkinsonowski - agonista receptorów dopaminergicznych.'),
+    ('Rupatadine', 'Rupatadyna', ''),
+    ('Salicylic acid', 'Kwas salicylowy', 'Lek o działaniu keratolitycznym.'),
+    ('Salmeterol', 'Salmeterol', 'Lek do stosowania w chorobach obturacyjnych dróg oddechowych - selektywny agonista receptora beta2-adrenergicznego.'),
+    ('Selenium', 'Selen', 'Selen.'),
+    ('Solifenacin', 'Solifenacyna', 'Spazmolityk działający na mięśnie gładkie układu moczowego.'),
+    ('Sulfogaiacol', 'Sulfogwajakol', 'Lek wykrztuśny.'),
+    ('Tacrolimus', 'Takrolimus', ''),
+    ('Tadalafil', 'Tadalafil', 'Inhibitor fosfodiesterazy typu 5 - stosowany w zaburzeniach erekcji oraz w nadciśnieniu płucnym.'),
+    ('Tamsulosin', 'Tamsulosyna', 'Lek stosowany w łagodnym rozroście gruczołu krokowego - selektywny antagonista postsynaptycznych receptorów alfa-adrenergicznych.'),
+    ('Telmisartan', 'Telmisartan', 'Bloker receptora angiotensyny II.'),
+    ('Testosterone', 'Testosteron', 'Androgen.'),
+    ('Tetanus toxoid', 'Szczepionka przeciw tężcowi', 'Szczepionka przeciwtężcowa.'),
+    ('Thymol', 'Tymol', 'Surowiec roślinny o działaniu wykrztuśnym, odkażającym, pobudzającym wydzielanie soku żołądkowego, trzustkowego i enzymów jelitowych.'),
+    ('Ticlopidine', 'Tyklopidyna', 'Lek przeciwzakrzepowy - inhibitor krzepnięcia.'),
+    ('Timolol', 'Tymolol', 'Lek obniżający ciśnienie śródgałkowe - nieselektywny bloker receptorów beta-adrenergicznych. '),
+    ('Tramadol', 'Tramadol', 'Opioidowy lek przeciwbólowy.'),
+    ('Tretinoin', 'Tretynoina', 'Lek przeciwtrądzikowy - pochodna retinoidowa. Lek przeciwnowotworowy z grupy retinoidów.'),
+    ('Trifarotene', 'Trifaroten', 'Lek przeciwtrądzikowy - pochodna retinoidowa.'),
+    ('Triprolidine', 'Tryprolidyna', 'Lek przeciwhistaminowy.'),
+    ('Ubidecarenone', 'Ubidekarenon', 'Lek o działaniu antyoksydacyjnym, immunostymulującym i przeciwmiażdżycowym.'),
+    ('Umeclidinium bromide', 'Bromek umeklidyniowy', ''),
+    ('Valeriana officinalis', 'Kozłek lekarski', 'Surowiec roślinny o działaniu uspokajającym.'),
+    ('Venlafaxine', 'Wenlafaksyna', 'Lek przeciwdepresyjny - inhibitor wychwytu zwrotnego serotoniny i noradrenaliny.'),
+    ('Vilanterol', 'Wilanterol', ''),
     ('Zinc acetate', 'Octan cynku', 'Lek stosowany w zaburzeniach metabolicznych - blokujący wchłanianie miedzi.'),
     ('Zinc oxide', 'Tlenek cynku', 'Lek o działaniu przeciwświądowym i wysuszającym.'),
     ('Zinc sulfate', 'Siarczan cynku', ''),
     ('Zinc undecylenate', 'Undecylian cynku', 'Lek przeciwgrzybiczy.'),
-    ('Bacitracin', 'Bacytracyna', 'Antybiotyk polipeptydowy.'),
-    ('Menthol', 'Mentol', 'Surowiec roślinny o właściwościach rozszerzających oskrzela i ułatwiających oddychanie, upłynniających wydzieliny śluzowe. Stosowany na skórę działa przeciwświądowo, znieczulająco, słabo antyseptycznie.'),
-    ('Palonosetron', 'Palonosetron', 'Lek przeciwwymiotny - silny i wybiórczy antagonista receptorów serotoninowych typu 3 (5-HT3). '),
-    ('Isotretinoin', 'Izotretynoina', 'Lek przeciwtrądzikowy - pochodna retinoidowa.'),
-    ('Levocetirizine', 'Lewocetyryzyna', 'Lek przeciwhistaminowy z grupy pochodnych piperazyny.'),
-    ('Aripiprazole', 'Arypiprazol', 'Lek przeciwpsychotyczny.'),
-    ('Almotriptan', 'Almotryptan', 'Lek przeciwmigrenowy - swoisty i wybiórczy agonista receptorów serotoninowych 5-HT1D.  '),
-    ('Amisulpride', 'Amisulpryd', 'Lek przeciwpsychotyczny z grupy pochodnych benzamidu.'),
-    ('Latanoprost', 'Latanoprost', 'Lek obniżający ciśnienie śródgałkowe - analog prostaglandyny F2alfa.'),
-    ('Doxazosin', 'Doksazosyna', 'Lek przeciwnadciśnieniowy - selektywny i kompetycyjny antagonista postsynaptycznych receptorów alfa-1-adrenergicznych.'),
-    ('Solifenacin', 'Solifenacyna', 'Spazmolityk działający na mięśnie gładkie układu moczowego.'),
-    ('Adapalene', 'Adapalen', 'Lek przeciwtrądzikowy - pochodna retinoidowa.'),
-    ('Escin', 'Escyna', 'Lek wpływający na elastyczność naczyń.'),
-    ('Lidocaine', 'Lidokaina', 'Środek miejscowo znieczulający o budowie amidowej. Lek przeciwarytmiczny klasy IB.'),
-    ('Ropinirole', 'Ropinirol', 'Lek przeciwparkinsonowski - agonista receptorów dopaminergicznych.'),
-    ('Olanzapine', 'Olanzapina', 'Lek przeciwpsychotyczny z grupy pochodnych benzodiazepiny.'),
-    ('Clomipramine', 'Klomipramina', 'Lek przeciwdepresyjny - nieselektywny inibitor wychwytu zwrotnego monoamin.'),
-    ('Amlodipine', 'Amlodypina', 'Lek blokujący kanały wapniowe o selektywnym działaniu naczyniowym - pochodna dihydropirydiny.'),
-    ('Ubidecarenone', 'Ubidekarenon', 'Lek o działaniu antyoksydacyjnym, immunostymulującym i przeciwmiażdżycowym.'),
-    ('Diosmin', 'Diosmina', 'Lek wpływający na elastyczność naczyń.'),
-    ('Ferrous', 'Żelazo', ''),
-    ('Ambroxol', 'Ambroksol', 'Lek mukolityczny.'),
-    ('Atorvastatin', 'Atorwastatyna', 'Lek modyfikujący stężenie lipidów - inhibitor reduktazy HMG-CoA.'),
-    ('Meloxicam', 'Meloksykam', 'Niesteroidowy lek przeciwzapalny z grupy oksykamów.'),
-    ('Thymol', 'Tymol', 'Surowiec roślinny o działaniu wykrztuśnym, odkażającym, pobudzającym wydzielanie soku żołądkowego, trzustkowego i enzymów jelitowych.'),
-    ('Alfuzosin', 'Alfuzosyna', 'Lek stosowany w łagodnym rozroście gruczołu krokowego - selektywny antagonista postsynaptycznych receptorów alfa-adrenergicznych.'),
-    ('Acetylcysteine', 'Acetylocysteina', 'Lek mukolityczny. Lek stosowany w przypadku przedawkowania paracetamolu.'),
-    ('Ciclesonide', 'Cyklezonid', 'Glikokortykosteroid.'),
-    ('Pantoprazole', 'Pantoprazol', 'Lek hamujący wydzielanie kwasu solnego w żołądku - inibitor pompy protonowej.'),
-    ('Pentoxifylline', 'Pentoksyfilina', 'Lek rozszerzający naczynia obwodowe - pochodna puryny.'),
-    ('Anidulafungin', 'Anidulafungina', 'Lek przeciwgrzybiczy - półsyntetyczna echizokandyna.'),
-    ('Clarithromycin', 'Klarytromycyna', 'Antybiotyk makrolidowy.'),
-    ('Erythromycin', 'Erytromycyna', 'Antybiotyk makrolidowy.'),
-    ('Agomelatine', 'Agomelatyna', ''),
-    ('Salmeterol', 'Salmeterol', 'Lek do stosowania w chorobach obturacyjnych dróg oddechowych - selektywny agonista receptora beta2-adrenergicznego.'),
-    ('Brigatinib', 'Brygatynib', 'Lek przeciwnowotworowy - inhibitor kinazy chłoniaka anaplastycznego (ALK).'),
-    ('Alclometasone', 'Alklometazon', 'Glikokortykosteroid.'),
-    ('Acarbose', 'Akarboza', 'Doustny lek przeciwcukrzycowy - inhibitor alfa-glukozydaz.  '),
-    ('Celecoxib', 'Celekoksyb', 'Selektywny inhibitor COX-2.'),
-    ('Escitalopram', 'Escytalopram', 'Lek przeciwdepresyjny - selektywny inhibitor wychwytu zwrotnego serotoniny.'),
-    ('Polidocanol', 'Polidokanol', 'Lek stosowany w leczeniu żylaków - środek do skleroterapii.'),
-    ('Fluticasone', 'Flutykazon', 'Glikokortykosteroid.'),
-    ('Fluticasone furoate', 'Furoinian flutykazonu', 'Glikokortykosteroid.'),
-    ('Quercetin', 'Kwercetyna', ''),
-    ('Amoxicillin', 'Amoksycylina', 'Antybiotyk z grupy penicylin o szerokim spektrum działania.'),
-    ('Amoxicillin and clavulanic acid', 'Amoksycylina i kwas klawulanowy', 'Antybiotyk z grupy penicylin w połączeniu z inhibitorem beta-laktamazy.'),
-    ('Clindamycin', 'Klindamycyna', ''),
-    ('Tretinoin', 'Tretynoina', 'Lek przeciwtrądzikowy - pochodna retinoidowa. Lek przeciwnowotworowy z grupy retinoidów.'),
-    ('Clopidogrel', 'Klopidogrel', 'Lek przeciwzakrzepowy - inhibitor krzepnięcia.'),
-    ('Losartan', 'Losartan', 'Bloker receptora angiotensyny II.'),
-    ('Cetirizine', 'Cetyryzyna', 'Lek przeciwhistaminowy z grupy pochodnych piperazyny.'),
-    ('Riociguat', 'Riocyguat', 'Lek obniżający ciśnienie stosowany w tętniczym nadciśnieniu płucnym.'),
-    ('Melphalan', 'Melfalan', 'Cytostatyk z grupy związków alkilujących.'),
-    ('Acitretin', 'Acytretyna', 'Lek przeciwłuszczycowy - pochodna retinoidowa.'),
-    ('Filgrastim', 'Filgrastym', 'Lek immunostymulujący - ludzki czynnik wzrostu granulocytów.'),
-    ('Mometasone', 'Mometazon', 'Glikokortykosteroid.'),
-    ('Ampicillin', 'Ampicylina', 'Antybiotyk z grupy penicylin o szerokim spektrum działania.'),
-    ('Ampicillin and sulbactam', 'Ampicylina i sulbaktam', 'Antybiotyk z grupy penicylin w połączeniu z inhibitorem beta-laktamazy.'),
-    ('Proxymetacaine', 'Proksymetakaina', 'Środek miejscowo znieczulający.'),
-    ('Vilanterol', 'Wilanterol', ''),
-    ('Dutasteride', 'Dutasteryd', 'Lek stosowany w łagodnym rozroście gruczołu krokowego - wybiórczy inhibitor 5-alfa reduktazy testosteronu.'),
-    ('Tramadol', 'Tramadol', 'Opioidowy lek przeciwbólowy.'),
-    ('Minoxidil', 'Minoksydyl', 'Lek przeciwnadciśnieniowy działający bezpośrednio na mięśnie gładkie naczyń krwionośnych. Lek pobudzający wzrost włosów.'),
-    ('Imiquimod', 'Imikwimod', 'Lek przeciwwirusowy.'),
-    ('Ramipril', 'Ramipryl', 'Inhibitor konwertazy angiotensyny.'),
-    ('Amitriptyline', 'Amitryptylina', 'Lek przeciwdepresyjny - nieselektywny inibitor wychwytu zwrotnego monoamin.'),
-    ('Fluoxetine', 'Fluoksetyna', 'Lek przeciwdepresyjny - selektywny inhibitor wychwytu zwrotnego serotoniny.'),
-    ('Ectoin', 'Ektoina', 'Substancja pochodzenia naturalnego, wykazująca właściwości stabilizujące błony komórkowe oraz zmniejszające stan zapalny.'),
-    ('Tamsulosin', 'Tamsulosyna', 'Lek stosowany w łagodnym rozroście gruczołu krokowego - selektywny antagonista postsynaptycznych receptorów alfa-adrenergicznych.'),
-    ('Diphenhydramine', 'Difenhydramina', ''),
-    ('Allantoine', 'Alantoina', 'Lek o działaniu przeciwzapalnym i przyspieszającym gojenie ran.'),
-    ('Acebutolol', 'Acebutolol', 'Selektywny lek beta-adrenolityczny.'),
-    ('Policresulen', 'Polikrezulen', 'Chemioterapeutyk.'),
-    ('Phenylephrine', 'Fenylefryna', 'Sympatykomimetyk.'),
-    ('Flucytosine', 'Flucytozyna', 'Lek przeciwgrzybiczy.'),
-    ('Selenium', 'Selen', 'Selen.'),
-    ('Venlafaxine', 'Wenlafaksyna', 'Lek przeciwdepresyjny - inhibitor wychwytu zwrotnego serotoniny i noradrenaliny.'),
-    ('Dextromethorphan', 'Dekstrometorfan', 'Lek przeciwkaszlowy.'),
-    ('Fremanezumab', 'Fremanezumab', 'Lek przeciwmigrenowy - przeciwciało monoklonalne.'),
-    ('Caffeine', 'Kofeina', 'Lek działający pobudzająco na OUN.'),
-    ('Ketorolac', 'Ketorolak', 'Niesteroidowy lek przeciwzapalny.'),
-    ('Azelastine', 'Azelastyna', 'Lek przeciwhistaminowy.'),
-    ('Acenocoumarol', 'Acenokumarol', 'Lek przeciwzakrzepowy - antagonista witaminy K.'),
-    ('Alprazolam', 'Alprazolam', 'Anksjolityk z grupy pochodnych benzodiazepiny.'),
-    ('Neomycin', 'Neomycyna', 'Antybiotyk aminoglikozydowy.'),
-    ('Cyproterone', 'Cyproteron', 'Antyandrogen.'),
-    ('Netupitant', 'Netupitant', 'Lek przeciwwymiotny - wybiórczy antagonista działający na ludzkie receptory neurokininowe 1 (NK1) substancji P.'),
-    ('Adenosine', 'Adenozyna', 'Lek przeciwarytmiczny klasy IV.'),
-    ('Quinapril', 'Chinapryl', 'Inhibitor konwertazy angiotensyny.'),
-    ('Alectinib', 'Alektynib', 'Lek przeciwnowotworowy - inhibitor kinazy chłoniaka anaplastycznego (ALK).'),
-    ('Amantadine', 'Amantadyna', 'Lek przeciwparkinsonowski - pochodna adamantanu.'),
-    ('Lactoferrin', 'Laktoferyna', 'Wielofunkcyjne białko z grupy transferyn, wykazujące duże powinowactwo do jonów żelaza.'),
-    ('Glimepiride', 'Glimepiryd', 'Doustny lek przeciwcukrzycowy - pochodna sulfonylomocznika.'),
-    ('Betahistine', 'Betahistyna', 'Lek stosowany przeciw zawrotom głowy.'),
-    ('Pefloxacin', 'Pefloksacyna', 'Chemioterapeutyk z grupy fluorochinolonów.'),
-    ('Paracetamol', 'Paracetamol', 'Lek przeciwbólowy i przeciwgorączkowy z grupy anilidów.'),
-    ('Levomenthol', 'Lewomentol', 'Surowiec roślinny o właściwościach rozszerzających oskrzela i ułatwiających oddychanie, upłynniających wydzieliny śluzowe. Stosowany na skórę działa przeciwświądowo, znieczulająco, słabo antyseptycznie.'),
-    ('Testosterone', 'Testosteron', 'Androgen.'),
-    ('Omeprazole', 'Omeprazol', 'Lek hamujący wydzielanie kwasu solnego w żołądku - inibitor pompy protonowej.'),
-    ('Tacrolimus', 'Takrolimus', ''),
-    ('Chloroprocaine', 'Chloroprokaina', 'Środek miejscowo znieczulający z grupy estrów kwasu aminobenzoesowego.'),
-    ('Anastrozole', 'Anastrozol', 'Lek przeciwnowotworowy - niesteroidowy inhibitor aromatazy.'),
-    ('Epinephrine', 'Epinefryna', 'Lek pobudzający układ sercowo-naczyniowy.'),
-    ('Electrolytes', 'Elektrolity', ''),
-    ('Electrolytes and glucose', 'Elektrolity i glukoza', ''),
-    ('Darvadstrocel', 'Darwadstrocel', 'Darwadstrocel zawiera namnożone komórki macierzyste pobrane z tkanki tłuszczowej, wykazujące działanie immunomodulacyjne i przeciwzapalne w miejscach ze stanem zapalnym.'),
-    ('Cytarabine', 'Cytarabina', 'Lek przeciwnowotworowy z grupy antymetabolitów - analog pirymidyn.'),
-    ('Formoterol', 'Formoterol', ''),
-    ('Trifarotene', 'Trifaroten', 'Lek przeciwtrądzikowy - pochodna retinoidowa.'),
-    ('Aciclovir', 'Acyklowir', 'Lek przeciwwirusowy aktywny wobec wirusa opyszczki typu 1 i 2, wirusa ospy wietrznej i półpaśca - analog nukleozydowy.'),
-    ('Chlorhexidine', 'Chlorheksydyna', 'Środek antyseptyczny.'),
-    ('Amikacin', 'Amikacyna', 'Antybiotyk aminoglikozydowy.'),
-    ('Ibuprofen', 'Ibuprofen', 'Niesteroidowy lek przeciwzapalny - pochodna kwasu propionowego.'),
-    ('Ticlopidine', 'Tyklopidyna', 'Lek przeciwzakrzepowy - inhibitor krzepnięcia.'),
-    ('Triprolidine', 'Tryprolidyna', 'Lek przeciwhistaminowy.'),
-    ('Dexpanthenol', 'Dekspantenol', ''),
-    ('Brimonidine', 'Brymonidyna', 'Lek obniżający ciśnienie śródgałkowe - selektywny agonista receptora alfa-2-adrenergicznego.'),
-    ('Sulfogaiacol', 'Sulfogwajakol', 'Lek wykrztuśny.'),
-    ('Biperiden', 'Biperyden', 'Lek przeciwparkinsonowski o działaniu cholinolitycznym.'),
-    ('Disulfiram', 'Disulfiram', 'Lek stosowany w leczeniu uzależnienia od alkoholu.'),
-    ('Fexofenadine', 'Feksofenadyna', 'Lek przeciwhistaminowy.'),
-    ('Oxycodone', 'Oksykodon', 'Opioidowy lek przeciwbólowy.'),
-    ('Finasteride', 'Finasteryd', 'Lek stosowany w łagodnym rozroście gruczołu krokowego - wybiórczy inhibitor 5-alfa reduktazy testosteronu. Lek pobudzający wzrost włosów.'),
-    ('Timolol', 'Tymolol', 'Lek obniżający ciśnienie śródgałkowe - nieselektywny bloker receptorów beta-adrenergicznych. '),
-    ('Amorolfine', 'Amorolfina', 'Lek przeciwgrzybiczy - pochodna morfoliny.'),
-    ('Resorcinol', 'Rezorcyna', 'Lek o działaniu keratolitycznym i antyseptycznym.'),
-    ('Codeine', 'Kodeina', 'Lek przeciwkaszlowy.');
+    ('Zinc', 'Cynk', ''),
+    ('Zingiber officinale', 'Imbir lekarski', 'Surowiec roślinny o działaniu zapobiegającym nudnościom.');
+
+
+insert into medicine_substance_map(medicine_id, active_substance_id) 
+select medicine_id, (select active_substance_id from active_substance where international_name='Salicylic acid') from medicine where trade_name='ABE'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Aripiprazole') from medicine where trade_name='Abilify'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Aripiprazole') from medicine where trade_name='Abilify Maintena'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylsalicylic acid') from medicine where trade_name='Abrea'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylsalicylic acid') from medicine where trade_name='Acard 300 mg'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylsalicylic acid') from medicine where trade_name='Acard'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Pseudoephedrine') from medicine where trade_name='Acatar Acti-Tabs'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Triprolidine') from medicine where trade_name='Acatar Acti-Tabs'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Azelastine') from medicine where trade_name='Acatar Allergy'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Oxymetazoline') from medicine where trade_name='Acatar Control'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ibuprofen') from medicine where trade_name='Acatar Zatoki'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Pseudoephedrine') from medicine where trade_name='Acatar Zatoki'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylcysteine') from medicine where trade_name='ACC classic'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylcysteine') from medicine where trade_name='ACC Hot'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylcysteine') from medicine where trade_name='ACC'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylcysteine') from medicine where trade_name='ACC mini'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Filgrastim') from medicine where trade_name='Accofil'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylcysteine') from medicine where trade_name='ACC optima Active'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylcysteine') from medicine where trade_name='ACC optima Hot'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylcysteine') from medicine where trade_name='ACC optima'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Oxycodone') from medicine where trade_name='Accordeon'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Quinapril') from medicine where trade_name='Accupro'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acebutolol') from medicine where trade_name='Acebutolol Aurovitas'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acenocoumarol') from medicine where trade_name='Acenocumarol WZF'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='Acenol'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Salicylic acid') from medicine where trade_name='Acerin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylsalicylic acid') from medicine where trade_name='Acesan'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylcysteine') from medicine where trade_name='Acetylcysteine Sandoz'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylcysteine') from medicine where trade_name='Acetylcysteinum Flegamina'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Aciclovir') from medicine where trade_name='Aciclovir Ziaja'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Folic acid') from medicine where trade_name='Acidum folicum Hasco'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Folic acid') from medicine where trade_name='Acidum folicum Richter'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Escitalopram') from medicine where trade_name='Aciprex'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acitretin') from medicine where trade_name='Acitren'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Celecoxib') from medicine where trade_name='Aclexa'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ticlopidine') from medicine where trade_name='Aclotin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Clindamycin') from medicine where trade_name='Acnatac'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Tretinoin') from medicine where trade_name='Acnatac'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Adapalene') from medicine where trade_name='Acnelec'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Dexpanthenol') from medicine where trade_name='Acodin Duo'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Dextromethorphan') from medicine where trade_name='Acodin Duo'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Dextromethorphan') from medicine where trade_name='Acodin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Telmisartan') from medicine where trade_name='Actelsar HCT'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Hydrochlorothiazide') from medicine where trade_name='Actelsar HCT'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Telmisartan') from medicine where trade_name='Actelsar'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Triprolidine') from medicine where trade_name='Actifed'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Pseudoephedrine') from medicine where trade_name='Actifed'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Dextromethorphan') from medicine where trade_name='Actifed'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Triprolidine') from medicine where trade_name='Acti-trin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Pseudoephedrine') from medicine where trade_name='Acti-trin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Dextromethorphan') from medicine where trade_name='Acti-trin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Estradiol and norethisterone') from medicine where trade_name='Activelle'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Benzydamine') from medicine where trade_name='Actusept'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ketorolac') from medicine where trade_name='Acular'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Quinapril') from medicine where trade_name='Acurenal'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Solifenacin') from medicine where trade_name='Adablok'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Doxazosin') from medicine where trade_name='Adadox'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Dutasteride') from medicine where trade_name='Adadut'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Tadalafil') from medicine where trade_name='Adalift'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Tramadol') from medicine where trade_name='Adamon SR'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ropinirole') from medicine where trade_name='Adartrel'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Finasteride') from medicine where trade_name='Adaster'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Dutasteride') from medicine where trade_name='Adatam Duo'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Tamsulosin') from medicine where trade_name='Adatam Duo'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Tamsulosin') from medicine where trade_name='Adatam'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acarbose') from medicine where trade_name='Adeksa'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Riociguat') from medicine where trade_name='Adempas'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Febuxostat') from medicine where trade_name='Adenuric'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Naltrexone') from medicine where trade_name='Adepend'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Adipine'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Calcium dobesilate') from medicine where trade_name='Adproctin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Epinephrine') from medicine where trade_name='Adrenalina Aguettant'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Epinephrine') from medicine where trade_name='Adrenalina WZF 0,1%'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Epinephrine') from medicine where trade_name='Adrenalina WZF'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Tacrolimus') from medicine where trade_name='Advagraf'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Desloratadine') from medicine where trade_name='Aerius'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Aesculus hippocastanum') from medicine where trade_name='Aesculan'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Lidocaine') from medicine where trade_name='Aesculan'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Polidocanol') from medicine where trade_name='Aethoxysklerol'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Fosfomycin') from medicine where trade_name='Afastural'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Everolimus') from medicine where trade_name='Afinitor'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Diosmin') from medicine where trade_name='Aflavic Comfort'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Diosmin') from medicine where trade_name='Aflavic Max'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ambroxol') from medicine where trade_name='Aflegan'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Alclometasone') from medicine where trade_name='Afloderm'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Alprazolam') from medicine where trade_name='Afobam'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Oxymetazoline') from medicine where trade_name='Afrin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Oxymetazoline') from medicine where trade_name='Afrin ND'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Pentoxifylline') from medicine where trade_name='Agapurin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Pentoxifylline') from medicine where trade_name='Agapurin SR'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Omeprazole') from medicine where trade_name='Agastin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Agen'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Agomelatine') from medicine where trade_name='Agolek'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Agomelatine') from medicine where trade_name='Agomelatine Adamed'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Agomelatine') from medicine where trade_name='Agomelatine G.L. Pharma'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Agomelatine') from medicine where trade_name='Agomelatine NeuroPharma'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Agomelatine') from medicine where trade_name='Agomelatine +pharma'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Agomelatine') from medicine where trade_name='Agomelatyna Egis'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Clopidogrel') from medicine where trade_name='Agregex'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='Agrypin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Pseudoephedrine') from medicine where trade_name='Agrypin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Dextromethorphan') from medicine where trade_name='Agrypin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Erenumab') from medicine where trade_name='Aimovig'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Budesonide') from medicine where trade_name='Airbufo Forspiro'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Formoterol') from medicine where trade_name='Airbufo Forspiro'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Fluticasone') from medicine where trade_name='AirFluSal Forspiro'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Salmeterol') from medicine where trade_name='AirFluSal Forspiro'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Fremanezumab') from medicine where trade_name='Ajovy'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Biperiden') from medicine where trade_name='Akineton'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Biperiden') from medicine where trade_name='Akineton SR'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Latanoprost') from medicine where trade_name='Akistan Duo'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Timolol') from medicine where trade_name='Akistan Duo'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Latanoprost') from medicine where trade_name='Akistan'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Trifarotene') from medicine where trade_name='Aklief'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Erythromycin') from medicine where trade_name='Aknemycin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Erythromycin') from medicine where trade_name='Aknemycin Plus'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Tretinoin') from medicine where trade_name='Aknemycin Plus'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Isotretinoin') from medicine where trade_name='Aknenormin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Netupitant') from medicine where trade_name='Akynzeo'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Palonosetron') from medicine where trade_name='Akynzeo'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Allantoine') from medicine where trade_name='Alantan'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Allantoine') from medicine where trade_name='Alantan Plus'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Dexpanthenol') from medicine where trade_name='Alantan Plus'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Allantoine') from medicine where trade_name='Alantavit'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Colecalciferol - vitamin D3') from medicine where trade_name='Alantavit'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Aloe') from medicine where trade_name='Alax'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Policresulen') from medicine where trade_name='Albothyl'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Proxymetacaine') from medicine where trade_name='Alcaine'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Aldan'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Imiquimod') from medicine where trade_name='Aldara'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Laronidase') from medicine where trade_name='Aldurazyme'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Alectinib') from medicine where trade_name='Alecensa'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Levocetirizine') from medicine where trade_name='Alergimed'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Desloratadine') from medicine where trade_name='AlergoTeva'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Desloratadine') from medicine where trade_name='Aleric Deslo Active'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Mometasone') from medicine where trade_name='Aleric Spray'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Cetirizine') from medicine where trade_name='Alermed'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Rupatadine') from medicine where trade_name='Alerprof'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Cetirizine') from medicine where trade_name='Alerzina'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Naproxen') from medicine where trade_name='Aleve'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Alfuzosin') from medicine where trade_name='Alfabax'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Alfacalcidol') from medicine where trade_name='Alfadiol'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Alfuzosin') from medicine where trade_name='Alfurion'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Alfuzosin') from medicine where trade_name='Alfuzostad'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylsalicylic acid') from medicine where trade_name='Alka-Seltzer'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Melphalan') from medicine where trade_name='Alkeran'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Fexofenadine') from medicine where trade_name='Allegra'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Fexofenadine') from medicine where trade_name='Allegra Telfast 180'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Cetirizine') from medicine where trade_name='AlleMax'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Fexofenadine') from medicine where trade_name='Allertec Fexo'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Cetirizine') from medicine where trade_name='Allertec'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Cetirizine') from medicine where trade_name='Allertec WZF'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Allium sativum') from medicine where trade_name='Alliofil'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Allium sativum') from medicine where trade_name='Alliomint'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Allopurinol') from medicine where trade_name='Allupol'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Almiden'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Almotriptan') from medicine where trade_name='Almozen'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Alneta'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Minoxidil') from medicine where trade_name='Alocutan Forte'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Minoxidil') from medicine where trade_name='Alocutan'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Darvadstrocel') from medicine where trade_name='Alofisel'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Minoxidil') from medicine where trade_name='Alopexy'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Losartan') from medicine where trade_name='Alortia'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Alortia'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Palonosetron') from medicine where trade_name='Aloxi'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Brimonidine') from medicine where trade_name='Alphagan'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Prednisolone') from medicine where trade_name='Alpicort E'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Estradiol') from medicine where trade_name='Alpicort E'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Salicylic acid') from medicine where trade_name='Alpicort E'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Prednisolone') from medicine where trade_name='Alpicort'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Salicylic acid') from medicine where trade_name='Alpicort'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Alprazolam') from medicine where trade_name='Alpragen'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Alprazolam') from medicine where trade_name='Alprazolam Aurovitas'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Alprazolam') from medicine where trade_name='Alprox'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Bacitracin') from medicine where trade_name='Altabactin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Neomycin') from medicine where trade_name='Altabactin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Alfuzosin') from medicine where trade_name='Alugen'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Brigatinib') from medicine where trade_name='Alunbrig'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Venlafaxine') from medicine where trade_name='Alventa'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ciclesonide') from medicine where trade_name='Alvesco'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amantadine') from medicine where trade_name='Amantix'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Glimepiride') from medicine where trade_name='Amaryl'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ambroxol') from medicine where trade_name='AmbroHexal'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ambroxol') from medicine where trade_name='Ambroksol Hasco'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ambroxol') from medicine where trade_name='Ambroksol Hasco Junior'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ambroxol') from medicine where trade_name='Ambroksol Hasco Max'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ambroxol') from medicine where trade_name='Ambroksol Takeda'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ambroxol') from medicine where trade_name='Ambrolytin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ambroxol') from medicine where trade_name='Ambrosol Teva'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ambroxol') from medicine where trade_name='Ambroxol Dr. Max'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Cetirizine') from medicine where trade_name='Amertil Bio'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Cetirizine') from medicine where trade_name='Amertil'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Adalimumab') from medicine where trade_name='Amgevita'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amikacin') from medicine where trade_name='Amikacin B. Braun'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amisulpride') from medicine where trade_name='Amipryd'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amisulpride') from medicine where trade_name='Amisan'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amitriptyline') from medicine where trade_name='Amitriptylinum VP'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Carbamazepine') from medicine where trade_name='Amizepin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Atorvastatin') from medicine where trade_name='Amlator'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Amlator'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Perindopril') from medicine where trade_name='Amlessa'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Amlessa'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Perindopril') from medicine where trade_name='Amlessini'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Amlessini'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Amlodipine Apotex'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Amlodipine Aurobindo'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Amlodipine Aurovitas'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Amlodipine Bluefish'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Amlodipine Orion'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Amlodipine Vitabalans'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Amlomyl'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Amlonor'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Amlopin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Amlozek'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amoxicillin and clavulanic acid') from medicine where trade_name='Amoksiklav'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amoxicillin and clavulanic acid') from medicine where trade_name='Amoksiklav Quicktab'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amorolfine') from medicine where trade_name='Amorolak'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amoxicillin') from medicine where trade_name='Amotaks Dis'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amoxicillin') from medicine where trade_name='Amoxicillin Aurovitas'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amoxicillin and clavulanic acid') from medicine where trade_name='Amoxicillin + Clavulanic Acid Aurovitas'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ampicillin') from medicine where trade_name='Ampicillin TZF'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Chloroprocaine') from medicine where trade_name='Ampres'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ramipril') from medicine where trade_name='Ampril HD'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Hydrochlorothiazide') from medicine where trade_name='Ampril HD'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ramipril') from medicine where trade_name='Ampril HL'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Hydrochlorothiazide') from medicine where trade_name='Ampril HL'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ramipril') from medicine where trade_name='Ampril'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amoxicillin and clavulanic acid') from medicine where trade_name='Amylan'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylsalicylic acid') from medicine where trade_name='Anacard medica protect'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Clomipramine') from medicine where trade_name='Anafranil'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Clomipramine') from medicine where trade_name='Anafranil SR'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Anagrelide') from medicine where trade_name='Anagrelid Aurovitas'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Anagrelide') from medicine where trade_name='Anagrelide Accord'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Anagrelide') from medicine where trade_name='Anagrelide Bioton'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Anagrelide') from medicine where trade_name='Anagrelide Glenmark'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Anagrelide') from medicine where trade_name='Anagrelide Mylan'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Anagrelide') from medicine where trade_name='Anagrelide Ranbaxy'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Anagrelide') from medicine where trade_name='Anagrelide Sandoz'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Anagrelide') from medicine where trade_name='Anagrelide Stada'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Anagrelide') from medicine where trade_name='Anagrelide Vipharm'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Anagrelide') from medicine where trade_name='Anagrelide Zentiva'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Naproxen') from medicine where trade_name='Anapran'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Anastrozole') from medicine where trade_name='Anastrozol Bluefish'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Anastrozole') from medicine where trade_name='Anastrozol Teva'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Fluoxetine') from medicine where trade_name='Andepin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Cyproterone') from medicine where trade_name='Androcur'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Finasteride') from medicine where trade_name='Androstatin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Finasteride') from medicine where trade_name='Androster'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Testosterone') from medicine where trade_name='Androtop'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Lidocaine') from medicine where trade_name='Anesderm'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Prilocaine') from medicine where trade_name='Anesderm'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Pantoprazole') from medicine where trade_name='Anesteloc'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Pantoprazole') from medicine where trade_name='Anesteloc Max'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Estradiol and drospirenone') from medicine where trade_name='Angeliq'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Anidulafungin') from medicine where trade_name='Anidulafungina Accord'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Anidulafungin') from medicine where trade_name='Anidulafungin Sandoz'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Umeclidinium bromide') from medicine where trade_name='Anoro Ellipta'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Vilanterol') from medicine where trade_name='Anoro Ellipta'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Disulfiram') from medicine where trade_name='Anticol'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='Antidol'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Codeine') from medicine where trade_name='Antidol'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Valeriana officinalis') from medicine where trade_name='Antinervinum'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Crataegus sp.') from medicine where trade_name='Antinervinum'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Finasteride') from medicine where trade_name='Antiprost'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylsalicylic acid') from medicine where trade_name='AntyGrypin dzień'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ascorbic acid - vitamin C') from medicine where trade_name='AntyGrypin dzień'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Caffeine') from medicine where trade_name='AntyGrypin dzień'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='AntyGrypin noc'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ascorbic acid - vitamin C') from medicine where trade_name='AntyGrypin noc'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Chlorpheniramine') from medicine where trade_name='AntyGrypin noc'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Salicylic acid') from medicine where trade_name='Antypot'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Boric acid') from medicine where trade_name='Antypot'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Olanzapine') from medicine where trade_name='Anzorin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='Apap ból i gorączka C Plus'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ascorbic acid - vitamin C') from medicine where trade_name='Apap ból i gorączka C Plus'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='Apap Caps'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='Apap dla dzieci Forte'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='Apap Extra'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Caffeine') from medicine where trade_name='Apap Extra'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='Apap'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ibuprofen') from medicine where trade_name='Apap intense'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='Apap intense'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='Apap Junior'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='Apap Noc'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Diphenhydramine') from medicine where trade_name='Apap Noc'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='Apap Przeziębienie'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ascorbic acid - vitamin C') from medicine where trade_name='Apap Przeziębienie'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Phenylephrine') from medicine where trade_name='Apap Przeziębienie'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='Apap Przeziębienie Junior'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ascorbic acid - vitamin C') from medicine where trade_name='Apap Przeziębienie Junior'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Phenylephrine') from medicine where trade_name='Apap Przeziębienie Junior'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ropinirole') from medicine where trade_name='Aparxon PR'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Clarithromycin') from medicine where trade_name='Apiclar'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Aripiprazole') from medicine where trade_name='Apiprax'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Sulfogaiacol') from medicine where trade_name='Apipulmol'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Sulfogaiacol') from medicine where trade_name='Apitussic'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Atorvastatin') from medicine where trade_name='Apo-Atorva'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Betahistine') from medicine where trade_name='ApoBetina'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ticlopidine') from medicine where trade_name='Apo-Clodin';
+
 
 commit;
