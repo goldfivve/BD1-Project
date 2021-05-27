@@ -1084,4 +1084,20 @@ insert into pharmacy(pharmacy_name) values
     ('APTEKA LEŚNICKA'),
     ('APTEKA "OGRODOWA" SPÓŁKA JAWNA');
 
+do $$
+begin
+    perform setseed(1);
+
+    for pharmacy_id in 1..(select count(pharmacy_id) from pharmacy) loop
+        for medicine_id in 1..(select count(medicine_id) from medicine) loop
+            if (select random()) > 0.8 then
+                insert
+                    into medicine_in_pharmacy (pharmacy_id, medicine_id, quantity)
+                    values(pharmacy_id, medicine_id, ceil(random() * 30));
+            end if;
+        end loop;
+    end loop;
+end;
+$$;
+
 commit;
