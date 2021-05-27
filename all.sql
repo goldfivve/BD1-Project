@@ -1098,102 +1098,103 @@ do $$ begin
     end loop;
 end; $$;
 
-insert into prescription(expiration_date, client_id, prescription_type) values ('03/08/2021', 1, 'Rpw');
-insert into prescription(expiration_date, client_id, prescription_type) values ('17/03/2022', 2, 'OTC');
-insert into prescription(expiration_date, client_id, prescription_type) values ('10/08/2020', 3, 'Rpw');
-insert into prescription(expiration_date, client_id, prescription_type) values ('04/02/2021', 4, 'Rp');
-insert into prescription(expiration_date, client_id, prescription_type) values ('10/10/2020', 5, 'Rpw');
-insert into prescription(expiration_date, client_id, prescription_type) values ('05/11/2021', 6, 'Rpw');
-insert into prescription(expiration_date, client_id, prescription_type) values ('15/03/2021', 7, 'OTC');
-insert into prescription(expiration_date, client_id, prescription_type) values ('26/07/2021', 8, 'Rpz');
-insert into prescription(expiration_date, client_id, prescription_type) values ('08/03/2022', 9, 'Rpz');
-insert into prescription(expiration_date, client_id, prescription_type) values ('05/01/2021', 10, 'Rpw');
-insert into prescription(expiration_date, client_id, prescription_type) values ('23/11/2020', 11, 'Rpz');
-insert into prescription(expiration_date, client_id, prescription_type) values ('03/03/2021', 12, 'OTC');
-insert into prescription(expiration_date, client_id, prescription_type) values ('09/10/2020', 13, 'OTC');
-insert into prescription(expiration_date, client_id, prescription_type) values ('15/09/2020', 14, 'Rp');
-insert into prescription(expiration_date, client_id, prescription_type) values ('05/11/2020', 15, 'Rpw');
-insert into prescription(expiration_date, client_id, prescription_type) values ('02/09/2020', 16, 'OTC');
-insert into prescription(expiration_date, client_id, prescription_type) values ('29/08/2020', 17, 'Rpw');
-insert into prescription(expiration_date, client_id, prescription_type) values ('19/02/2021', 18, 'OTC');
-insert into prescription(expiration_date, client_id, prescription_type) values ('06/02/2021', 19, 'Rpz');
-insert into prescription(expiration_date, client_id, prescription_type) values ('23/10/2020', 20, 'Rpw');
-insert into prescription(expiration_date, client_id, prescription_type) values ('25/10/2020', 21, 'Rp');
-insert into prescription(expiration_date, client_id, prescription_type) values ('13/11/2021', 22, 'OTC');
-insert into prescription(expiration_date, client_id, prescription_type) values ('02/01/2021', 23, 'Rpw');
-insert into prescription(expiration_date, client_id, prescription_type) values ('15/01/2022', 24, 'Rp');
-insert into prescription(expiration_date, client_id, prescription_type) values ('11/06/2021', 25, 'Rp');
-insert into prescription(expiration_date, client_id, prescription_type) values ('16/01/2022', 26, 'Rp');
-insert into prescription(expiration_date, client_id, prescription_type) values ('01/10/2021', 27, 'Rpz');
-insert into prescription(expiration_date, client_id, prescription_type) values ('16/04/2022', 28, 'Rpw');
-insert into prescription(expiration_date, client_id, prescription_type) values ('31/05/2021', 29, 'Rpw');
-insert into prescription(expiration_date, client_id, prescription_type) values ('23/08/2021', 30, 'Rpw');
-insert into prescription(expiration_date, client_id, prescription_type) values ('04/05/2021', 31, 'OTC');
-insert into prescription(expiration_date, client_id, prescription_type) values ('22/05/2022', 32, 'Rpw');
-insert into prescription(expiration_date, client_id, prescription_type) values ('06/02/2022', 33, 'Rp');
-insert into prescription(expiration_date, client_id, prescription_type) values ('04/04/2022', 34, 'OTC');
-insert into prescription(expiration_date, client_id, prescription_type) values ('19/04/2021', 35, 'Rpw');
-insert into prescription(expiration_date, client_id, prescription_type) values ('03/11/2020', 36, 'OTC');
-insert into prescription(expiration_date, client_id, prescription_type) values ('24/03/2022', 37, 'Rpw');
-insert into prescription(expiration_date, client_id, prescription_type) values ('29/12/2021', 38, 'OTC');
-insert into prescription(expiration_date, client_id, prescription_type) values ('14/07/2021', 39, 'Rpz');
-insert into prescription(expiration_date, client_id, prescription_type) values ('14/07/2020', 40, 'Rpw');
-insert into prescription(expiration_date, client_id, prescription_type) values ('18/05/2022', 41, 'Rpw');
-insert into prescription(expiration_date, client_id, prescription_type) values ('06/10/2021', 42, 'Rpz');
-insert into prescription(expiration_date, client_id, prescription_type) values ('31/08/2021', 43, 'Rpw');
-insert into prescription(expiration_date, client_id, prescription_type) values ('20/04/2022', 44, 'Rpz');
-insert into prescription(expiration_date, client_id, prescription_type) values ('16/09/2020', 45, 'OTC');
-insert into prescription(expiration_date, client_id, prescription_type) values ('09/09/2021', 46, 'Rpz');
-insert into prescription(expiration_date, client_id, prescription_type) values ('28/06/2020', 47, 'Rpz');
-insert into prescription(expiration_date, client_id, prescription_type) values ('08/05/2021', 48, 'Rpz');
-insert into prescription(expiration_date, client_id, prescription_type) values ('24/05/2021', 49, 'Rpw');
-insert into prescription(expiration_date, client_id, prescription_type) values ('12/10/2020', 50, 'OTC');
-insert into prescription(expiration_date, client_id, prescription_type) values ('17/06/2021', 51, 'Rpw');
-insert into prescription(expiration_date, client_id, prescription_type) values ('04/11/2020', 52, 'Rpz');
-insert into prescription(expiration_date, client_id, prescription_type) values ('07/08/2020', 53, 'Rpz');
-insert into prescription(expiration_date, client_id, prescription_type) values ('15/01/2022', 54, 'Rpz');
-insert into prescription(expiration_date, client_id, prescription_type) values ('24/06/2020', 55, 'Rpw');
-insert into prescription(expiration_date, client_id, prescription_type) values ('18/08/2021', 56, 'Rpz');
-insert into prescription(expiration_date, client_id, prescription_type) values ('09/04/2021', 57, 'OTC');
-insert into prescription(expiration_date, client_id, prescription_type) values ('12/05/2022', 58, 'Rpw');
-insert into prescription(expiration_date, client_id, prescription_type) values ('01/10/2021', 59, 'Rpz');
-insert into prescription(expiration_date, client_id, prescription_type) values ('16/07/2021', 60, 'Rpw');
-insert into prescription(expiration_date, client_id, prescription_type) values ('30/09/2020', 61, 'Rp');
-insert into prescription(expiration_date, client_id, prescription_type) values ('20/12/2020', 62, 'Rpw');
-insert into prescription(expiration_date, client_id, prescription_type) values ('12/12/2020', 63, 'Rpz');
-insert into prescription(expiration_date, client_id, prescription_type) values ('07/09/2021', 64, 'OTC');
-insert into prescription(expiration_date, client_id, prescription_type) values ('24/03/2022', 65, 'OTC');
-insert into prescription(expiration_date, client_id, prescription_type) values ('10/04/2022', 66, 'Rpw');
-insert into prescription(expiration_date, client_id, prescription_type) values ('26/09/2021', 67, 'Rp');
-insert into prescription(expiration_date, client_id, prescription_type) values ('29/11/2020', 68, 'Rpz');
-insert into prescription(expiration_date, client_id, prescription_type) values ('12/01/2022', 69, 'Rp');
-insert into prescription(expiration_date, client_id, prescription_type) values ('29/07/2020', 70, 'OTC');
-insert into prescription(expiration_date, client_id, prescription_type) values ('14/12/2020', 71, 'Rpz');
-insert into prescription(expiration_date, client_id, prescription_type) values ('23/02/2022', 72, 'Rpw');
-insert into prescription(expiration_date, client_id, prescription_type) values ('13/11/2021', 73, 'Rpz');
-insert into prescription(expiration_date, client_id, prescription_type) values ('03/06/2021', 74, 'Rp');
-insert into prescription(expiration_date, client_id, prescription_type) values ('02/06/2020', 75, 'Rp');
-insert into prescription(expiration_date, client_id, prescription_type) values ('04/08/2021', 76, 'Rpw');
-insert into prescription(expiration_date, client_id, prescription_type) values ('27/12/2020', 77, 'Rp');
-insert into prescription(expiration_date, client_id, prescription_type) values ('03/05/2022', 78, 'Rpw');
-insert into prescription(expiration_date, client_id, prescription_type) values ('10/07/2021', 79, 'OTC');
-insert into prescription(expiration_date, client_id, prescription_type) values ('30/12/2021', 80, 'Rpw');
-insert into prescription(expiration_date, client_id, prescription_type) values ('07/12/2020', 81, 'Rpw');
-insert into prescription(expiration_date, client_id, prescription_type) values ('01/07/2021', 82, 'Rpw');
-insert into prescription(expiration_date, client_id, prescription_type) values ('17/01/2021', 83, 'Rpz');
-insert into prescription(expiration_date, client_id, prescription_type) values ('04/11/2021', 84, 'Rp');
-insert into prescription(expiration_date, client_id, prescription_type) values ('25/06/2021', 85, 'Rp');
-insert into prescription(expiration_date, client_id, prescription_type) values ('12/12/2020', 86, 'Rp');
-insert into prescription(expiration_date, client_id, prescription_type) values ('02/10/2021', 87, 'Rpz');
-insert into prescription(expiration_date, client_id, prescription_type) values ('15/10/2020', 88, 'Rpw');
-insert into prescription(expiration_date, client_id, prescription_type) values ('20/01/2022', 89, 'Rpw');
-insert into prescription(expiration_date, client_id, prescription_type) values ('18/01/2021', 90, 'Rpw');
-insert into prescription(expiration_date, client_id, prescription_type) values ('19/09/2020', 91, 'Rpz');
-insert into prescription(expiration_date, client_id, prescription_type) values ('30/04/2022', 92, 'OTC');
-insert into prescription(expiration_date, client_id, prescription_type) values ('17/05/2021', 93, 'OTC');
-insert into prescription(expiration_date, client_id, prescription_type) values ('20/09/2020', 94, 'Rp');
-insert into prescription(expiration_date, client_id, prescription_type) values ('20/01/2022', 95, 'Rp');
-insert into prescription(expiration_date, client_id, prescription_type) values ('08/01/2022', 96, 'OTC');
+insert into prescription(expiration_date, client_id, prescription_type) values
+    ('03/08/2021', 1, 'Rpw'),
+    ('17/03/2022', 2, 'OTC'),
+    ('10/08/2020', 3, 'Rpw'),
+    ('04/02/2021', 4, 'Rp'),
+    ('10/10/2020', 5, 'Rpw'),
+    ('05/11/2021', 6, 'Rpw'),
+    ('15/03/2021', 7, 'OTC'),
+    ('26/07/2021', 8, 'Rpz'),
+    ('08/03/2022', 9, 'Rpz'),
+    ('05/01/2021', 10, 'Rpw'),
+    ('23/11/2020', 11, 'Rpz'),
+    ('03/03/2021', 12, 'OTC'),
+    ('09/10/2020', 13, 'OTC'),
+    ('15/09/2020', 14, 'Rp'),
+    ('05/11/2020', 15, 'Rpw'),
+    ('02/09/2020', 16, 'OTC'),
+    ('29/08/2020', 17, 'Rpw'),
+    ('19/02/2021', 18, 'OTC'),
+    ('06/02/2021', 19, 'Rpz'),
+    ('23/10/2020', 20, 'Rpw'),
+    ('25/10/2020', 21, 'Rp'),
+    ('13/11/2021', 22, 'OTC'),
+    ('02/01/2021', 23, 'Rpw'),
+    ('15/01/2022', 24, 'Rp'),
+    ('11/06/2021', 25, 'Rp'),
+    ('16/01/2022', 26, 'Rp'),
+    ('01/10/2021', 27, 'Rpz'),
+    ('16/04/2022', 28, 'Rpw'),
+    ('31/05/2021', 29, 'Rpw'),
+    ('23/08/2021', 30, 'Rpw'),
+    ('04/05/2021', 31, 'OTC'),
+    ('22/05/2022', 32, 'Rpw'),
+    ('06/02/2022', 33, 'Rp'),
+    ('04/04/2022', 34, 'OTC'),
+    ('19/04/2021', 35, 'Rpw'),
+    ('03/11/2020', 36, 'OTC'),
+    ('24/03/2022', 37, 'Rpw'),
+    ('29/12/2021', 38, 'OTC'),
+    ('14/07/2021', 39, 'Rpz'),
+    ('14/07/2020', 40, 'Rpw'),
+    ('18/05/2022', 41, 'Rpw'),
+    ('06/10/2021', 42, 'Rpz'),
+    ('31/08/2021', 43, 'Rpw'),
+    ('20/04/2022', 44, 'Rpz'),
+    ('16/09/2020', 45, 'OTC'),
+    ('09/09/2021', 46, 'Rpz'),
+    ('28/06/2020', 47, 'Rpz'),
+    ('08/05/2021', 48, 'Rpz'),
+    ('24/05/2021', 49, 'Rpw'),
+    ('12/10/2020', 50, 'OTC'),
+    ('17/06/2021', 51, 'Rpw'),
+    ('04/11/2020', 52, 'Rpz'),
+    ('07/08/2020', 53, 'Rpz'),
+    ('15/01/2022', 54, 'Rpz'),
+    ('24/06/2020', 55, 'Rpw'),
+    ('18/08/2021', 56, 'Rpz'),
+    ('09/04/2021', 57, 'OTC'),
+    ('12/05/2022', 58, 'Rpw'),
+    ('01/10/2021', 59, 'Rpz'),
+    ('16/07/2021', 60, 'Rpw'),
+    ('30/09/2020', 61, 'Rp'),
+    ('20/12/2020', 62, 'Rpw'),
+    ('12/12/2020', 63, 'Rpz'),
+    ('07/09/2021', 64, 'OTC'),
+    ('24/03/2022', 65, 'OTC'),
+    ('10/04/2022', 66, 'Rpw'),
+    ('26/09/2021', 67, 'Rp'),
+    ('29/11/2020', 68, 'Rpz'),
+    ('12/01/2022', 69, 'Rp'),
+    ('29/07/2020', 70, 'OTC'),
+    ('14/12/2020', 71, 'Rpz'),
+    ('23/02/2022', 72, 'Rpw'),
+    ('13/11/2021', 73, 'Rpz'),
+    ('03/06/2021', 74, 'Rp'),
+    ('02/06/2020', 75, 'Rp'),
+    ('04/08/2021', 76, 'Rpw'),
+    ('27/12/2020', 77, 'Rp'),
+    ('03/05/2022', 78, 'Rpw'),
+    ('10/07/2021', 79, 'OTC'),
+    ('30/12/2021', 80, 'Rpw'),
+    ('07/12/2020', 81, 'Rpw'),
+    ('01/07/2021', 82, 'Rpw'),
+    ('17/01/2021', 83, 'Rpz'),
+    ('04/11/2021', 84, 'Rp'),
+    ('25/06/2021', 85, 'Rp'),
+    ('12/12/2020', 86, 'Rp'),
+    ('02/10/2021', 87, 'Rpz'),
+    ('15/10/2020', 88, 'Rpw'),
+    ('20/01/2022', 89, 'Rpw'),
+    ('18/01/2021', 90, 'Rpw'),
+    ('19/09/2020', 91, 'Rpz'),
+    ('30/04/2022', 92, 'OTC'),
+    ('17/05/2021', 93, 'OTC'),
+    ('20/09/2020', 94, 'Rp'),
+    ('20/01/2022', 95, 'Rp'),
+    ('08/01/2022', 96, 'OTC');
 
 insert into active_substance(international_name, "name", description) values
     ('Estradiol', 'Estradiol', 'Estrogen.'),
