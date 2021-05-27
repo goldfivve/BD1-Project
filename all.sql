@@ -40,7 +40,8 @@ create table pharmacy(
 create table medicine_in_pharmacy(
     pharmacy_id int not null references pharmacy,
     medicine_id int not null references medicine,
-    quantity int not null
+    quantity int not null,
+    primary key(pharmacy_id, medicine_id)
 );
 
 create table prescribed_medicine(
@@ -902,7 +903,6 @@ insert into pharmacy(pharmacy_name) values
     ('APTEKA HIPOKRATES'),
     ('APTEKA LEKOSFERA DGA17'),
     ('APTEKA TĘCZOWA 3'),
-    ('APTEKA'),
     ('APTEKA GRUNWALDZKA'),
     ('APTEKA CEF@RM 36,6'),
     ('APTEKA MNISZEK SP. J.'),
@@ -953,7 +953,6 @@ insert into pharmacy(pharmacy_name) values
     ('APTEKA PRZY LEGNICKIEJ'),
     ('APTEKA NA ZDROWIE'),
     ('APTEKA SUPER-PHARM APTEKA MAGNOLIA PARK'),
-    ('APTEKA'),
     ('APTEKA POMARAŃCZOWA'),
     ('APTEKA WAWRZYNEK S.C.'),
     ('APTEKA LEKOSFERA DGA 1'),
@@ -1021,10 +1020,8 @@ insert into pharmacy(pharmacy_name) values
     ('APTEKA LEGE ARTIS'),
     ('APTEKA MEDIC'),
     ('APTEKA TĘCZOWA'),
-    ('APTEKA'),
     ('APTEKA PRZYJAŹNI'),
     ('APTEKA "POD DĘBAMI"'),
-    ('APTEKA'),
     ('APTEKA PRIMA'),
     ('APTEKA MEDICEO DRIVE'),
     ('APTEKA BISKUPIN S.C.'),
@@ -1415,208 +1412,77 @@ insert into active_substance(international_name, "name", description) values
 
 insert into medicine_substance_map(medicine_id, active_substance_id) 
 select medicine_id, (select active_substance_id from active_substance where international_name='Salicylic acid') from medicine where trade_name='ABE'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Aripiprazole') from medicine where trade_name='Abilify'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Aripiprazole') from medicine where trade_name='Abilify Maintena'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylsalicylic acid') from medicine where trade_name='Abrea'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylsalicylic acid') from medicine where trade_name='Acard 300 mg'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylsalicylic acid') from medicine where trade_name='Acard'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Pseudoephedrine') from medicine where trade_name='Acatar Acti-Tabs'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Triprolidine') from medicine where trade_name='Acatar Acti-Tabs'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Azelastine') from medicine where trade_name='Acatar Allergy'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Oxymetazoline') from medicine where trade_name='Acatar Control'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Ibuprofen') from medicine where trade_name='Acatar Zatoki'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Pseudoephedrine') from medicine where trade_name='Acatar Zatoki'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylcysteine') from medicine where trade_name='ACC classic'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acarbose') from medicine where trade_name='Adeksa'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acebutolol') from medicine where trade_name='Acebutolol Aurovitas'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acenocoumarol') from medicine where trade_name='Acenocumarol WZF'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylcysteine') from medicine where trade_name='ACC Hot'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylcysteine') from medicine where trade_name='ACC'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylcysteine') from medicine where trade_name='ACC classic'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylcysteine') from medicine where trade_name='ACC mini'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Filgrastim') from medicine where trade_name='Accofil'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylcysteine') from medicine where trade_name='ACC optima Active'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylcysteine') from medicine where trade_name='ACC optima Hot'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylcysteine') from medicine where trade_name='ACC optima'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Oxycodone') from medicine where trade_name='Accordeon'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Quinapril') from medicine where trade_name='Accupro'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Acebutolol') from medicine where trade_name='Acebutolol Aurovitas'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Acenocoumarol') from medicine where trade_name='Acenocumarol WZF'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='Acenol'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Salicylic acid') from medicine where trade_name='Acerin'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylsalicylic acid') from medicine where trade_name='Acesan'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylcysteine') from medicine where trade_name='ACC'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylcysteine') from medicine where trade_name='Acetylcysteine Sandoz'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylcysteine') from medicine where trade_name='Acetylcysteinum Flegamina'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylsalicylic acid') from medicine where trade_name='Abrea'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylsalicylic acid') from medicine where trade_name='Acard 300 mg'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylsalicylic acid') from medicine where trade_name='Acard'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylsalicylic acid') from medicine where trade_name='Acesan'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylsalicylic acid') from medicine where trade_name='Alka-Seltzer'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylsalicylic acid') from medicine where trade_name='Anacard medica protect'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylsalicylic acid') from medicine where trade_name='AntyGrypin dzień'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Aciclovir') from medicine where trade_name='Aciclovir Ziaja'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Folic acid') from medicine where trade_name='Acidum folicum Hasco'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Folic acid') from medicine where trade_name='Acidum folicum Richter'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Escitalopram') from medicine where trade_name='Aciprex'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Acitretin') from medicine where trade_name='Acitren'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Celecoxib') from medicine where trade_name='Aclexa'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Ticlopidine') from medicine where trade_name='Aclotin'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Clindamycin') from medicine where trade_name='Acnatac'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Tretinoin') from medicine where trade_name='Acnatac'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Adalimumab') from medicine where trade_name='Amgevita'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Adapalene') from medicine where trade_name='Acnelec'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Dexpanthenol') from medicine where trade_name='Acodin Duo'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Dextromethorphan') from medicine where trade_name='Acodin Duo'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Dextromethorphan') from medicine where trade_name='Acodin'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Telmisartan') from medicine where trade_name='Actelsar HCT'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Hydrochlorothiazide') from medicine where trade_name='Actelsar HCT'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Telmisartan') from medicine where trade_name='Actelsar'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Triprolidine') from medicine where trade_name='Actifed'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Pseudoephedrine') from medicine where trade_name='Actifed'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Dextromethorphan') from medicine where trade_name='Actifed'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Triprolidine') from medicine where trade_name='Acti-trin'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Pseudoephedrine') from medicine where trade_name='Acti-trin'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Dextromethorphan') from medicine where trade_name='Acti-trin'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Estradiol and norethisterone') from medicine where trade_name='Activelle'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Benzydamine') from medicine where trade_name='Actusept'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Ketorolac') from medicine where trade_name='Acular'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Quinapril') from medicine where trade_name='Acurenal'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Solifenacin') from medicine where trade_name='Adablok'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Doxazosin') from medicine where trade_name='Adadox'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Dutasteride') from medicine where trade_name='Adadut'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Tadalafil') from medicine where trade_name='Adalift'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Tramadol') from medicine where trade_name='Adamon SR'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Ropinirole') from medicine where trade_name='Adartrel'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Finasteride') from medicine where trade_name='Adaster'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Dutasteride') from medicine where trade_name='Adatam Duo'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Tamsulosin') from medicine where trade_name='Adatam Duo'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Tamsulosin') from medicine where trade_name='Adatam'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Acarbose') from medicine where trade_name='Adeksa'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Riociguat') from medicine where trade_name='Adempas'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Febuxostat') from medicine where trade_name='Adenuric'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Naltrexone') from medicine where trade_name='Adepend'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Adipine'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Calcium dobesilate') from medicine where trade_name='Adproctin'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Epinephrine') from medicine where trade_name='Adrenalina Aguettant'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Epinephrine') from medicine where trade_name='Adrenalina WZF 0,1%'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Epinephrine') from medicine where trade_name='Adrenalina WZF'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Tacrolimus') from medicine where trade_name='Advagraf'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Desloratadine') from medicine where trade_name='Aerius'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Aesculus hippocastanum') from medicine where trade_name='Aesculan'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Lidocaine') from medicine where trade_name='Aesculan'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Polidocanol') from medicine where trade_name='Aethoxysklerol'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Fosfomycin') from medicine where trade_name='Afastural'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Everolimus') from medicine where trade_name='Afinitor'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Diosmin') from medicine where trade_name='Aflavic Comfort'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Diosmin') from medicine where trade_name='Aflavic Max'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Ambroxol') from medicine where trade_name='Aflegan'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Alclometasone') from medicine where trade_name='Afloderm'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Alprazolam') from medicine where trade_name='Afobam'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Oxymetazoline') from medicine where trade_name='Afrin'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Oxymetazoline') from medicine where trade_name='Afrin ND'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Pentoxifylline') from medicine where trade_name='Agapurin'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Pentoxifylline') from medicine where trade_name='Agapurin SR'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Omeprazole') from medicine where trade_name='Agastin'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Agen'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Agomelatine') from medicine where trade_name='Agolek'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Agomelatine') from medicine where trade_name='Agomelatine +pharma'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Agomelatine') from medicine where trade_name='Agomelatine Adamed'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Agomelatine') from medicine where trade_name='Agomelatine G.L. Pharma'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Agomelatine') from medicine where trade_name='Agomelatine NeuroPharma'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Agomelatine') from medicine where trade_name='Agomelatine +pharma'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Agomelatine') from medicine where trade_name='Agomelatyna Egis'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Clopidogrel') from medicine where trade_name='Agregex'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='Agrypin'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Pseudoephedrine') from medicine where trade_name='Agrypin'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Dextromethorphan') from medicine where trade_name='Agrypin'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Erenumab') from medicine where trade_name='Aimovig'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Budesonide') from medicine where trade_name='Airbufo Forspiro'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Formoterol') from medicine where trade_name='Airbufo Forspiro'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Fluticasone') from medicine where trade_name='AirFluSal Forspiro'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Salmeterol') from medicine where trade_name='AirFluSal Forspiro'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Fremanezumab') from medicine where trade_name='Ajovy'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Biperiden') from medicine where trade_name='Akineton'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Biperiden') from medicine where trade_name='Akineton SR'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Latanoprost') from medicine where trade_name='Akistan Duo'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Timolol') from medicine where trade_name='Akistan Duo'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Latanoprost') from medicine where trade_name='Akistan'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Trifarotene') from medicine where trade_name='Aklief'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Erythromycin') from medicine where trade_name='Aknemycin'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Erythromycin') from medicine where trade_name='Aknemycin Plus'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Tretinoin') from medicine where trade_name='Aknemycin Plus'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Isotretinoin') from medicine where trade_name='Aknenormin'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Netupitant') from medicine where trade_name='Akynzeo'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Palonosetron') from medicine where trade_name='Akynzeo'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Allantoine') from medicine where trade_name='Alantan'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Allantoine') from medicine where trade_name='Alantan Plus'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Dexpanthenol') from medicine where trade_name='Alantan Plus'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Allantoine') from medicine where trade_name='Alantavit'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Colecalciferol - vitamin D3') from medicine where trade_name='Alantavit'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Aloe') from medicine where trade_name='Alax'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Policresulen') from medicine where trade_name='Albothyl'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Proxymetacaine') from medicine where trade_name='Alcaine'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Aldan'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Imiquimod') from medicine where trade_name='Aldara'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Laronidase') from medicine where trade_name='Aldurazyme'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Alclometasone') from medicine where trade_name='Afloderm'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Alectinib') from medicine where trade_name='Alecensa'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Levocetirizine') from medicine where trade_name='Alergimed'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Desloratadine') from medicine where trade_name='AlergoTeva'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Desloratadine') from medicine where trade_name='Aleric Deslo Active'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Mometasone') from medicine where trade_name='Aleric Spray'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Cetirizine') from medicine where trade_name='Alermed'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Rupatadine') from medicine where trade_name='Alerprof'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Cetirizine') from medicine where trade_name='Alerzina'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Naproxen') from medicine where trade_name='Aleve'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Alfuzosin') from medicine where trade_name='Alfabax'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Alfacalcidol') from medicine where trade_name='Alfadiol'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Alfuzosin') from medicine where trade_name='Alfabax'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Alfuzosin') from medicine where trade_name='Alfurion'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Alfuzosin') from medicine where trade_name='Alfuzostad'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylsalicylic acid') from medicine where trade_name='Alka-Seltzer'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Melphalan') from medicine where trade_name='Alkeran'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Fexofenadine') from medicine where trade_name='Allegra'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Fexofenadine') from medicine where trade_name='Allegra Telfast 180'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Cetirizine') from medicine where trade_name='AlleMax'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Fexofenadine') from medicine where trade_name='Allertec Fexo'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Cetirizine') from medicine where trade_name='Allertec'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Cetirizine') from medicine where trade_name='Allertec WZF'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Alfuzosin') from medicine where trade_name='Alugen'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Allantoine') from medicine where trade_name='Alantan Plus'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Allantoine') from medicine where trade_name='Alantan'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Allantoine') from medicine where trade_name='Alantavit'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Allium sativum') from medicine where trade_name='Alliofil'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Allium sativum') from medicine where trade_name='Alliomint'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Allopurinol') from medicine where trade_name='Allupol'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Almiden'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Almotriptan') from medicine where trade_name='Almozen'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Alneta'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Minoxidil') from medicine where trade_name='Alocutan Forte'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Minoxidil') from medicine where trade_name='Alocutan'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Darvadstrocel') from medicine where trade_name='Alofisel'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Minoxidil') from medicine where trade_name='Alopexy'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Losartan') from medicine where trade_name='Alortia'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Alortia'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Palonosetron') from medicine where trade_name='Aloxi'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Brimonidine') from medicine where trade_name='Alphagan'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Prednisolone') from medicine where trade_name='Alpicort E'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Estradiol') from medicine where trade_name='Alpicort E'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Salicylic acid') from medicine where trade_name='Alpicort E'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Prednisolone') from medicine where trade_name='Alpicort'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Salicylic acid') from medicine where trade_name='Alpicort'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Aloe') from medicine where trade_name='Alax'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Alprazolam') from medicine where trade_name='Afobam'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Alprazolam') from medicine where trade_name='Alpragen'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Alprazolam') from medicine where trade_name='Alprazolam Aurovitas'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Alprazolam') from medicine where trade_name='Alprox'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Bacitracin') from medicine where trade_name='Altabactin'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Neomycin') from medicine where trade_name='Altabactin'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Alfuzosin') from medicine where trade_name='Alugen'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Brigatinib') from medicine where trade_name='Alunbrig'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Venlafaxine') from medicine where trade_name='Alventa'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Ciclesonide') from medicine where trade_name='Alvesco'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Amantadine') from medicine where trade_name='Amantix'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Glimepiride') from medicine where trade_name='Amaryl'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ambroxol') from medicine where trade_name='Aflegan'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Ambroxol') from medicine where trade_name='AmbroHexal'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Ambroxol') from medicine where trade_name='Ambroksol Hasco'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Ambroxol') from medicine where trade_name='Ambroksol Hasco Junior'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Ambroxol') from medicine where trade_name='Ambroksol Hasco Max'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ambroxol') from medicine where trade_name='Ambroksol Hasco'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Ambroxol') from medicine where trade_name='Ambroksol Takeda'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Ambroxol') from medicine where trade_name='Ambrolytin'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Ambroxol') from medicine where trade_name='Ambrosol Teva'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Ambroxol') from medicine where trade_name='Ambroxol Dr. Max'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Cetirizine') from medicine where trade_name='Amertil Bio'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Cetirizine') from medicine where trade_name='Amertil'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Adalimumab') from medicine where trade_name='Amgevita'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Amikacin') from medicine where trade_name='Amikacin B. Braun'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Amisulpride') from medicine where trade_name='Amipryd'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Amisulpride') from medicine where trade_name='Amisan'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Amitriptyline') from medicine where trade_name='Amitriptylinum VP'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Carbamazepine') from medicine where trade_name='Amizepin'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Atorvastatin') from medicine where trade_name='Amlator'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Adipine'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Agen'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Aldan'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Almiden'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Alneta'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Alortia'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Amlator'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Perindopril') from medicine where trade_name='Amlessa'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Amlessa'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Perindopril') from medicine where trade_name='Amlessini'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Amlessini'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Amlodipine Apotex'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Amlodipine Aurobindo'
@@ -1628,23 +1494,14 @@ union select medicine_id, (select active_substance_id from active_substance wher
 union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Amlonor'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Amlopin'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Amlozek'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Amoxicillin and clavulanic acid') from medicine where trade_name='Amoksiklav'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Amoxicillin and clavulanic acid') from medicine where trade_name='Amoksiklav Quicktab'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Amorolfine') from medicine where trade_name='Amorolak'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amoxicillin and clavulanic acid') from medicine where trade_name='Amoksiklav Quicktab'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amoxicillin and clavulanic acid') from medicine where trade_name='Amoksiklav'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amoxicillin and clavulanic acid') from medicine where trade_name='Amoxicillin + Clavulanic Acid Aurovitas'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amoxicillin and clavulanic acid') from medicine where trade_name='Amylan'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Amoxicillin') from medicine where trade_name='Amotaks Dis'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Amoxicillin') from medicine where trade_name='Amoxicillin Aurovitas'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Amoxicillin and clavulanic acid') from medicine where trade_name='Amoxicillin + Clavulanic Acid Aurovitas'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Ampicillin') from medicine where trade_name='Ampicillin TZF'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Chloroprocaine') from medicine where trade_name='Ampres'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Ramipril') from medicine where trade_name='Ampril HD'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Hydrochlorothiazide') from medicine where trade_name='Ampril HD'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Ramipril') from medicine where trade_name='Ampril HL'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Hydrochlorothiazide') from medicine where trade_name='Ampril HL'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Ramipril') from medicine where trade_name='Ampril'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Amoxicillin and clavulanic acid') from medicine where trade_name='Amylan'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylsalicylic acid') from medicine where trade_name='Anacard medica protect'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Clomipramine') from medicine where trade_name='Anafranil'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Clomipramine') from medicine where trade_name='Anafranil SR'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Anagrelide') from medicine where trade_name='Anagrelid Aurovitas'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Anagrelide') from medicine where trade_name='Anagrelide Accord'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Anagrelide') from medicine where trade_name='Anagrelide Bioton'
@@ -1655,64 +1512,204 @@ union select medicine_id, (select active_substance_id from active_substance wher
 union select medicine_id, (select active_substance_id from active_substance where international_name='Anagrelide') from medicine where trade_name='Anagrelide Stada'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Anagrelide') from medicine where trade_name='Anagrelide Vipharm'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Anagrelide') from medicine where trade_name='Anagrelide Zentiva'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Naproxen') from medicine where trade_name='Anapran'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Anastrozole') from medicine where trade_name='Anastrozol Bluefish'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Anastrozole') from medicine where trade_name='Anastrozol Teva'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Fluoxetine') from medicine where trade_name='Andepin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Anidulafungin') from medicine where trade_name='Anidulafungin Sandoz'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Anidulafungin') from medicine where trade_name='Anidulafungina Accord'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Aripiprazole') from medicine where trade_name='Abilify Maintena'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Aripiprazole') from medicine where trade_name='Abilify'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Aripiprazole') from medicine where trade_name='Apiprax'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ascorbic acid - vitamin C') from medicine where trade_name='AntyGrypin dzień'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ascorbic acid - vitamin C') from medicine where trade_name='AntyGrypin noc'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ascorbic acid - vitamin C') from medicine where trade_name='Apap Przeziębienie Junior'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ascorbic acid - vitamin C') from medicine where trade_name='Apap Przeziębienie'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ascorbic acid - vitamin C') from medicine where trade_name='Apap ból i gorączka C Plus'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Atorvastatin') from medicine where trade_name='Amlator'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Atorvastatin') from medicine where trade_name='Apo-Atorva'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Azelastine') from medicine where trade_name='Acatar Allergy'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Bacitracin') from medicine where trade_name='Altabactin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Benzydamine') from medicine where trade_name='Actusept'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Betahistine') from medicine where trade_name='ApoBetina'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Biperiden') from medicine where trade_name='Akineton SR'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Biperiden') from medicine where trade_name='Akineton'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Boric acid') from medicine where trade_name='Antypot'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Brigatinib') from medicine where trade_name='Alunbrig'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Brimonidine') from medicine where trade_name='Alphagan'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Budesonide') from medicine where trade_name='Airbufo Forspiro'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Caffeine') from medicine where trade_name='AntyGrypin dzień'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Caffeine') from medicine where trade_name='Apap Extra'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Calcium dobesilate') from medicine where trade_name='Adproctin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Carbamazepine') from medicine where trade_name='Amizepin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Celecoxib') from medicine where trade_name='Aclexa'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Cetirizine') from medicine where trade_name='Alermed'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Cetirizine') from medicine where trade_name='Alerzina'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Cetirizine') from medicine where trade_name='AlleMax'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Cetirizine') from medicine where trade_name='Allertec WZF'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Cetirizine') from medicine where trade_name='Allertec'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Cetirizine') from medicine where trade_name='Amertil Bio'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Cetirizine') from medicine where trade_name='Amertil'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Chloroprocaine') from medicine where trade_name='Ampres'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Chlorpheniramine') from medicine where trade_name='AntyGrypin noc'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ciclesonide') from medicine where trade_name='Alvesco'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Clarithromycin') from medicine where trade_name='Apiclar'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Clindamycin') from medicine where trade_name='Acnatac'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Clomipramine') from medicine where trade_name='Anafranil SR'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Clomipramine') from medicine where trade_name='Anafranil'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Clopidogrel') from medicine where trade_name='Agregex'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Codeine') from medicine where trade_name='Antidol'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Colecalciferol - vitamin D3') from medicine where trade_name='Alantavit'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Crataegus sp.') from medicine where trade_name='Antinervinum'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Cyproterone') from medicine where trade_name='Androcur'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Darvadstrocel') from medicine where trade_name='Alofisel'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Desloratadine') from medicine where trade_name='Aerius'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Desloratadine') from medicine where trade_name='AlergoTeva'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Desloratadine') from medicine where trade_name='Aleric Deslo Active'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Dexpanthenol') from medicine where trade_name='Acodin Duo'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Dexpanthenol') from medicine where trade_name='Alantan Plus'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Dextromethorphan') from medicine where trade_name='Acodin Duo'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Dextromethorphan') from medicine where trade_name='Acodin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Dextromethorphan') from medicine where trade_name='Acti-trin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Dextromethorphan') from medicine where trade_name='Actifed'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Dextromethorphan') from medicine where trade_name='Agrypin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Diosmin') from medicine where trade_name='Aflavic Comfort'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Diosmin') from medicine where trade_name='Aflavic Max'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Diphenhydramine') from medicine where trade_name='Apap Noc'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Disulfiram') from medicine where trade_name='Anticol'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Doxazosin') from medicine where trade_name='Adadox'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Dutasteride') from medicine where trade_name='Adadut'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Dutasteride') from medicine where trade_name='Adatam Duo'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Epinephrine') from medicine where trade_name='Adrenalina Aguettant'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Epinephrine') from medicine where trade_name='Adrenalina WZF 0,1%'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Epinephrine') from medicine where trade_name='Adrenalina WZF'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Erenumab') from medicine where trade_name='Aimovig'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Erythromycin') from medicine where trade_name='Aknemycin Plus'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Erythromycin') from medicine where trade_name='Aknemycin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Escitalopram') from medicine where trade_name='Aciprex'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Estradiol and drospirenone') from medicine where trade_name='Angeliq'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Estradiol and norethisterone') from medicine where trade_name='Activelle'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Estradiol') from medicine where trade_name='Alpicort E'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Everolimus') from medicine where trade_name='Afinitor'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Febuxostat') from medicine where trade_name='Adenuric'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Fexofenadine') from medicine where trade_name='Allegra Telfast 180'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Fexofenadine') from medicine where trade_name='Allegra'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Fexofenadine') from medicine where trade_name='Allertec Fexo'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Filgrastim') from medicine where trade_name='Accofil'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Finasteride') from medicine where trade_name='Adaster'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Finasteride') from medicine where trade_name='Androstatin'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Finasteride') from medicine where trade_name='Androster'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Testosterone') from medicine where trade_name='Androtop'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Lidocaine') from medicine where trade_name='Anesderm'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Prilocaine') from medicine where trade_name='Anesderm'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Pantoprazole') from medicine where trade_name='Anesteloc'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Pantoprazole') from medicine where trade_name='Anesteloc Max'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Estradiol and drospirenone') from medicine where trade_name='Angeliq'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Anidulafungin') from medicine where trade_name='Anidulafungina Accord'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Anidulafungin') from medicine where trade_name='Anidulafungin Sandoz'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Umeclidinium bromide') from medicine where trade_name='Anoro Ellipta'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Vilanterol') from medicine where trade_name='Anoro Ellipta'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Disulfiram') from medicine where trade_name='Anticol'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='Antidol'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Codeine') from medicine where trade_name='Antidol'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Valeriana officinalis') from medicine where trade_name='Antinervinum'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Crataegus sp.') from medicine where trade_name='Antinervinum'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Finasteride') from medicine where trade_name='Antiprost'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylsalicylic acid') from medicine where trade_name='AntyGrypin dzień'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Ascorbic acid - vitamin C') from medicine where trade_name='AntyGrypin dzień'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Caffeine') from medicine where trade_name='AntyGrypin dzień'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='AntyGrypin noc'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Ascorbic acid - vitamin C') from medicine where trade_name='AntyGrypin noc'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Chlorpheniramine') from medicine where trade_name='AntyGrypin noc'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Salicylic acid') from medicine where trade_name='Antypot'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Boric acid') from medicine where trade_name='Antypot'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Olanzapine') from medicine where trade_name='Anzorin'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='Apap ból i gorączka C Plus'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Ascorbic acid - vitamin C') from medicine where trade_name='Apap ból i gorączka C Plus'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='Apap Caps'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='Apap dla dzieci Forte'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='Apap Extra'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Caffeine') from medicine where trade_name='Apap Extra'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='Apap'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Fluoxetine') from medicine where trade_name='Andepin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Fluticasone') from medicine where trade_name='AirFluSal Forspiro'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Folic acid') from medicine where trade_name='Acidum folicum Hasco'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Folic acid') from medicine where trade_name='Acidum folicum Richter'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Formoterol') from medicine where trade_name='Airbufo Forspiro'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Fosfomycin') from medicine where trade_name='Afastural'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Fremanezumab') from medicine where trade_name='Ajovy'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Glimepiride') from medicine where trade_name='Amaryl'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Hydrochlorothiazide') from medicine where trade_name='Actelsar HCT'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Hydrochlorothiazide') from medicine where trade_name='Ampril HD'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Hydrochlorothiazide') from medicine where trade_name='Ampril HL'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ibuprofen') from medicine where trade_name='Acatar Zatoki'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Ibuprofen') from medicine where trade_name='Apap intense'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='Apap intense'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Imiquimod') from medicine where trade_name='Aldara'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Isotretinoin') from medicine where trade_name='Aknenormin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ketorolac') from medicine where trade_name='Acular'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Laronidase') from medicine where trade_name='Aldurazyme'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Latanoprost') from medicine where trade_name='Akistan Duo'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Latanoprost') from medicine where trade_name='Akistan'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Levocetirizine') from medicine where trade_name='Alergimed'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Lidocaine') from medicine where trade_name='Aesculan'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Lidocaine') from medicine where trade_name='Anesderm'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Losartan') from medicine where trade_name='Alortia'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Melphalan') from medicine where trade_name='Alkeran'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Minoxidil') from medicine where trade_name='Alocutan Forte'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Minoxidil') from medicine where trade_name='Alocutan'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Minoxidil') from medicine where trade_name='Alopexy'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Mometasone') from medicine where trade_name='Aleric Spray'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Naltrexone') from medicine where trade_name='Adepend'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Naproxen') from medicine where trade_name='Aleve'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Naproxen') from medicine where trade_name='Anapran'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Neomycin') from medicine where trade_name='Altabactin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Netupitant') from medicine where trade_name='Akynzeo'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Olanzapine') from medicine where trade_name='Anzorin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Omeprazole') from medicine where trade_name='Agastin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Oxycodone') from medicine where trade_name='Accordeon'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Oxymetazoline') from medicine where trade_name='Acatar Control'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Oxymetazoline') from medicine where trade_name='Afrin ND'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Oxymetazoline') from medicine where trade_name='Afrin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Palonosetron') from medicine where trade_name='Akynzeo'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Palonosetron') from medicine where trade_name='Aloxi'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Pantoprazole') from medicine where trade_name='Anesteloc Max'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Pantoprazole') from medicine where trade_name='Anesteloc'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='Acenol'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='Agrypin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='Antidol'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='AntyGrypin noc'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='Apap Caps'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='Apap Extra'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='Apap Junior'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='Apap Noc'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Diphenhydramine') from medicine where trade_name='Apap Noc'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='Apap Przeziębienie'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Ascorbic acid - vitamin C') from medicine where trade_name='Apap Przeziębienie'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Phenylephrine') from medicine where trade_name='Apap Przeziębienie'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='Apap Przeziębienie Junior'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Ascorbic acid - vitamin C') from medicine where trade_name='Apap Przeziębienie Junior'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='Apap Przeziębienie'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='Apap ból i gorączka C Plus'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='Apap dla dzieci Forte'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='Apap intense'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='Apap'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Pentoxifylline') from medicine where trade_name='Agapurin SR'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Pentoxifylline') from medicine where trade_name='Agapurin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Perindopril') from medicine where trade_name='Amlessa'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Perindopril') from medicine where trade_name='Amlessini'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Phenylephrine') from medicine where trade_name='Apap Przeziębienie Junior'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Phenylephrine') from medicine where trade_name='Apap Przeziębienie'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Policresulen') from medicine where trade_name='Albothyl'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Polidocanol') from medicine where trade_name='Aethoxysklerol'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Prednisolone') from medicine where trade_name='Alpicort E'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Prednisolone') from medicine where trade_name='Alpicort'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Prilocaine') from medicine where trade_name='Anesderm'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Proxymetacaine') from medicine where trade_name='Alcaine'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Pseudoephedrine') from medicine where trade_name='Acatar Acti-Tabs'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Pseudoephedrine') from medicine where trade_name='Acatar Zatoki'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Pseudoephedrine') from medicine where trade_name='Acti-trin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Pseudoephedrine') from medicine where trade_name='Actifed'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Pseudoephedrine') from medicine where trade_name='Agrypin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Quinapril') from medicine where trade_name='Accupro'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Quinapril') from medicine where trade_name='Acurenal'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ramipril') from medicine where trade_name='Ampril HD'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ramipril') from medicine where trade_name='Ampril HL'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ramipril') from medicine where trade_name='Ampril'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Riociguat') from medicine where trade_name='Adempas'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ropinirole') from medicine where trade_name='Adartrel'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Ropinirole') from medicine where trade_name='Aparxon PR'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Clarithromycin') from medicine where trade_name='Apiclar'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Aripiprazole') from medicine where trade_name='Apiprax'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Rupatadine') from medicine where trade_name='Alerprof'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Salicylic acid') from medicine where trade_name='Acerin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Salicylic acid') from medicine where trade_name='Alpicort E'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Salicylic acid') from medicine where trade_name='Alpicort'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Salicylic acid') from medicine where trade_name='Antypot'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Salmeterol') from medicine where trade_name='AirFluSal Forspiro'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Solifenacin') from medicine where trade_name='Adablok'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Sulfogaiacol') from medicine where trade_name='Apipulmol'
 union select medicine_id, (select active_substance_id from active_substance where international_name='Sulfogaiacol') from medicine where trade_name='Apitussic'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Atorvastatin') from medicine where trade_name='Apo-Atorva'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Betahistine') from medicine where trade_name='ApoBetina'
-union select medicine_id, (select active_substance_id from active_substance where international_name='Ticlopidine') from medicine where trade_name='Apo-Clodin';
+union select medicine_id, (select active_substance_id from active_substance where international_name='Tacrolimus') from medicine where trade_name='Advagraf'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Tadalafil') from medicine where trade_name='Adalift'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Tamsulosin') from medicine where trade_name='Adatam Duo'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Tamsulosin') from medicine where trade_name='Adatam'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Telmisartan') from medicine where trade_name='Actelsar HCT'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Telmisartan') from medicine where trade_name='Actelsar'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Testosterone') from medicine where trade_name='Androtop'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ticlopidine') from medicine where trade_name='Aclotin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ticlopidine') from medicine where trade_name='Apo-Clodin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Timolol') from medicine where trade_name='Akistan Duo'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Tramadol') from medicine where trade_name='Adamon SR'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Tretinoin') from medicine where trade_name='Acnatac'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Tretinoin') from medicine where trade_name='Aknemycin Plus'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Trifarotene') from medicine where trade_name='Aklief'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Triprolidine') from medicine where trade_name='Acatar Acti-Tabs'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Triprolidine') from medicine where trade_name='Acti-trin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Triprolidine') from medicine where trade_name='Actifed'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Umeclidinium bromide') from medicine where trade_name='Anoro Ellipta'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Valeriana officinalis') from medicine where trade_name='Antinervinum'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Venlafaxine') from medicine where trade_name='Alventa'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Vilanterol') from medicine where trade_name='Anoro Ellipta';
 
 
 insert into warehouse_order(pharmacy_id, order_date, order_status) values
@@ -4258,6 +4255,7 @@ do $$ begin
     perform define_interaction('Venlafaxine', 'Amitriptyline', '', 'major');
     perform define_interaction('Venlafaxine', 'Anagrelide', '', 'major');
     perform define_interaction('Venlafaxine', 'Aripiprazole', '', 'moderate');
+    perform define_interaction('Fluoxetine', 'Escitalopram', '', 'major');
 end; $$;
 
 
@@ -5263,5 +5261,164 @@ insert into prescribed_medicine (medicine_id, prescription_id, quantity) values
 (107, 74, 5),
 (265, 85, 2),
 (334, 63, 3);
+
+-- sprawdzenie, czy przepisane leki nie kolidują ze sobą dla "lekarz "i "aptekarz
+-- Aciprex (Escitalopram, ssri)
+-- Andepin (Fluoxetine, ssri)
+select distinct interaction.intensity, interaction.description
+from substance_interaction interaction
+join active_substance s1 on s1.active_substance_id = interaction.substance_one
+join active_substance s2 on s2.active_substance_id = interaction.substance_two
+join medicine_substance_map map1 on s1.active_substance_id = map1.active_substance_id
+join medicine_substance_map map2 on s2.active_substance_id = map2.active_substance_id
+join medicine med1 on med1.medicine_id = map1.medicine_id
+join medicine med2 on med2.medicine_id = map2.medicine_id
+where med1.trade_name = 'Aciprex'
+  and med2.trade_name = 'Andepin';
+
+-- wyszukiwanie leków po nazwach handlowych, międzynarodowych i danej jednostce chorobowej dla aktora "aptekarz"
+select *
+from medicine
+where trade_name like '%Aciprex%';
+
+
+-- wystawienie erecept dla aktora "lekarz"
+with inserted_prescription as (
+        insert into prescription(expiration_date, client_id, prescription_type) values(
+            '2022-06-01',
+            (select client_id from client where firstname='Jan' and surname='Kozak'),
+            'Rp'
+        ) returning prescription_id
+    )
+insert into prescribed_medicine(prescription_id, medicine_id, quantity)
+select
+    inserted_prescription.prescription_id,
+    (
+        select medicine_id
+        from medicine
+        where trade_name='Aciprex' and dosage='10 mg' and pack_size='28 szt. '
+    ),
+    3 quantity
+from inserted_prescription;
+
+
+-- badanie stanu liczbowego poszczególnych leków dla aktora "aptekarz"
+select quantity
+from medicine_in_pharmacy
+join medicine using(medicine_id)
+where pharmacy_id = 1
+  and medicine.trade_name='Aciprex';
+
+-- dodawanie leków przy dostawie dla aktora "dostawca"
+insert into medicine_in_pharmacy(pharmacy_id, medicine_id, quantity)
+    values(
+        1,
+        (select medicine_id from medicine where trade_name='Aciprex' and dosage='10 mg' and pack_size='28 szt. '),
+        10
+    )
+on conflict (pharmacy_id, medicine_id) do update 
+  set quantity = medicine_in_pharmacy.quantity + 10;
+
+-- dodawanie do listy zamówień z magazynu dla aktora "aptekarz"
+insert into warehouse_order_item(warehouse_order_id, quantity, medicine_id) values(1, 10, 5);
+
+---- usuwanie już dostarczonych leków z listy zamówionych dla aktora "dostawca"
+update warehouse_order
+set order_status = 'delivered'
+where warehouse_order_id = 106;
+
+-- w przypadku braku dostępności leku sprawdzanie czy lek jest dostępny w innej aptece dla aktora "aptekarz"
+select pharmacy_name, quantity, medicine.trade_name, medicine.dosage, medicine.pack_size
+from medicine_in_pharmacy 
+join pharmacy using(pharmacy_id)
+join medicine using(medicine_id)
+where medicine_id = 1 and quantity > 0;
+
+--
+---- usuwanie sprzedanych leków z listy zasobów "aptekarz"
+--begin;
+    update medicine_in_pharmacy
+    set quantity = quantity - 1
+    where pharmacy_id = 1 and medicine_id = 2;
+
+    delete from medicine_in_pharmacy
+    where pharmacy_id = 1 and quantity <= 0;
+--commit;
+
+
+-- w przypadku braku dostępności leku sprawdzanie zamienników które mogą być na stanie dla aktora "aptekarz"
+select quantity, medicine.*
+from medicine_in_pharmacy 
+join medicine using(medicine_id)
+join medicine_substance_map using(medicine_id)
+join active_substance using(active_substance_id)
+where pharmacy_id = 1
+  and quantity > 0
+  and active_substance_id in (
+      select active_substance_id
+      from medicine
+      join medicine_substance_map using(medicine_id)
+      where trade_name='Apap');
+
+---- sprawdzanie jakie leki jeszcze są do wydania na erecepcie dla aktora "aptekarz"
+select quantity, medicine.* from prescribed_medicine 
+join prescription using(prescription_id)
+join medicine using(medicine_id)
+where expiration_date > current_date
+  and quantity > 0
+  and client_id = (select client_id from client where firstname='Jan' and surname='Kozak');
+
+-- zaznaczanie leków jako już wydanych (całościowo albo część dawki) na erecepcie dla aktora "aptekarz"
+update prescribed_medicine
+set quantity = quantity - 1
+where prescription_id = 88
+  and medicine_id = (select medicine_id from medicine where trade_name='Absenor' and dosage='300 mg' and pack_size='100 szt. ');
+
+
+-- sprawdzanie listy leków łagodzących konkretne dolegliwości dla aktora "aptekarz"
+select medicine_id from medicine 
+where recommendations like 'bol brzucha';
+
+
+-- wyszukiwanie dostępnych leków w aptece dla aktora "klient"
+select medicine.*, quantity
+from medicine_in_pharmacy
+join medicine using(medicine_id)
+where quantity > 0
+  and pharmacy_id = (
+    select pharmacy_id
+    from pharmacy
+    where pharmacy_name='APTEKA OGÓLNODOSTĘPNA "POD PODWÓJNYM ZŁOTYM ORŁEM" SPÓŁKA JAWNA'
+  );
+
+--
+---- sprawdzanie zawartości swojej erecepty dla aktora "klient"
+select expiration_date, prescription.prescription_type, quantity, medicine.trade_name, medicine.dosage, medicine.pack_size
+from prescription 
+join prescribed_medicine using(prescription_id)
+join medicine using(medicine_id)
+where client_id = (select client_id from client where firstname='Jan' and surname='Kozak');
+
+-- sprawdzanie ile jeszcze leków zostało do wydania z erecepty dla aktora "klient"
+select expiration_date, prescription.prescription_type, quantity, medicine.trade_name, medicine.dosage, medicine.pack_size
+from prescription 
+join prescribed_medicine using(prescription_id)
+join medicine using(medicine_id)
+where client_id = (select client_id from client where firstname='Jan' and surname='Kozak')
+  and quantity > 0;
+
+-- dodawanie informacji o wydaniu leku na receptę Rpw do książki narkotycznej dla aktora "aptekarz"
+insert into psychotropy_evidence(client_id, active_substance_id, quantity, dispensed_date, pharmacy_id)
+    values(
+        (select client_id from client where firstname='Jan' and surname='Kozak'),
+        (select active_substance_id from active_substance where international_name='Oxycodone'),
+        2,
+        current_date,
+        (
+          select pharmacy_id
+          from pharmacy
+          where pharmacy_name='APTEKA OGÓLNODOSTĘPNA "POD PODWÓJNYM ZŁOTYM ORŁEM" SPÓŁKA JAWNA'
+        )
+    );
 
 commit;
