@@ -827,265 +827,261 @@ insert into availability_in_warehouse values
 	(87, 159),
 	(88, 147),
 	(89, 125);
- insert into pharmacy(pharmacy_name) values('APTEKA POD RATUSZEM');
- insert into pharmacy(pharmacy_name) values('APTEKA SUPER-PHARM');
- insert into pharmacy(pharmacy_name) values('APTEKA OGÓLNODOSTĘPNA "POD PODWÓJNYM ZŁOTYM ORŁEM" SPÓŁKA JAWNA');
- insert into pharmacy(pharmacy_name) values('APTEKA VITA');
- insert into pharmacy(pharmacy_name) values('APTEKA NA SZEWSKIEJ');
- insert into pharmacy(pharmacy_name) values('APTEKA MCCOY'S SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ');
- insert into pharmacy(pharmacy_name) values('APTEKA DR.MAX');
- insert into pharmacy(pharmacy_name) values('APTEKA SUPER PHARM');
- insert into pharmacy(pharmacy_name) values('APTEKA DR. MAX');
- insert into pharmacy(pharmacy_name) values('APTEKA "TUMSKA"');
- insert into pharmacy(pharmacy_name) values('APTEKA PIASKOWA');
- insert into pharmacy(pharmacy_name) values('APTEKA CEF@RM 36,6');
- insert into pharmacy(pharmacy_name) values('APTEKA WROCŁAWSKA');
- insert into pharmacy(pharmacy_name) values('APTEKA CEF@RM 36,6');
- insert into pharmacy(pharmacy_name) values('APTEKA "ZA FOSĄ"');
- insert into pharmacy(pharmacy_name) values('APTEKA DOM LEKÓW');
- insert into pharmacy(pharmacy_name) values('APTEKA ZIKO');
- insert into pharmacy(pharmacy_name) values('APTEKA ZIKO');
- insert into pharmacy(pharmacy_name) values('APTEKA SŁONECZNA');
- insert into pharmacy(pharmacy_name) values('APTEKA DOM LEKÓW');
- insert into pharmacy(pharmacy_name) values('APTEKA POMORSKA S.C.');
- insert into pharmacy(pharmacy_name) values('APTEKA LEKOSFERA DGA 12');
- insert into pharmacy(pharmacy_name) values('APTEKA ZIEMOWITA');
- insert into pharmacy(pharmacy_name) values('APTEKA SILESIA 3');
- insert into pharmacy(pharmacy_name) values('APTEKA AMICUS III');
- insert into pharmacy(pharmacy_name) values('APTEKA "DR ZDROWIE"');
- insert into pharmacy(pharmacy_name) values('APTEKA CEDRUS');
- insert into pharmacy(pharmacy_name) values('APTEKA GRABISZYŃSKA');
- insert into pharmacy(pharmacy_name) values('APTEKA MEDICOVER APTEKA');
- insert into pharmacy(pharmacy_name) values('APTEKA MEDICOVER');
- insert into pharmacy(pharmacy_name) values('APTEKA');
- insert into pharmacy(pharmacy_name) values('APTEKA O.O. BONIFRATRÓW');
- insert into pharmacy(pharmacy_name) values('APTEKA ZDROWIE');
- insert into pharmacy(pharmacy_name) values('APTEKA "POD SKRZYDŁEM ANIOŁA"');
- insert into pharmacy(pharmacy_name) values('APTEKA "MIESZCZAŃSKA"');
- insert into pharmacy(pharmacy_name) values('APTEKA "BRANIBORSKA"');
- insert into pharmacy(pharmacy_name) values('APTEKA DR.MAX');
- insert into pharmacy(pharmacy_name) values('APTEKA DR.MAX');
- insert into pharmacy(pharmacy_name) values('APTEKA ZIKO');
- insert into pharmacy(pharmacy_name) values('APTEKA API');
- insert into pharmacy(pharmacy_name) values('APTEKA PRZY PRZYCHODNI');
- insert into pharmacy(pharmacy_name) values('APTEKA MAK');
- insert into pharmacy(pharmacy_name) values('APTEKA MEDFARM');
- insert into pharmacy(pharmacy_name) values('APTEKA MAK');
- insert into pharmacy(pharmacy_name) values('APTEKA PINIA');
- insert into pharmacy(pharmacy_name) values('APTEKA LEGE ARTIS S.J.');
- insert into pharmacy(pharmacy_name) values('APTEKA  ŚW.WINCENTEGO');
- insert into pharmacy(pharmacy_name) values('APTEKA VERONICA');
- insert into pharmacy(pharmacy_name) values('APTEKA MAK');
- insert into pharmacy(pharmacy_name) values('APTEKA CZTERY PORY ROKU');
- insert into pharmacy(pharmacy_name) values('APTEKA LEGE ARTIS S.J.');
- insert into pharmacy(pharmacy_name) values('APTEKA "SŁONECZNA"');
- insert into pharmacy(pharmacy_name) values('APTEKA ŚW.TOMASZA');
- insert into pharmacy(pharmacy_name) values('APTEKA SPOŁECZNA NA SĘPA SZARZYŃSKIEGO GRUPA NOWA FARMACJA');
- insert into pharmacy(pharmacy_name) values('APTEKA KATEDRALNA');
- insert into pharmacy(pharmacy_name) values('APTEKA SILESIA');
- insert into pharmacy(pharmacy_name) values('APTEKA SŁONECZNA BIEDRONKA');
- insert into pharmacy(pharmacy_name) values('APTEKA HERBA S.C.DANUTA KONOPACKA,KATARZYNA FIUTOWSKA');
- insert into pharmacy(pharmacy_name) values('APTEKA DR.MAX');
- insert into pharmacy(pharmacy_name) values('APTEKA GINSANA');
- insert into pharmacy(pharmacy_name) values('APTEKA EXPRESSPHARM V');
- insert into pharmacy(pharmacy_name) values('APTEKA "LIBRA"');
- insert into pharmacy(pharmacy_name) values('APTEKA LEGE ARTIS');
- insert into pharmacy(pharmacy_name) values('APTEKA POD SŁOŃCEM');
- insert into pharmacy(pharmacy_name) values('APTEKA "ARKA"');
- insert into pharmacy(pharmacy_name) values('APTEKA WRATISLAVIA II S.C.');
- insert into pharmacy(pharmacy_name) values('APTEKA WRATISLAVIA II');
- insert into pharmacy(pharmacy_name) values('APTEKA ARONIA');
- insert into pharmacy(pharmacy_name) values('APTEKA LEKOSFERA DGA 10');
- insert into pharmacy(pharmacy_name) values('APTEKA HETMAŃSKA');
- insert into pharmacy(pharmacy_name) values('APTEKA NIEZAPOMINAJKA DLA CAŁEJ RODZINY');
- insert into pharmacy(pharmacy_name) values('APTEKA SUPER-PHARM');
- insert into pharmacy(pharmacy_name) values('APTEKA HIPOKRATES');
- insert into pharmacy(pharmacy_name) values('APTEKA LEKOSFERA DGA17');
- insert into pharmacy(pharmacy_name) values('APTEKA TĘCZOWA 3');
- insert into pharmacy(pharmacy_name) values('APTEKA');
- insert into pharmacy(pharmacy_name) values('APTEKA GRUNWALDZKA');
- insert into pharmacy(pharmacy_name) values('APTEKA CEF@RM 36,6');
- insert into pharmacy(pharmacy_name) values('APTEKA MNISZEK SP. J.');
- insert into pharmacy(pharmacy_name) values('"APTEKA PRZY PL. HISZFELDA"');
- insert into pharmacy(pharmacy_name) values('APTEKA');
- insert into pharmacy(pharmacy_name) values('APTEKA CEF@RM 36,6');
- insert into pharmacy(pharmacy_name) values('APTEKA VISCI');
- insert into pharmacy(pharmacy_name) values('APTEKA PIASTOWSKA');
- insert into pharmacy(pharmacy_name) values('APTEKA "GRAFIT"');
- insert into pharmacy(pharmacy_name) values('APTEKA "LEGE ARTIS"');
- insert into pharmacy(pharmacy_name) values('APTEKA RUMIANEK');
- insert into pharmacy(pharmacy_name) values('APTEKA RUBUS');
- insert into pharmacy(pharmacy_name) values('APTEKA ''ALGA'' JOANNA ARAŹNY, ILONA OTLEWSKA S.C.');
- insert into pharmacy(pharmacy_name) values('APTEKA "PRZY PROXIMUM"');
- insert into pharmacy(pharmacy_name) values('APTEKA ALOES');
- insert into pharmacy(pharmacy_name) values('APTEKA SILESIA 4');
- insert into pharmacy(pharmacy_name) values('APTEKA JANTAROWA');
- insert into pharmacy(pharmacy_name) values('APTEKA POD AKACJAMI');
- insert into pharmacy(pharmacy_name) values('APTEKA POD KALINĄ');
- insert into pharmacy(pharmacy_name) values('APTEKA DOM LEKÓW');
- insert into pharmacy(pharmacy_name) values('APTEKA "VITRUM"');
- insert into pharmacy(pharmacy_name) values('APTEKA "HIBISCUS"');
- insert into pharmacy(pharmacy_name) values('APTEKA MEDICOVER APTEKA');
- insert into pharmacy(pharmacy_name) values('APTEKA "ARKADIA"');
- insert into pharmacy(pharmacy_name) values('APTEKA WRATISLAVIA III');
- insert into pharmacy(pharmacy_name) values('APTEKA "CZEKOLADOWA2"');
- insert into pharmacy(pharmacy_name) values('APTEKA "FRANCUSKA"');
- insert into pharmacy(pharmacy_name) values('APTEKA "OSTROBRAMSKA" S.C.');
- insert into pharmacy(pharmacy_name) values('APTEKA NA DAMROTA');
- insert into pharmacy(pharmacy_name) values('APTEKA POPOWICKA');
- insert into pharmacy(pharmacy_name) values('APTEKA FRANCUSKA');
- insert into pharmacy(pharmacy_name) values('APTEKA ACER');
- insert into pharmacy(pharmacy_name) values('APTEKA WRATISLAVIA');
- insert into pharmacy(pharmacy_name) values('APTEKA POD FILAREM');
- insert into pharmacy(pharmacy_name) values('APTEKA');
- insert into pharmacy(pharmacy_name) values('APTEKA');
- insert into pharmacy(pharmacy_name) values('APTEKA AKSAMITNA');
- insert into pharmacy(pharmacy_name) values('APTEKA NA OBORNICKIEJ');
- insert into pharmacy(pharmacy_name) values('APTEKA DR.MAX');
- insert into pharmacy(pharmacy_name) values('APTEKA ŚLICZNA');
- insert into pharmacy(pharmacy_name) values('APTEKA WIŚNIOWA DRIVE');
- insert into pharmacy(pharmacy_name) values('APTEKA LEKOSFERA DGA23');
- insert into pharmacy(pharmacy_name) values('APTEKA "MIODOWA"');
- insert into pharmacy(pharmacy_name) values('APTEKA MAK');
- insert into pharmacy(pharmacy_name) values('APTEKA "MULTI-LEK" SPÓŁKA JAWNA');
- insert into pharmacy(pharmacy_name) values('APTEKA "SŁONECZNA BIEDRONKA"');
- insert into pharmacy(pharmacy_name) values('APTEKA "POŁUDNIOWA"');
- insert into pharmacy(pharmacy_name) values('APTEKA ŻMIGRODZKA');
- insert into pharmacy(pharmacy_name) values('APTEKA SILESIA 2');
- insert into pharmacy(pharmacy_name) values('APTEKA DR.MAX');
- insert into pharmacy(pharmacy_name) values('APTEKA PRZY LEGNICKIEJ');
- insert into pharmacy(pharmacy_name) values('APTEKA NA ZDROWIE');
- insert into pharmacy(pharmacy_name) values('APTEKA SUPER-PHARM APTEKA MAGNOLIA PARK');
- insert into pharmacy(pharmacy_name) values('APTEKA');
- insert into pharmacy(pharmacy_name) values('APTEKA POMARAŃCZOWA');
- insert into pharmacy(pharmacy_name) values('APTEKA WAWRZYNEK S.C.');
- insert into pharmacy(pharmacy_name) values('APTEKA LEKOSFERA DGA 1');
- insert into pharmacy(pharmacy_name) values('APTEKA DR. OPTIMA');
- insert into pharmacy(pharmacy_name) values('APTEKA "POD JAWORAMI"');
- insert into pharmacy(pharmacy_name) values('APTEKA PRZY KRYNICKIEJ');
- insert into pharmacy(pharmacy_name) values('APTEKA BIOGENES.');
- insert into pharmacy(pharmacy_name) values('APTEKA AMICUS II');
- insert into pharmacy(pharmacy_name) values('APTEKA ZDROWIE');
- insert into pharmacy(pharmacy_name) values('APTEKA BIAŁOWIESKA');
- insert into pharmacy(pharmacy_name) values('APTEKA "KARŁOWICKA"');
- insert into pharmacy(pharmacy_name) values('APTEKA MILLENIUM');
- insert into pharmacy(pharmacy_name) values('APTEKA SŁONECZNA BIEDRONKA');
- insert into pharmacy(pharmacy_name) values('APTEKA AMICUS IV');
- insert into pharmacy(pharmacy_name) values('APTEKA AMICUS');
- insert into pharmacy(pharmacy_name) values('APTEKA "WANILIA"');
- insert into pharmacy(pharmacy_name) values('APTEKA Z MISIEM');
- insert into pharmacy(pharmacy_name) values('APTEKA "REMEDIUM"');
- insert into pharmacy(pharmacy_name) values('APTEKA "POD JEMIOŁĄ"');
- insert into pharmacy(pharmacy_name) values('APTEKA WALERIANA');
- insert into pharmacy(pharmacy_name) values('APTEKA DR.MAX');
- insert into pharmacy(pharmacy_name) values('APTEKA BEZPIECZNA');
- insert into pharmacy(pharmacy_name) values('APTEKA NA ZDROWIE');
- insert into pharmacy(pharmacy_name) values('APTEKA PRZY WEIGLA');
- insert into pharmacy(pharmacy_name) values('APTEKA LEKOSFERA DGA 11');
- insert into pharmacy(pharmacy_name) values('APTEKA "AB"  SP. Z O.O.');
- insert into pharmacy(pharmacy_name) values('APTEKA AGAT');
- insert into pharmacy(pharmacy_name) values('APTEKA OLIMPIJSKA');
- insert into pharmacy(pharmacy_name) values('APTEKA TARNOGAJSKA');
- insert into pharmacy(pharmacy_name) values('APTEKA AKADEMICKA');
- insert into pharmacy(pharmacy_name) values('APTEKA EURO-APTEKA');
- insert into pharmacy(pharmacy_name) values('APTEKA "WYSOKOGÓRSKA"');
- insert into pharmacy(pharmacy_name) values('APTEKA PULSANTIS S.C.');
- insert into pharmacy(pharmacy_name) values('APTEKA NA OSTATNIM GROSZU');
- insert into pharmacy(pharmacy_name) values('APTEKA KRÓLEWSKA');
- insert into pharmacy(pharmacy_name) values('APTEKA "TWOJA"');
- insert into pharmacy(pharmacy_name) values('APTEKA LAWENDA');
- insert into pharmacy(pharmacy_name) values('APTEKA "PRZY NETTO"');
- insert into pharmacy(pharmacy_name) values('APTEKA LOBELIA');
- insert into pharmacy(pharmacy_name) values('APTEKA "MALVA"');
- insert into pharmacy(pharmacy_name) values('APTEKA ŚW.WOJCIECHA');
- insert into pharmacy(pharmacy_name) values('APTEKA DR.MAX');
- insert into pharmacy(pharmacy_name) values('APTEKA PRO HOMINE');
- insert into pharmacy(pharmacy_name) values('APTEKA W PRZYCHODNI NA BISKUPINIE');
- insert into pharmacy(pharmacy_name) values('"APTEKA U DAWIDA"');
- insert into pharmacy(pharmacy_name) values('APTEKA NA BULWARZE IKARA');
- insert into pharmacy(pharmacy_name) values('APTEKA HELVETIA');
- insert into pharmacy(pharmacy_name) values('APTEKA DR.MAX');
- insert into pharmacy(pharmacy_name) values('APTEKA "RADIX" SPÓŁKA CYWILNA MARIAN, ŁUKASZ SZLÓSARCZYK');
- insert into pharmacy(pharmacy_name) values('APTEKA LEGE ARTIS');
- insert into pharmacy(pharmacy_name) values('APTEKA "PRZY MARINO"');
- insert into pharmacy(pharmacy_name) values('APTEKA LOTNICZA');
- insert into pharmacy(pharmacy_name) values('APTEKA RÓŻA WIATRÓW S.C.');
- insert into pharmacy(pharmacy_name) values('APTEKA MOJA');
- insert into pharmacy(pharmacy_name) values('APTEKA GRECKA');
- insert into pharmacy(pharmacy_name) values('APTEKA "WERBENA"');
- insert into pharmacy(pharmacy_name) values('APTEKA NIEZAPOMINAJKA DLA CAŁEJ RODZINY');
- insert into pharmacy(pharmacy_name) values('APTEKA SZMARAGDOWA BIS');
- insert into pharmacy(pharmacy_name) values('APTEKA BERBERYS');
- insert into pharmacy(pharmacy_name) values('APTEKA "KRZYCKA"');
- insert into pharmacy(pharmacy_name) values('APTEKA "DA VINCI"');
- insert into pharmacy(pharmacy_name) values('APTEKA KSIĘŻĘCA');
- insert into pharmacy(pharmacy_name) values('APTEKA GEMINI');
- insert into pharmacy(pharmacy_name) values('APTEKA LEGE ARTIS');
- insert into pharmacy(pharmacy_name) values('APTEKA LEGE ARTIS');
- insert into pharmacy(pharmacy_name) values('APTEKA MEDIC');
- insert into pharmacy(pharmacy_name) values('APTEKA TĘCZOWA');
- insert into pharmacy(pharmacy_name) values('APTEKA');
- insert into pharmacy(pharmacy_name) values('APTEKA PRZYJAŹNI');
- insert into pharmacy(pharmacy_name) values('APTEKA "POD DĘBAMI"');
- insert into pharmacy(pharmacy_name) values('APTEKA');
- insert into pharmacy(pharmacy_name) values('APTEKA PRIMA');
- insert into pharmacy(pharmacy_name) values('APTEKA MEDICEO DRIVE');
- insert into pharmacy(pharmacy_name) values('APTEKA BISKUPIN S.C.');
- insert into pharmacy(pharmacy_name) values('APTEKA NOVA');
- insert into pharmacy(pharmacy_name) values('APTEKA POD WĘŻEM');
- insert into pharmacy(pharmacy_name) values('APTEKA NA RONDZIE');
- insert into pharmacy(pharmacy_name) values('APTEKA NA KOZANOWIE');
- insert into pharmacy(pharmacy_name) values('APTEKA CEF@RM 36,6');
- insert into pharmacy(pharmacy_name) values('APTEKA APTEKI ARNIKA');
- insert into pharmacy(pharmacy_name) values('APTEKA AMAVITA');
- insert into pharmacy(pharmacy_name) values('APTEKA LEKOSFERA DGA22');
- insert into pharmacy(pharmacy_name) values('APTEKA OŁTASZYŃSKA');
- insert into pharmacy(pharmacy_name) values('APTEKA ORCHIDEA');
- insert into pharmacy(pharmacy_name) values('APTEKA RODZINNA');
- insert into pharmacy(pharmacy_name) values('APTEKA ABSYNT');
- insert into pharmacy(pharmacy_name) values('APTEKA "PARAFIALNA"');
- insert into pharmacy(pharmacy_name) values('APTEKA DOMOWA "ORCHOWSKA"');
- insert into pharmacy(pharmacy_name) values('APTEKA KRZEMIENIECKA');
- insert into pharmacy(pharmacy_name) values('APTEKA "DOKERSKA"');
- insert into pharmacy(pharmacy_name) values('APTEKA ALPEJSKA');
- insert into pharmacy(pharmacy_name) values('APTEKA KUŻNIKI');
- insert into pharmacy(pharmacy_name) values('APTEKA SIELSKA');
- insert into pharmacy(pharmacy_name) values('APTEKA OLIMPIA');
- insert into pharmacy(pharmacy_name) values('APTEKA "MUCHOBORSKA"');
- insert into pharmacy(pharmacy_name) values('APTEKA CALENDULA');
- insert into pharmacy(pharmacy_name) values('APTEKA');
- insert into pharmacy(pharmacy_name) values('APTEKA AVICENNA');
- insert into pharmacy(pharmacy_name) values('APTEKA SARBINOWSKA');
- insert into pharmacy(pharmacy_name) values('APTEKA BROCHOWSKA');
- insert into pharmacy(pharmacy_name) values('APTEKA VIVALDIEGO');
- insert into pharmacy(pharmacy_name) values('APTEKA DROHOBYCKA');
- insert into pharmacy(pharmacy_name) values('APTEKA "CZEKOLADOWA"');
- insert into pharmacy(pharmacy_name) values('APTEKA "NASZA APTEKA"');
- insert into pharmacy(pharmacy_name) values('APTEKA "NA DOBRE I NA ZŁE" WALDEMAR CIACH');
- insert into pharmacy(pharmacy_name) values('APTEKA NIEZAPOMINAJKA DLA CAŁEJ RODZINY');
- insert into pharmacy(pharmacy_name) values('APTEKA EXPRESSPHARM VII');
- insert into pharmacy(pharmacy_name) values('APTEKA STRACHOCIŃSKA');
- insert into pharmacy(pharmacy_name) values('APTEKA MILLENIUM');
- insert into pharmacy(pharmacy_name) values('APTEKA "OSIEDLOWA"');
- insert into pharmacy(pharmacy_name) values('APTEKA NA WOJNOWIE');
- insert into pharmacy(pharmacy_name) values('APTEKA "POLESKA"');
- insert into pharmacy(pharmacy_name) values('APTEKA "RUMIANKOWA"  "FEMI" S.C.');
- insert into pharmacy(pharmacy_name) values('APTEKA RUMIANEK');
- insert into pharmacy(pharmacy_name) values('APTEKA "LEGE ARTIS"');
- insert into pharmacy(pharmacy_name) values('APTEKA SUPER-PHARM');
- insert into pharmacy(pharmacy_name) values('APTEKA "EXPRESSPHARM"');
- insert into pharmacy(pharmacy_name) values('APTEKA EXPRESSPHARM II');
- insert into pharmacy(pharmacy_name) values('APTEKA SAMBUCUS');
- insert into pharmacy(pharmacy_name) values('APTEKA ZIELONA');
- insert into pharmacy(pharmacy_name) values('APTEKA AKTYWNA');
- insert into pharmacy(pharmacy_name) values('APTEKA DLA ZDROWIA');
- insert into pharmacy(pharmacy_name) values('APTEKA "BEŻOWA"');
- insert into pharmacy(pharmacy_name) values('APTEKA "ZŁOTNICKA"');
- insert into pharmacy(pharmacy_name) values('APTEKA DĘBOWA');
- insert into pharmacy(pharmacy_name) values('APTEKA BELLADONNA');
- insert into pharmacy(pharmacy_name) values('APTEKA "POD ŚW. ANTONIM"');
- insert into pharmacy(pharmacy_name) values('APTEKA EXPRESSPHARM IV');
- insert into pharmacy(pharmacy_name) values('APTEKA LEŚNICKA');
- insert into pharmacy(pharmacy_name) values('APTEKA "OGRODOWA" SPÓŁKA JAWNA');
+
+insert into pharmacy(pharmacy_name) values
+    ('APTEKA POD RATUSZEM'),
+    ('APTEKA SUPER-PHARM'),
+    ('APTEKA OGÓLNODOSTĘPNA "POD PODWÓJNYM ZŁOTYM ORŁEM" SPÓŁKA JAWNA'),
+    ('APTEKA VITA'),
+    ('APTEKA NA SZEWSKIEJ'),
+    ('APTEKA DR.MAX'),
+    ('APTEKA SUPER PHARM'),
+    ('APTEKA DR. MAX'),
+    ('APTEKA "TUMSKA"'),
+    ('APTEKA PIASKOWA'),
+    ('APTEKA CEF@RM 36,6'),
+    ('APTEKA WROCŁAWSKA'),
+    ('APTEKA CEF@RM 36,6'),
+    ('APTEKA "ZA FOSĄ"'),
+    ('APTEKA DOM LEKÓW'),
+    ('APTEKA ZIKO'),
+    ('APTEKA ZIKO'),
+    ('APTEKA SŁONECZNA'),
+    ('APTEKA DOM LEKÓW'),
+    ('APTEKA POMORSKA S.C.'),
+    ('APTEKA LEKOSFERA DGA 12'),
+    ('APTEKA ZIEMOWITA'),
+    ('APTEKA SILESIA 3'),
+    ('APTEKA AMICUS III'),
+    ('APTEKA "DR ZDROWIE"'),
+    ('APTEKA CEDRUS'),
+    ('APTEKA GRABISZYŃSKA'),
+    ('APTEKA MEDICOVER APTEKA'),
+    ('APTEKA MEDICOVER'),
+    ('APTEKA O.O. BONIFRATRÓW'),
+    ('APTEKA ZDROWIE'),
+    ('APTEKA "POD SKRZYDŁEM ANIOŁA"'),
+    ('APTEKA "MIESZCZAŃSKA"'),
+    ('APTEKA "BRANIBORSKA"'),
+    ('APTEKA DR.MAX'),
+    ('APTEKA DR.MAX'),
+    ('APTEKA ZIKO'),
+    ('APTEKA API'),
+    ('APTEKA PRZY PRZYCHODNI'),
+    ('APTEKA MAK'),
+    ('APTEKA MEDFARM'),
+    ('APTEKA MAK'),
+    ('APTEKA PINIA'),
+    ('APTEKA LEGE ARTIS S.J.'),
+    ('APTEKA  ŚW.WINCENTEGO'),
+    ('APTEKA VERONICA'),
+    ('APTEKA MAK'),
+    ('APTEKA CZTERY PORY ROKU'),
+    ('APTEKA LEGE ARTIS S.J.'),
+    ('APTEKA "SŁONECZNA"'),
+    ('APTEKA ŚW.TOMASZA'),
+    ('APTEKA SPOŁECZNA NA SĘPA SZARZYŃSKIEGO GRUPA NOWA FARMACJA'),
+    ('APTEKA KATEDRALNA'),
+    ('APTEKA SILESIA'),
+    ('APTEKA SŁONECZNA BIEDRONKA'),
+    ('APTEKA HERBA S.C.DANUTA KONOPACKA,KATARZYNA FIUTOWSKA'),
+    ('APTEKA DR.MAX'),
+    ('APTEKA GINSANA'),
+    ('APTEKA EXPRESSPHARM V'),
+    ('APTEKA "LIBRA"'),
+    ('APTEKA LEGE ARTIS'),
+    ('APTEKA POD SŁOŃCEM'),
+    ('APTEKA "ARKA"'),
+    ('APTEKA WRATISLAVIA II S.C.'),
+    ('APTEKA WRATISLAVIA II'),
+    ('APTEKA ARONIA'),
+    ('APTEKA LEKOSFERA DGA 10'),
+    ('APTEKA HETMAŃSKA'),
+    ('APTEKA NIEZAPOMINAJKA DLA CAŁEJ RODZINY'),
+    ('APTEKA SUPER-PHARM'),
+    ('APTEKA HIPOKRATES'),
+    ('APTEKA LEKOSFERA DGA17'),
+    ('APTEKA TĘCZOWA 3'),
+    ('APTEKA'),
+    ('APTEKA GRUNWALDZKA'),
+    ('APTEKA CEF@RM 36,6'),
+    ('APTEKA MNISZEK SP. J.'),
+    ('"APTEKA PRZY PL. HISZFELDA"'),
+    ('APTEKA CEF@RM 36,6'),
+    ('APTEKA VISCI'),
+    ('APTEKA PIASTOWSKA'),
+    ('APTEKA "GRAFIT"'),
+    ('APTEKA "LEGE ARTIS"'),
+    ('APTEKA RUMIANEK'),
+    ('APTEKA RUBUS'),
+    ('APTEKA ''ALGA'' JOANNA ARAŹNY, ILONA OTLEWSKA S.C.'),
+    ('APTEKA "PRZY PROXIMUM"'),
+    ('APTEKA ALOES'),
+    ('APTEKA SILESIA 4'),
+    ('APTEKA JANTAROWA'),
+    ('APTEKA POD AKACJAMI'),
+    ('APTEKA POD KALINĄ'),
+    ('APTEKA DOM LEKÓW'),
+    ('APTEKA "VITRUM"'),
+    ('APTEKA "HIBISCUS"'),
+    ('APTEKA MEDICOVER APTEKA'),
+    ('APTEKA "ARKADIA"'),
+    ('APTEKA WRATISLAVIA III'),
+    ('APTEKA "CZEKOLADOWA2"'),
+    ('APTEKA "FRANCUSKA"'),
+    ('APTEKA "OSTROBRAMSKA" S.C.'),
+    ('APTEKA NA DAMROTA'),
+    ('APTEKA POPOWICKA'),
+    ('APTEKA FRANCUSKA'),
+    ('APTEKA ACER'),
+    ('APTEKA WRATISLAVIA'),
+    ('APTEKA POD FILAREM'),
+    ('APTEKA AKSAMITNA'),
+    ('APTEKA NA OBORNICKIEJ'),
+    ('APTEKA DR.MAX'),
+    ('APTEKA ŚLICZNA'),
+    ('APTEKA WIŚNIOWA DRIVE'),
+    ('APTEKA LEKOSFERA DGA23'),
+    ('APTEKA "MIODOWA"'),
+    ('APTEKA MAK'),
+    ('APTEKA "MULTI-LEK" SPÓŁKA JAWNA'),
+    ('APTEKA "SŁONECZNA BIEDRONKA"'),
+    ('APTEKA "POŁUDNIOWA"'),
+    ('APTEKA ŻMIGRODZKA'),
+    ('APTEKA SILESIA 2'),
+    ('APTEKA DR.MAX'),
+    ('APTEKA PRZY LEGNICKIEJ'),
+    ('APTEKA NA ZDROWIE'),
+    ('APTEKA SUPER-PHARM APTEKA MAGNOLIA PARK'),
+    ('APTEKA'),
+    ('APTEKA POMARAŃCZOWA'),
+    ('APTEKA WAWRZYNEK S.C.'),
+    ('APTEKA LEKOSFERA DGA 1'),
+    ('APTEKA DR. OPTIMA'),
+    ('APTEKA "POD JAWORAMI"'),
+    ('APTEKA PRZY KRYNICKIEJ'),
+    ('APTEKA BIOGENES.'),
+    ('APTEKA AMICUS II'),
+    ('APTEKA ZDROWIE'),
+    ('APTEKA BIAŁOWIESKA'),
+    ('APTEKA "KARŁOWICKA"'),
+    ('APTEKA MILLENIUM'),
+    ('APTEKA SŁONECZNA BIEDRONKA'),
+    ('APTEKA AMICUS IV'),
+    ('APTEKA AMICUS'),
+    ('APTEKA "WANILIA"'),
+    ('APTEKA Z MISIEM'),
+    ('APTEKA "REMEDIUM"'),
+    ('APTEKA "POD JEMIOŁĄ"'),
+    ('APTEKA WALERIANA'),
+    ('APTEKA DR.MAX'),
+    ('APTEKA BEZPIECZNA'),
+    ('APTEKA NA ZDROWIE'),
+    ('APTEKA PRZY WEIGLA'),
+    ('APTEKA LEKOSFERA DGA 11'),
+    ('APTEKA "AB"  SP. Z O.O.'),
+    ('APTEKA AGAT'),
+    ('APTEKA OLIMPIJSKA'),
+    ('APTEKA TARNOGAJSKA'),
+    ('APTEKA AKADEMICKA'),
+    ('APTEKA EURO-APTEKA'),
+    ('APTEKA "WYSOKOGÓRSKA"'),
+    ('APTEKA PULSANTIS S.C.'),
+    ('APTEKA NA OSTATNIM GROSZU'),
+    ('APTEKA KRÓLEWSKA'),
+    ('APTEKA "TWOJA"'),
+    ('APTEKA LAWENDA'),
+    ('APTEKA "PRZY NETTO"'),
+    ('APTEKA LOBELIA'),
+    ('APTEKA "MALVA"'),
+    ('APTEKA ŚW.WOJCIECHA'),
+    ('APTEKA DR.MAX'),
+    ('APTEKA PRO HOMINE'),
+    ('APTEKA W PRZYCHODNI NA BISKUPINIE'),
+    ('"APTEKA U DAWIDA"'),
+    ('APTEKA NA BULWARZE IKARA'),
+    ('APTEKA HELVETIA'),
+    ('APTEKA DR.MAX'),
+    ('APTEKA "RADIX" SPÓŁKA CYWILNA MARIAN, ŁUKASZ SZLÓSARCZYK'),
+    ('APTEKA LEGE ARTIS'),
+    ('APTEKA "PRZY MARINO"'),
+    ('APTEKA LOTNICZA'),
+    ('APTEKA RÓŻA WIATRÓW S.C.'),
+    ('APTEKA MOJA'),
+    ('APTEKA GRECKA'),
+    ('APTEKA "WERBENA"'),
+    ('APTEKA NIEZAPOMINAJKA DLA CAŁEJ RODZINY'),
+    ('APTEKA SZMARAGDOWA BIS'),
+    ('APTEKA BERBERYS'),
+    ('APTEKA "KRZYCKA"'),
+    ('APTEKA "DA VINCI"'),
+    ('APTEKA KSIĘŻĘCA'),
+    ('APTEKA GEMINI'),
+    ('APTEKA LEGE ARTIS'),
+    ('APTEKA LEGE ARTIS'),
+    ('APTEKA MEDIC'),
+    ('APTEKA TĘCZOWA'),
+    ('APTEKA'),
+    ('APTEKA PRZYJAŹNI'),
+    ('APTEKA "POD DĘBAMI"'),
+    ('APTEKA'),
+    ('APTEKA PRIMA'),
+    ('APTEKA MEDICEO DRIVE'),
+    ('APTEKA BISKUPIN S.C.'),
+    ('APTEKA NOVA'),
+    ('APTEKA POD WĘŻEM'),
+    ('APTEKA NA RONDZIE'),
+    ('APTEKA NA KOZANOWIE'),
+    ('APTEKA CEF@RM 36,6'),
+    ('APTEKA APTEKI ARNIKA'),
+    ('APTEKA AMAVITA'),
+    ('APTEKA LEKOSFERA DGA22'),
+    ('APTEKA OŁTASZYŃSKA'),
+    ('APTEKA ORCHIDEA'),
+    ('APTEKA RODZINNA'),
+    ('APTEKA ABSYNT'),
+    ('APTEKA "PARAFIALNA"'),
+    ('APTEKA DOMOWA "ORCHOWSKA"'),
+    ('APTEKA KRZEMIENIECKA'),
+    ('APTEKA "DOKERSKA"'),
+    ('APTEKA ALPEJSKA'),
+    ('APTEKA KUŻNIKI'),
+    ('APTEKA SIELSKA'),
+    ('APTEKA OLIMPIA'),
+    ('APTEKA "MUCHOBORSKA"'),
+    ('APTEKA CALENDULA'),
+    ('APTEKA AVICENNA'),
+    ('APTEKA SARBINOWSKA'),
+    ('APTEKA BROCHOWSKA'),
+    ('APTEKA VIVALDIEGO'),
+    ('APTEKA DROHOBYCKA'),
+    ('APTEKA "CZEKOLADOWA"'),
+    ('APTEKA "NASZA APTEKA"'),
+    ('APTEKA "NA DOBRE I NA ZŁE" WALDEMAR CIACH'),
+    ('APTEKA NIEZAPOMINAJKA DLA CAŁEJ RODZINY'),
+    ('APTEKA EXPRESSPHARM VII'),
+    ('APTEKA STRACHOCIŃSKA'),
+    ('APTEKA MILLENIUM'),
+    ('APTEKA "OSIEDLOWA"'),
+    ('APTEKA NA WOJNOWIE'),
+    ('APTEKA "POLESKA"'),
+    ('APTEKA "RUMIANKOWA"  "FEMI" S.C.'),
+    ('APTEKA RUMIANEK'),
+    ('APTEKA "LEGE ARTIS"'),
+    ('APTEKA SUPER-PHARM'),
+    ('APTEKA "EXPRESSPHARM"'),
+    ('APTEKA EXPRESSPHARM II'),
+    ('APTEKA SAMBUCUS'),
+    ('APTEKA ZIELONA'),
+    ('APTEKA AKTYWNA'),
+    ('APTEKA DLA ZDROWIA'),
+    ('APTEKA "BEŻOWA"'),
+    ('APTEKA "ZŁOTNICKA"'),
+    ('APTEKA DĘBOWA'),
+    ('APTEKA BELLADONNA'),
+    ('APTEKA "POD ŚW. ANTONIM"'),
+    ('APTEKA EXPRESSPHARM IV'),
+    ('APTEKA LEŚNICKA'),
+    ('APTEKA "OGRODOWA" SPÓŁKA JAWNA');
 
 commit;
