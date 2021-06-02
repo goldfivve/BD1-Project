@@ -1,0 +1,82 @@
+create table medicine(
+    medicine_id serial primary key,
+    trade_name text not null,
+    grammage int not null,
+    contraindications text not null,
+    recommendations text not null,
+    prescription_type prescription_type not null
+);
+create table availability_in_warehouse(
+    medicine_id int not null references medicine,
+    quantity int not null
+);
+create table client(
+    client_id serial primary key,
+    "name" text not null,
+    surname text not null
+);
+
+create table prescription(
+    prescription_id serial primary key,
+    expiration_date date not null,
+    client_id int not null references client,
+    prescription_type prescription_type not null
+);
+
+create table pharmacy(
+    pharmacy_id serial primary key,
+    pharmacy_name text not null
+);
+
+create table medicine_in_pharmacy(
+    pharmacy_id int not null references pharmacy,
+    medicine_id int not null references medicine,
+    quantity int not null
+);
+
+create table prescribed_medicine(
+    medicine_id int not null references medicine,
+    prescription_id int not null references prescription,
+    quantity int not null
+);
+
+create table substance_interaction(
+    substance_one int not null,
+    substance_two int not null,
+    description text not null,
+    intensity intensity not null
+);
+
+create table active_substance(
+    active_substance_id serial not null primary key,
+    "name" text not null,
+    international_name text not null,
+    description text not null
+);
+
+create table psychotropy_evidence(
+    client_id int not null references client,
+    active_substance_id int not null references active_substance,
+    quantity int not null,
+    dispensed_date date not null,
+    pharmacy_id int not null references pharmacy
+);
+
+create table "order"(
+    order_id serial not null primary key,
+    pharmacy_id int not null references pharmacy,
+    order_date date not null,
+    order_status order_status not null
+
+);
+
+create table medicine_substance_map(
+    active_substance_id int not null references active_substance,
+    medicine_id int not null references medicine
+);
+
+create table warehouse_order_item(
+    order_id int not null references "order",
+    quantity int not null,
+    medicine_id int not null references medicine
+);
