@@ -2,10 +2,13 @@
 
 ### Skład grupy
 
-Zuzanna Jasińska (252760)  
-Karol Baraniecki (252726)  
-Dominika Kmiecik (252628)  
+| Termin zajęć 	|                                   Piątek TP 11:15                                   	|
+|:------------:	|:-----------------------------------------------------------------------------------:	|
+|  Prowadzący  	|                            mgr inż. Szymon Wojciechowski                            	|
+|  Baza danych 	|                                        Apteka                                       	|
+|    Autorzy   	| Zuzanna Jasińska (252760)<br>Karol Baraniecki (252726)<br>Dominika Kmiecik (252628) 	| 
 
+## Etap I - Deklaracja tematu
 ### Historia użtkownika
 Dwóch współwłaścicieli sieci aptek zostało zmuszonych zakończyć współpracę. Ze względu na burzliwy koniec wspólnej działalności, wszystkie dane dotyczące asortymentu i zależności występujących między sprzedawanymi lekami oraz wystawionych recept, a także zrealizowanych recept uległy zniszczeniu. Po ochłodzeniu emocji, jeden z nich zrozumiał, że został pozbawiony źródła utrzymania. Z ostatnich oszczędności postanowił wykupić pozostałe udziały w firmie i zacząć wszystko od początku. Baza będzie wykorzystywana do obsługi systemu aptecznego przez aptekarza. Zadaniem aptekarza ma być wydawanie leków i wykonywanie czynności z nim związanymi - realizowaniem recept, zmianą stanu zasobów apteki, zamawianiem leków, sprawdzaniem ich dostępności w innych aptekach. Klient obsługiwany przez aptekarza będzie mógł także sam uprzednio sprawdzać listę leków zamieszczoną w recepcie oraz dostępność poszukiwanych leków w aptece i stan zrealizowania recepty. Apteka będzie zaopatrywana przez dostawcę weryfikującego stan realizowanego zamówienia.
 
@@ -28,3 +31,5442 @@ Dwóch współwłaścicieli sieci aptek zostało zmuszonych zakończyć współp
 - sprawdzanie zawartości swojej erecepty dla aktora "klient"
 - sprawdzanie ile jeszcze leków zostało do wydania z erecepty dla aktora "klient"
 - dodawanie informacji o wydaniu leku na receptę Rpw do książki narkotycznej dla aktora "aptekarz"
+
+## Etap II - Normalizacja, Diagram ER
+
+![image info](./Desktop/ERD.png)
+
+## Etap III - Implementacja
+
+```sql
+begin;
+
+create type intensity as enum('minor', 'moderate', 'major');
+create type order_status as enum('delivered', 'not_yet_placed', 'being_fulfilled');
+create type prescription_type as enum('OTC', 'Rpw', 'Rpz', 'Rp');
+
+create table medicine(
+    medicine_id serial primary key,
+    trade_name text not null,
+    dosage text,
+    pack_size text not null,
+    contraindications text not null,
+    recommendations text not null,
+    prescription_type prescription_type not null
+);
+
+create table availability_in_warehouse(
+    medicine_id int not null references medicine,
+    quantity int not null
+);
+
+create table client(
+    client_id serial primary key,
+    firstname text not null,
+    surname text not null
+);
+
+create table prescription(
+    prescription_id serial primary key,
+    expiration_date date not null,
+    client_id int not null references client,
+    prescription_type prescription_type not null
+);
+
+create table pharmacy(
+    pharmacy_id serial primary key,
+    pharmacy_name text not null
+);
+
+create table medicine_in_pharmacy(
+    pharmacy_id int not null references pharmacy,
+    medicine_id int not null references medicine,
+    quantity int not null,
+    primary key(pharmacy_id, medicine_id)
+);
+
+create table prescribed_medicine(
+    medicine_id int not null references medicine,
+    prescription_id int not null references prescription,
+    quantity int not null
+);
+
+create table active_substance(
+    active_substance_id serial not null primary key,
+    "name" text not null,
+    international_name text not null,
+    description text not null
+);
+
+create table substance_interaction(
+    substance_one int not null references active_substance(active_substance_id),
+    substance_two int not null references active_substance(active_substance_id),
+    description text not null,
+    intensity intensity not null
+);
+
+create table psychotropy_evidence(
+    client_id int not null references client,
+    active_substance_id int not null references active_substance,
+    quantity int not null,
+    dispensed_date date not null,
+    pharmacy_id int not null references pharmacy
+);
+
+create table warehouse_order(
+    warehouse_order_id serial not null primary key,
+    pharmacy_id int not null references pharmacy,
+    order_date date not null,
+    order_status order_status not null
+);
+
+create table medicine_substance_map(
+    active_substance_id int not null references active_substance,
+    medicine_id int not null references medicine
+);
+
+create table warehouse_order_item(
+    warehouse_order_id int not null references warehouse_order,
+    quantity int not null,
+    medicine_id int not null references medicine
+);
+
+
+insert into client(firstname, surname) values
+    ('Krystian', 'Lechowicz'),  -- id 1
+    ('Lucjan', 'Kuk'), -- id 2
+    ('Jakub', 'Mazur'), -- id 3
+    ('Jan', 'Kozak'), -- id 4
+    ('Leszek', 'Nowicki'), -- id 5
+    ('Piotr', 'Kopeć'), -- id 6
+    ('Tadeusz', 'Papierok'), -- id 7
+    ('Łukasz', 'Dróżdż'), -- id 8
+    ('Stefan', 'Szymczyk'), -- id 9
+    ('Kajetan', 'Rapacki'), -- id 10
+    ('Antoni', 'Saja'), -- id 11
+    ('Eugeniusz', 'Sawicki'), -- id 12
+    ('Waldemar', 'Mielcarek'), -- id 13
+    ('Wiesław', 'Mężyński'), -- id 14
+    ('Serhii', 'Kureń'), -- id 15
+    ('Przemysław', 'Janas'), -- id 16
+    ('Tadeusz', 'Kozdra'), -- id 17
+    ('Krzysztof', 'Szewców'), -- id 18
+    ('Paweł', 'Sieradzki'), -- id 19
+    ('Andrzej', 'Nowak'), -- id 20
+    ('Robert', 'Fiedoruk'), -- id 21
+    ('Józef', 'Naus'), -- id 22
+    ('Henryk', 'Brzeźniak'), -- id 23
+    ('Jakub', 'Żurek'), -- id 24
+    ('Marek', 'Kaczor'), -- id 25
+    ('Stanisław', 'Kotarba'), -- id 26
+    ('Józef', 'Sipak'), -- id 27
+    ('Krzysztof', 'Michalski'), -- id 28
+    ('Piotr', 'Macioszczyk'), -- id 29
+    ('Stefan', 'Mencweld'), -- id 30
+    ('Piotr', 'Gwizdała'), -- id 31
+    ('Sylwester', 'Taisner'), -- id 32
+    ('Mikołaj', 'Owsiany'), -- id 33
+    ('Krzysztof', 'Kozikowski'), -- id 34
+    ('Henryk', 'Dzikoń'), -- id 35
+    ('Patryk', 'Kozicki'), -- id 36
+    ('Patryk', 'Deja'), -- id 37
+    ('Franciszek', 'Kobojek'), -- id 38
+    ('Adam', 'Kusa'), -- id 39
+    ('Stefan', 'Mrugowski'), -- id 40
+    ('Ihor', 'Chmura'), -- id 41
+    ('Andrzej', 'Ławrynowicz'), -- id 42
+    ('Krzysztof', 'Bejger'), -- id 43
+    ('Jakub', 'Palewski'), -- id 44
+    ('Piotr', 'Bechert'), -- id 45
+    ('Zbigniew', 'Dworakowski'), -- id 46
+    ('Sebastian', 'Baranowski'), -- id 47
+    ('Jerzy', 'Madej'), -- id 48
+    ('Wilhelm', 'Żyła'), -- id 49
+    ('Mariusz', 'Jakubiszak'), -- id 50
+    ('Artur', 'Bronowski'), -- id 51
+    ('Jan', 'Kossakowski'), -- id 52
+    ('Adam', 'Jagodziński'), -- id 53
+    ('Gustaw', 'Kurowski'), -- id 54
+    ('Grzegorz', 'Mateusiak'), -- id 55
+    ('Cezary', 'Maziarz'), -- id 56
+    ('Marek', 'Polit'), -- id 57
+    ('Henryk', 'Maciuk'), -- id 58
+    ('Alan', 'Wawrzynek'), -- id 59
+    ('Grzegorz', 'Skonieczny'), -- id 60
+    ('Jacek', 'Kurasz'), -- id 61
+    ('Władysław', 'Lendzion'), -- id 62
+    ('Mateusz', 'Stańczuk'), -- id 63
+    ('Sylwester', 'Błasiak'), -- id 64
+    ('Akaki', 'Baran'), -- id 65
+    ('Tadeusz', 'Grzegorzewski'), -- id 66
+    ('Kajetan', 'Ciesielski'), -- id 67
+    ('Mirosław', 'Wawoczny'), -- id 68
+    ('Radosław', 'Chrzanowski'), -- id 69
+    ('Jerzy', 'Szyngira'), -- id 70
+    ('Witold', 'Halo'), -- id 71
+    ('Jacek', 'Kowalski'), -- id 72
+    ('Szymon', 'Cymek'), -- id 73
+    ('Dawid', 'Głogowski'), -- id 74
+    ('Dominik', 'Mazurek'), -- id 75
+    ('Jakub', 'Gliwa'), -- id 76
+    ('Sławomir', 'Stankiewicz'), -- id 77
+    ('Adam', 'Piechowiak'), -- id 78
+    ('Aleksander', 'Cichowicz'), -- id 79
+    ('Radosław', 'Kulczyński'), -- id 80
+    ('Krzysztof', 'Mączka'), -- id 81
+    ('Jan', 'Leśniewski'), -- id 82
+    ('Kamil', 'Marszalik'), -- id 83
+    ('Dariusz', 'Pawliszak'), -- id 84
+    ('Krzysztof', 'Zhabotynskyi'), -- id 85
+    ('Eugeniusz', 'Domański'), -- id 86
+    ('Konrad', 'Jędrzejewski'), -- id 87
+    ('Kazimierz', 'Jachimczak'), -- id 88
+    ('Teodor', 'Titov'), -- id 89
+    ('Łukasz', 'Tomczak'), -- id 90
+    ('Janusz', 'Siuśta'), -- id 91
+    ('Jan', 'Łącz'), -- id 92
+    ('Roman', 'Masood'), -- id 93
+    ('Zygmunt', 'Taradejna'), -- id 94
+    ('Marcin', 'Bator'), -- id 95
+    ('Roman', 'Koryga'); -- id 96
+
+insert into medicine(trade_name, prescription_type, dosage, pack_size, contraindications, recommendations) values
+    ('Abaktal', 'Rp', '400 mg', '10 szt. ', '', ''),
+    ('Abasaglar', 'Rp', '100 j./ml', '10 wkładów 3 ml ', '', ''),
+    ('ABE', 'OTC', '89 mg + 89 mg/g', '1 but. 8 g ', '', ''),
+    ('Abilify', 'Rp', '7,5 mg/ml', '1 fiolka 1,3 ml ', '', ''),
+    ('Abilify', 'Rp', '15 mg', '28 szt. ', '', ''),
+    ('Abilify', 'Rp', '15 mg', '56 szt. ', '', ''),
+    ('Abilify', 'Rp', '30 mg', '56 szt. ', '', ''),
+    ('Abilify Maintena', 'Rp', '400 mg', '1 fiolka + 1 fiolka rozp. ', '', ''),
+    ('Abrea', 'OTC', '75 mg', '90 szt. ', '', ''),
+    ('Absenor', 'Rp', '300 mg', '100 szt. ', '', ''),
+    ('Absenor', 'Rp', '500 mg', '100 szt. ', '', ''),
+    ('Acard 300 mg', 'OTC', '300 mg', '1 szt. ', '', ''),
+    ('Acard 300 mg', 'OTC', '300 mg', '10 szt. ', '', ''),
+    ('Acard', 'OTC', '75 mg', '30 szt. ', '', ''),
+    ('Acard', 'OTC', '75 mg', '60 szt. ', '', ''),
+    ('Acard', 'OTC', '75 mg', '120 szt. ', '', ''),
+    ('Acard 150 mg', 'OTC', '150 mg', '30 szt. ', '', ''),
+    ('Acard 150 mg', 'OTC', '150 mg', '60 szt. ', '', ''),
+    ('Acatar Acti-Tabs', 'OTC', '60 mg + 2,5 mg', '4 szt. ', '', ''),
+    ('Acatar Acti-Tabs', 'OTC', '60 mg + 2,5 mg', '12 szt. ', '', ''),
+    ('Acatar Allergy', 'OTC', '1 mg/ml', '1 but. 10 ml ', '', ''),
+    ('Acatar Control', 'OTC', '0,5 mg/ml', '1 poj. 15 ml ', '', ''),
+    ('Acatar Zatoki', 'OTC', '200 mg + 30 mg', '12 szt. ', '', ''),
+    ('ACC classic', 'OTC', '20 mg/ml', '1 but. 100 ml ', '', ''),
+    ('ACC classic', 'OTC', '20 mg/ml', '1 but. 200 ml ', '', ''),
+    ('ACC Hot', 'OTC', '200 mg', '20 saszetek 3 g ', '', ''),
+    ('ACC', 'OTC', '200 mg', '20 szt. ', '', ''),
+    ('ACC', 'OTC', '200 mg', '20 szt. ', '', ''),
+    ('ACC mini', 'OTC', '100 mg', '20 saszetek 3 g ', '', ''),
+    ('ACC mini', 'OTC', '100 mg', '20 szt. ', '', ''),
+    ('Accofil', 'Rpz', '30 mln j.m. - 0,3 mg/0,5 ml', '1 amp.-strzyk. 0,5 ml ', '', ''),
+    ('Accofil', 'Rpz', '30 mln j.m. - 0,3 mg/0,5 ml', '5 amp.-strzyk. 0,5 ml ', '', ''),
+    ('Accofil', 'Rpz', '30 mln j.m. - 0,3 mg/0,5 ml', '7 amp.-strzyk. 0,5 ml ', '', ''),
+    ('Accofil', 'Rpz', '48 mln j.m. - 0,48 mg/0,5 ml', '1 amp.-strzyk. 0,5 ml ', '', ''),
+    ('Accofil', 'Rpz', '48 mln j.m. - 0,48 mg/0,5 ml', '5 amp.-strzyk. 0,5 ml ', '', ''),
+    ('Accofil', 'Rpz', '48 mln j.m. - 0,48 mg/0,5 ml', '7 amp.-strzyk. 0,5 ml ', '', ''),
+    ('ACC optima Active', 'OTC', '600 mg', '10 saszetek ', '', ''),
+    ('ACC optima Hot', 'OTC', '600 mg', '10 saszetek 3 g ', '', ''),
+    ('ACC optima', 'OTC', '600 mg', '10 szt. ', '', ''),
+    ('Accordeon', 'Rpw', '5 mg', '100 szt. ', '', ''),
+    ('Accordeon', 'Rpw', '10 mg', '60 szt. ', '', ''),
+    ('Accordeon', 'Rpw', '10 mg', '100 szt. ', '', ''),
+    ('Accordeon', 'Rpw', '20 mg', '60 szt. ', '', ''),
+    ('Accordeon', 'Rpw', '20 mg', '100 szt. ', '', ''),
+    ('Accordeon', 'Rpw', '40 mg', '100 szt. ', '', ''),
+    ('Accordeon', 'Rpw', '80 mg', '100 szt. ', '', ''),
+    ('Accupro 5', 'Rp', '5 mg', '30 szt. ', '', ''),
+    ('Accupro 10', 'Rp', '10 mg', '30 szt. ', '', ''),
+    ('Accupro 20', 'Rp', '20 mg', '30 szt. ', '', ''),
+    ('Accupro 40', 'Rp', '40 mg', '28 szt. ', '', ''),
+    ('Acebutolol Aurovitas', 'Rp', '200 mg', '30 szt. ', '', ''),
+    ('Acebutolol Aurovitas', 'Rp', '400 mg', '30 szt. ', '', ''),
+    ('Acenocumarol WZF', 'Rp', '1 mg', '60 szt. ', '', ''),
+    ('Acenocumarol WZF', 'Rp', '4 mg', '60 szt. ', '', ''),
+    ('Acenol', 'OTC', '300 mg', '20 szt. ', '', ''),
+    ('Acenol Forte', 'OTC', '500 mg', '20 szt. ', '', ''),
+    ('Acerin', 'OTC', '195 mg + 98 mg/g', '1 op. 8 g ', '', ''),
+    ('Acesan', 'OTC', '30 mg', '63 szt. ', '', ''),
+    ('Acetylcysteine Sandoz', 'Rp', '100 mg/ml', '5 amp. 3 ml ', '', ''),
+    ('Acetylcysteinum Flegamina', 'OTC', '600 mg', '10 szt. ', '', ''),
+    ('Aciclovir Ziaja', 'OTC', '50 mg/g', '1 tuba 5 g ', '', ''),
+    ('Acidum folicum Hasco', 'Rp', '5 mg', ' Acidum folicum Hasco (Rp)', '', ''),
+    ('Acidum folicum Richter', 'Rp', '5 mg', ' Acidum folicum Richter (Rp)', '', ''),
+    ('Aciprex', 'Rp', '10 mg', '28 szt. ', '', ''),
+    ('Aciprex', 'Rp', '10 mg', '56 szt. ', '', ''),
+    ('Acitren', 'Rp', '10 mg', '30 szt. ', '', ''),
+    ('Acitren', 'Rp', '10 mg', '100 szt. ', '', ''),
+    ('Acitren', 'Rp', '25 mg', '30 szt. ', '', ''),
+    ('Acitren', 'Rp', '25 mg', '100 szt. ', '', ''),
+    ('Aclasta', 'Rpz', '5 mg/100 ml', '1 but. 100 ml ', '', ''),
+    ('Aclexa', 'Rp', '100 mg', '10 szt. ', '', ''),
+    ('Aclexa', 'Rp', '100 mg', '30 szt. ', '', ''),
+    ('Aclexa', 'Rp', '100 mg', '60 szt. ', '', ''),
+    ('Aclexa', 'Rp', '200 mg', '10 szt. ', '', ''),
+    ('Aclexa', 'Rp', '200 mg', '30 szt. ', '', ''),
+    ('Aclexa', 'Rp', '200 mg', '60 szt. ', '', ''),
+    ('Aclotin', 'Rp', '250 mg', '20 szt. ', '', ''),
+    ('Aclotin', 'Rp', '250 mg', '60 szt. ', '', ''),
+    ('Acnatac', 'Rp', '10 mg + 0,25 mg/g', '1 tuba 30 g ', '', ''),
+    ('Acnelec', 'Rp', '1 mg/g', '1 tuba 30 g ', '', ''),
+    ('Acnelec', 'Rp', '1 mg/g', '1 tuba 30 g ', '', ''),
+    ('Acodin Duo', 'OTC', '50 mg + 15 mg/5 ml', '1 but. 100 ml ', '', ''),
+    ('Acodin', 'OTC', '15 mg', '10 szt. ', '', ''),
+    ('Acodin', 'OTC', '15 mg', '20 szt. ', '', ''),
+    ('Acodin 150 Junior', 'Rp', '50 mg + 7,5 mg/5 ml', '1 but. 100 ml ', '', ''),
+    ('Actelsar HCT', 'Rp', '80 mg + 12,5 mg', '28 szt. ', '', ''),
+    ('Actelsar HCT', 'Rp', '80 mg + 25 mg', '28 szt. ', '', ''),
+    ('Actelsar', 'Rp', '40 mg', '28 szt. ', '', ''),
+    ('Actelsar', 'Rp', '80 mg', '28 szt. ', '', ''),
+    ('Actifed', 'OTC', '1,25 mg + 30 mg + 10 mg/5 ml', '1 but. 100 ml ', '', ''),
+    ('Acti-trin', 'OTC', '1,25 mg + 30 mg + 10 mg/5 ml', '1 but. 100 ml ', '', ''),
+    ('Activelle', 'Rp', '1 mg + 0,5 mg', '28 szt. ', '', ''),
+    ('Actrapid Penfill', 'Rp', '100 j.m./ml', '5 wkładów 3 ml ', '', ''),
+    ('Actusept', 'OTC', '1,5 mg/ml', '1 but. 30 ml ', '', ''),
+    ('Acular', 'Rp', '5 mg/ml', '1 but. 10 ml ', '', ''),
+    ('Acurenal', 'Rp', '5 mg', '30 szt. ', '', ''),
+    ('Acurenal', 'Rp', '10 mg', '30 szt. ', '', ''),
+    ('Acurenal', 'Rp', '20 mg', '30 szt. ', '', ''),
+    ('Acurenal', 'Rp', '40 mg', '30 szt. ', '', ''),
+    ('Adablok', 'Rp', '5 mg', '30 szt. ', '', ''),
+    ('Adablok', 'Rp', '10 mg', '30 szt. ', '', ''),
+    ('Adadox', 'Rp', '2 mg', '30 szt. ', '', ''),
+    ('Adadox', 'Rp', '4 mg', '30 szt. ', '', ''),
+    ('Adadox', 'Rp', '4 mg', '90 szt. ', '', ''),
+    ('Adadut', 'Rp', '0,5 mg', '30 szt. ', '', ''),
+    ('Adalift', 'Rp', '5 mg', '28 szt. ', '', ''),
+    ('Adalift', 'Rp', '10 mg', '4 szt. ', '', ''),
+    ('Adalift', 'Rp', '20 mg', '2 szt. ', '', ''),
+    ('Adalift', 'Rp', '20 mg', '4 szt. ', '', ''),
+    ('Adamon SR 50', 'Rp', '50 mg', ' Adamon SR 100 (Rp)', '', ''),
+    ('Adaring', 'Rp', '0,12 mg + 0,015 mg/24 h', '1 szt. ', '', ''),
+    ('Adaring', 'Rp', '0,12 mg + 0,015 mg/24 h', '3 szt. ', '', ''),
+    ('Adartrel', 'Rp', '0,25 mg', '12 szt. ', '', ''),
+    ('Adartrel', 'Rp', '0,5 mg', '28 szt. ', '', ''),
+    ('Adartrel', 'Rp', '2 mg', '28 szt. ', '', ''),
+    ('Adaster', 'Rp', '5 mg', '30 szt. ', '', ''),
+    ('Adaster', 'Rp', '5 mg', '90 szt. ', '', ''),
+    ('Adatam Duo', 'Rp', '0,5 mg + 0,4 mg', '30 szt. ', '', ''),
+    ('Adatam', 'Rp', '0,4 mg', '30 szt. ', '', ''),
+    ('Adatam', 'Rp', '0,4 mg', '90 szt. ', '', ''),
+    ('Adcetris', 'Rpz', '50 mg', '1 fiolka ', '', ''),
+    ('Adeksa', 'Rp', '50 mg', '30 szt. ', '', ''),
+    ('Adeksa', 'Rp', '100 mg', '30 szt. ', '', ''),
+    ('Adempas', 'Rpz', '0,5 mg', '42 szt. ', '', ''),
+    ('Adempas', 'Rpz', '1 mg', '42 szt. ', '', ''),
+    ('Adempas', 'Rpz', '1,5 mg', '42 szt. ', '', ''),
+    ('Adempas', 'Rpz', '2 mg', '42 szt. ', '', ''),
+    ('Adempas', 'Rpz', '2,5 mg', '42 szt. ', '', ''),
+    ('Adenuric', 'Rp', '80 mg', '28 szt. ', '', ''),
+    ('Adenuric', 'Rp', '120 mg', '28 szt. ', '', ''),
+    ('Adepend', 'Rp', '50 mg', '28 szt. ', '', ''),
+    ('Adipine', 'Rp', '5 mg', '30 szt. ', '', ''),
+    ('Adipine', 'Rp', '10 mg', '30 szt. ', '', ''),
+    ('Adproctin', 'OTC', '500 mg', '30 szt. ', '', ''),
+    ('Adrenalina Aguettant', 'Rp', '0,1 mg/ml', '10 amp.-strzyk. ', '', ''),
+    ('Adrenalina WZF 0,1%', 'Rp', '1 mg/ml', '10 amp. 1 ml ', '', ''),
+    ('Adrenalina WZF', 'Rp', '0,3 mg/0,3 ml', '1 amp.-strzyk. 1 ml ', '', ''),
+    ('Advagraf', 'Rpz', '0,5 mg', '30 szt. ', '', ''),
+    ('Advagraf', 'Rpz', '1 mg', '30 szt. ', '', ''),
+    ('Advagraf', 'Rpz', '3 mg', '30 szt. ', '', ''),
+    ('Advagraf', 'Rpz', '5 mg', '30 szt. ', '', ''),
+    ('Advantan', 'Rp', '1 mg/g', '1 tuba 15 g ', '', ''),
+    ('Advantan', 'Rp', '1 mg/g', '1 tuba 15 g ', '', ''),
+    ('Advantan', 'Rp', '1 mg/g', '1 tuba 25 g ', '', ''),
+    ('Advantan', 'Rp', '1 mg/g', '1 tuba 30 g ', '', ''),
+    ('Advantan', 'Rp', '1 mg/g', '1 tuba 15 g ', '', ''),
+    ('Advantan', 'Rp', '1 mg/g', '1 tuba 25 g ', '', ''),
+    ('Advantan', 'Rp', '1 mg/g', '1 tuba 30 g ', '', ''),
+    ('Aerius', 'Rp', '0,5 mg/ml', '1 but. 60 ml ', '', ''),
+    ('Aerius', 'Rp', '0,5 mg/ml', '1 but. 150 ml ', '', ''),
+    ('Aerius', 'Rp', '5 mg', '10 szt. ', '', ''),
+    ('Aerius', 'Rp', '5 mg', '30 szt. ', '', ''),
+    ('Aescin', 'OTC', '20 mg', '30 szt. ', '', ''),
+    ('Aescin', 'OTC', '20 mg', '90 szt. ', '', ''),
+    ('Aescin', 'OTC', '20 mg + 50 mg + 50 j.m./g', '1 tuba 40 g ', '', ''),
+    ('Aesculan', 'OTC', '62,5 mg + 5 mg/g', '1 tuba 30 g ', '', ''),
+    ('Aethoxysklerol 0,5%', 'Rp', '5 mg/ml', '5 amp. 2 ml ', '', ''),
+    ('Aethoxysklerol 1%', 'Rp', '10 mg/ml', '5 amp. 2 ml ', '', ''),
+    ('Aethoxysklerol 2%', 'Rp', '20 mg/ml', '5 amp. 2 ml ', '', ''),
+    ('Aethoxysklerol 3%', 'Rp', '30 mg/ml', '5 amp. 2 ml ', '', ''),
+    ('Afastural', 'Rp', '3 g', '1 saszetka 8 g ', '', ''),
+    ('Afinitor', 'Rpz', '5 mg', '30 szt. ', '', ''),
+    ('Afinitor', 'Rpz', '10 mg', '30 szt. ', '', ''),
+    ('Aflavic Comfort', 'OTC', '600 mg', '30 szt. ', '', ''),
+    ('Aflavic Max', 'OTC', '1000 mg', '30 szt. ', '', ''),
+    ('Aflavic Max', 'OTC', '1000 mg', '60 szt. ', '', ''),
+    ('Aflegan', 'Rp', '7,5 mg/ml', '10 amp. 2 ml ', '', ''),
+    ('Afloderm', 'Rp', '0,5 mg/g', '1 tuba 20 g ', '', ''),
+    ('Afloderm', 'Rp', '0,5 mg/g', '1 tuba 40 g ', '', ''),
+    ('Afloderm', 'Rp', '0,5 mg/g', '1 tuba 20 g ', '', ''),
+    ('Afloderm', 'Rp', '0,5 mg/g', '1 tuba 40 g ', '', ''),
+    ('Afobam', 'Rp', '0,25 mg', '30 szt. ', '', ''),
+    ('Afobam', 'Rp', '0,5 mg', '30 szt. ', '', ''),
+    ('Afobam', 'Rp', '1 mg', '30 szt. ', '', ''),
+    ('Afrin', 'OTC', '0,5 mg/ml', '1 but. 20 ml ', '', ''),
+    ('Afrin ND', 'OTC', '0,5 mg/ml', '1 but. 15 ml ', '', ''),
+    ('Agapurin', 'Rp', '100 mg', '60 szt. ', '', ''),
+    ('Agapurin SR 400', 'Rp', '400 mg', '20 szt. ', '', ''),
+    ('Agapurin SR 600', 'Rp', '600 mg', '20 szt. ', '', ''),
+    ('Agastin 20 mg', 'Rp', '20 mg', '28 szt. ', '', ''),
+    ('Agen 5', 'Rp', '5 mg', '30 szt. ', '', ''),
+    ('Agen 5', 'Rp', '5 mg', '60 szt. ', '', ''),
+    ('Agen 10', 'Rp', '10 mg', '30 szt. ', '', ''),
+    ('Agen 10', 'Rp', '10 mg', '60 szt. ', '', ''),
+    ('Aglan', 'Rp', '15 mg/1,5 ml', '5 amp. 1,5 ml ', '', ''),
+    ('Aglan 15', 'Rp', '15 mg', '10 szt. ', '', ''),
+    ('Aglan 15', 'Rp', '15 mg', '20 szt. ', '', ''),
+    ('Aglan 15', 'Rp', '15 mg', '30 szt. ', '', ''),
+    ('Agolek', 'Rp', '25 mg', '28 szt. ', '', ''),
+    ('Agomelatine Adamed', 'Rp', '25 mg', '28 szt. ', '', ''),
+    ('Agomelatine G.L. Pharma', 'Rp', '25 mg', '28 szt. ', '', ''),
+    ('Agomelatine NeuroPharma', 'Rp', '25 mg', '28 szt. ', '', ''),
+    ('Agomelatine +pharma', 'Rp', '25 mg', '30 szt. ', '', ''),
+    ('Agomelatine +pharma', 'Rp', '25 mg', '90 szt. ', '', ''),
+    ('Agomelatyna Egis', 'Rp', '25 mg', '28 szt. ', '', ''),
+    ('Agregex', 'Rp', '75 mg', '28 szt. ', '', ''),
+    ('Agrypin', 'OTC', '325 mg + 30 mg + 10 mg', '10 szt. ', '', ''),
+    ('Aidee', 'Rp', '0,03 mg + 2 mg', '21 szt. ', '', ''),
+    ('Aimovig', 'Rpz', '70 mg/ml', '1 wstrzykiwacz 1 ml ', '', ''),
+    ('Aimovig', 'Rpz', '140 mg/ml', '1 wstrzykiwacz 1 ml ', '', ''),
+    ('Airbufo Forspiro', 'Rp', '160 µg + 4,5 µg/dawkę inh.', '60 dawek ', '', ''),
+    ('Airbufo Forspiro', 'Rp', '160 µg + 4,5 µg/dawkę inh.', '120 dawek ', '', ''),
+    ('AirFluSal Forspiro', 'Rp', '250 µg + 50 µg/dawkę inh.', '60 dawek ', '', ''),
+    ('AirFluSal Forspiro', 'Rp', '500 µg + 50 µg/dawkę inh.', '60 dawek ', '', ''),
+    ('Ajovy', 'Rpz', '225 mg', '1 amp.-strzyk. 1,5 ml ', '', ''),
+    ('Akineton', 'Rp', '5 mg/ml', '5 amp. 1 ml ', '', ''),
+    ('Akineton', 'Rp', '2 mg', '50 szt. ', '', ''),
+    ('Akineton SR 4 mg', 'Rp', '4 mg', '30 szt. ', '', ''),
+    ('Akistan Duo', 'Rp', '0,05 mg + 5 mg/ml', '1 but. 2,5 ml ', '', ''),
+    ('Akistan Duo', 'Rp', '0,05 mg + 5 mg/ml', '3 but. 2,5 ml ', '', ''),
+    ('Akistan', 'Rp', '0,05 mg/ml', '1 but. 2,5 ml ', '', ''),
+    ('Akistan', 'Rp', '0,05 mg/ml', '3 but. 2,5 ml ', '', ''),
+    ('Aklief', 'Rp', '50 µg/g', '1 poj. 30 g ', '', ''),
+    ('Aknemycin', 'Rp', '20 mg/g', '1 tuba 25 g ', '', ''),
+    ('Aknemycin', 'Rp', '20 mg/g', '1 but. 25 ml ', '', ''),
+    ('Aknemycin Plus', 'Rp', '40 mg + 0,25 mg/g', '1 but. 25 ml ', '', ''),
+    ('Aknenormin 10 mg', 'Rp', '10 mg', '30 szt. ', '', ''),
+    ('Aknenormin 10 mg', 'Rp', '10 mg', '60 szt. ', '', ''),
+    ('Aknenormin 10 mg', 'Rp', '10 mg', '90 szt. ', '', ''),
+    ('Aknenormin 20 mg', 'Rp', '20 mg', '30 szt. ', '', ''),
+    ('Aknenormin 20 mg', 'Rp', '20 mg', '60 szt. ', '', ''),
+    ('Aknenormin 20 mg', 'Rp', '20 mg', '90 szt. ', '', ''),
+    ('Aknenormin 20 mg', 'Rp', '20 mg', '100 szt. ', '', ''),
+    ('Akneroxid 5', 'OTC', '50 mg/g', '1 tuba 50 g ', '', ''),
+    ('Akneroxid 10', 'OTC', '100 mg/g', '1 tuba 50 g ', '', ''),
+    ('Aksoderm forte', 'OTC', '1000 j.m./g', '1 tuba 10 g ', '', ''),
+    ('Aksoderm', 'OTC', '400 j.m./g', '1 tuba 30 g ', '', ''),
+    ('Akynzeo', 'Rp', '300 mg + 0,5 mg', '1 szt. ', '', ''),
+    ('Alacare', 'Rp', '8 mg', '4 szt. ', '', ''),
+    ('Alantan', 'OTC', '20 mg/g', '1 tuba 30 g ', '', ''),
+    ('Alantan Plus', 'OTC', '20 mg + 50 mg/g', '1 tuba 35 g ', '', ''),
+    ('Alantan Plus', 'OTC', '20 mg + 50 mg/g', '1 tuba 30 g ', '', ''),
+    ('Alantavit', 'OTC', '10 mg + 500 j.m. + 1000 j.m./g', '1 tuba 30 g ', '', ''),
+    ('Alax', 'OTC', '35 mg + 42 mg', '20 szt. ', '', ''),
+    ('Albothyl', 'OTC', '90 mg', '6 szt. ', '', ''),
+    ('Alcaine', 'Rp', '5 mg/ml', '1 but. 15 ml ', '', ''),
+    ('Alcep', 'OTC', '949 mg/5 ml', '1 but. 125 g ', '', ''),
+    ('Aldactone', 'Rp', '20 mg/ml', '10 amp. 10 ml ', '', ''),
+    ('Aldan', 'Rp', '5 mg', '30 szt. ', '', ''),
+    ('Aldan', 'Rp', '10 mg', '30 szt. ', '', ''),
+    ('Aldara 5% Krem', 'Rp', '50 mg/g', '12 saszetek ', '', ''),
+    ('Aldurazyme', 'Rpz', '100 j./ml', '1 fiolka 5 ml ', '', ''),
+    ('Alecensa', 'Rpz', '150 mg', '224 szt. ', '', ''),
+    ('Alendran 70', 'Rp', '70 mg', '4 szt. ', '', ''),
+    ('Alendrogen', 'Rp', '70 mg', '4 szt. ', '', ''),
+    ('Alendronat Bluefish', 'Rp', '70 mg', '4 szt. ', '', ''),
+    ('Alendronic Acid Genoptim', 'Rp', '70 mg', '4 szt. ', '', ''),
+    ('Alergimed', 'Rp', '5 mg', '30 szt. ', '', ''),
+    ('AlergoTeva', 'OTC', '5 mg', '10 szt. ', '', ''),
+    ('Aleric Deslo Active', 'OTC', '0,5 mg/ml', '1 but. 60 ml ', '', ''),
+    ('Aleric Deslo Active', 'OTC', '2,5 mg', '10 szt. ', '', ''),
+    ('Aleric Deslo Active', 'OTC', '5 mg', '10 szt. ', '', ''),
+    ('Aleric Spray', 'OTC', '50 µg/dawkę', '60 dawek ', '', ''),
+    ('Alermed', 'Rp', '10 mg', '20 szt. ', '', ''),
+    ('Alermed', 'Rp', '10 mg', '30 szt. ', '', ''),
+    ('Alerprof', 'Rp', '10 mg', '10 szt. ', '', ''),
+    ('Alerprof', 'Rp', '10 mg', '30 szt. ', '', ''),
+    ('Alerprof', 'Rp', '10 mg', '100 szt. ', '', ''),
+    ('Alerzina', 'OTC', '10 mg', '10 szt. ', '', ''),
+    ('Aleve', 'OTC', '220 mg', '12 szt. ', '', ''),
+    ('Aleve', 'OTC', '220 mg', '24 szt. ', '', ''),
+    ('Alfabax', 'Rp', '10 mg', '30 szt. ', '', ''),
+    ('Alfadiol', 'Rp', '0,25 µg', '100 szt. ', '', ''),
+    ('Alfadiol', 'Rp', '1 µg', '100 szt. ', '', ''),
+    ('Alfurion', 'Rp', '10 mg', '30 szt. ', '', ''),
+    ('Alfuzostad 10 mg', 'Rp', '10 mg', '30 szt. ', '', ''),
+    ('Alka-Seltzer', 'OTC', '324 mg', '10 szt. ', '', ''),
+    ('Alkeran', 'Rp', '2 mg', '25 szt. ', '', ''),
+    ('Allegra', 'OTC', '120 mg', '10 szt. ', '', ''),
+    ('Allegra Telfast 180', 'Rp', '180 mg', '20 szt. ', '', ''),
+    ('AlleMax', 'OTC', '10 mg', '10 szt. ', '', ''),
+    ('Alleoptical', 'OTC', '20 mg/ml', '10 poj. 0,3 ml ', '', ''),
+    ('Allergo-Comod', 'OTC', '20 mg/ml', '1 but. 10 ml ', '', ''),
+    ('Allergocrom', 'OTC', '20 mg/ml', '1 but. 10 ml ', '', ''),
+    ('Allergodil', 'OTC', '1 mg/ml', '1 but. 10 ml ', '', ''),
+    ('Allergodil', 'OTC', '0,5 mg/ml', '1 but. 6 ml ', '', ''),
+    ('Allertec Fexo', 'OTC', '120 mg', '10 szt. ', '', ''),
+    ('Allertec', 'Rp', '10 mg/ml', '1 but. 10 ml ', '', ''),
+    ('Allertec', 'Rp', '10 mg/ml', '1 but. 20 ml ', '', ''),
+    ('Allertec', 'Rp', '1 mg/ml', '1 but. 100 ml ', '', ''),
+    ('Allertec', 'Rp', '10 mg', '20 szt. ', '', ''),
+    ('Allertec', 'Rp', '10 mg', '30 szt. ', '', ''),
+    ('Allertec WZF', 'OTC', '10 mg', '7 szt. ', '', ''),
+    ('Allertec WZF', 'OTC', '10 mg', '10 szt. ', '', ''),
+    ('Alliofil', 'OTC', '200 mg + 53,5 mg', '30 szt. ', '', ''),
+    ('Alliomint', 'OTC', '300 mg', '30 szt. ', '', ''),
+    ('Allupol', 'Rp', '100 mg', '50 szt. ', '', ''),
+    ('Allupol', 'Rp', '300 mg', '30 szt. ', '', ''),
+    ('Almiden', 'Rp', '5 mg', '30 szt. ', '', ''),
+    ('Almiden', 'Rp', '10 mg', '30 szt. ', '', ''),
+    ('Almozen', 'Rp', '12,5 mg', '3 szt. ', '', ''),
+    ('Almozen', 'Rp', '12,5 mg', '6 szt. ', '', ''),
+    ('Alneta', 'Rp', '5 mg', '30 szt. ', '', ''),
+    ('Alneta', 'Rp', '5 mg', '60 szt. ', '', ''),
+    ('Alneta', 'Rp', '10 mg', '30 szt. ', '', ''),
+    ('Alneta', 'Rp', '10 mg', '60 szt. ', '', ''),
+    ('Alocutan Forte', 'OTC', '50 mg/ml', '1 but. 60 ml ', '', ''),
+    ('Alocutan', 'OTC', '20 mg/ml', '1 but. 60 ml ', '', ''),
+    ('Alofisel', 'Rpz', '5 mln komórek/ml', '4 fiolki ', '', ''),
+    ('Alopexy', 'OTC', '50 mg/ml', '1 but. 60 ml ', '', ''),
+    ('Alopexy', 'OTC', '50 mg/ml', '3 but. 60 ml ', '', ''),
+    ('Alortia', 'Rp', '50 mg + 5 mg', '30 szt. ', '', ''),
+    ('Alortia', 'Rp', '50 mg + 5 mg', '60 szt. ', '', ''),
+    ('Alortia', 'Rp', '50 mg + 5 mg', '90 szt. ', '', ''),
+    ('Alortia', 'Rp', '50 mg + 10 mg', '30 szt. ', '', ''),
+    ('Alortia', 'Rp', '50 mg + 10 mg', '60 szt. ', '', ''),
+    ('Alortia', 'Rp', '50 mg + 10 mg', '90 szt. ', '', ''),
+    ('Alortia', 'Rp', '100 mg + 5 mg', '30 szt. ', '', ''),
+    ('Alortia', 'Rp', '100 mg + 10 mg', '30 szt. ', '', ''),
+    ('Aloxi', 'Rp', '0,5 mg', '1 szt. ', '', ''),
+    ('Aloxi', 'Rp', '0,25 mg/5 ml', '1 fiolka 5 ml ', '', ''),
+    ('Alphagan', 'Rp', '2 mg/ml', '1 but. 5 ml ', '', ''),
+    ('Alpicort E', 'Rp', '2 mg + 0,05 mg + 4 mg/ml', '1 but. 100 ml ', '', ''),
+    ('Alpicort', 'Rp', '2 mg + 4 mg/ml', '1 but. 100 ml ', '', ''),
+    ('Alpragen', 'Rp', '0,25 mg', '30 szt. ', '', ''),
+    ('Alpragen', 'Rp', '0,5 mg', '30 szt. ', '', ''),
+    ('Alpragen', 'Rp', '1 mg', '30 szt. ', '', ''),
+    ('Alprazolam Aurovitas', 'Rp', '0,25 mg', '30 szt. ', '', ''),
+    ('Alprazolam Aurovitas', 'Rp', '0,5 mg', '30 szt. ', '', ''),
+    ('Alprazolam Aurovitas', 'Rp', '1 mg', '30 szt. ', '', ''),
+    ('Alprox', 'Rp', '0,25 mg', '30 szt. ', '', ''),
+    ('Alprox', 'Rp', '0,5 mg', '30 szt. ', '', ''),
+    ('Alprox', 'Rp', '1 mg', '30 szt. ', '', ''),
+    ('Altabactin', 'OTC', '250 j.m. + 5 mg/g', '1 tuba 5 g ', '', ''),
+    ('Altabactin', 'OTC', '250 j.m. + 5 mg/g', '1 tuba 20 g ', '', ''),
+    ('Altacet', 'OTC', '1000 mg', '6 szt. ', '', ''),
+    ('Altacet', 'OTC', '10 mg/g', '1 tuba 75 g ', '', ''),
+    ('Altażel Oceanic', 'OTC', '10 mg/g', '1 tuba 75 g ', '', ''),
+    ('Altaziaja', 'OTC', '10 mg/g', '1 tuba 75 g ', '', ''),
+    ('Alti-sir', 'OTC', '2,17 g/5 ml', '1 but. 125 g ', '', ''),
+    ('Alugastrin', 'OTC', '340 mg', '20 szt. ', '', ''),
+    ('Alugastrin', 'OTC', '340 mg', '40 szt. ', '', ''),
+    ('Alugastrin', 'OTC', '340 mg/5 ml', '1 but. 250 ml ', '', ''),
+    ('Alugen 10 mg', 'Rp', '10 mg', '30 szt. ', '', ''),
+    ('Alunbrig', 'Rpz', '30 mg', '28 szt. ', '', ''),
+    ('Alunbrig', 'Rpz', '90 mg', '7 szt. ', '', ''),
+    ('Alunbrig', 'Rpz', '90 mg', '28 szt. ', '', ''),
+    ('Alunbrig', 'Rpz', '180 mg', '28 szt. ', '', ''),
+    ('Alventa', 'Rp', '37,5 mg', '28 szt. ', '', ''),
+    ('Alventa', 'Rp', '75 mg', '28 szt. ', '', ''),
+    ('Alventa', 'Rp', '75 mg', '60 szt. ', '', ''),
+    ('Alventa', 'Rp', '150 mg', '28 szt. ', '', ''),
+    ('Alventa', 'Rp', '150 mg', '60 szt. ', '', ''),
+    ('Alvesco 80', 'Rp', '80 µg/dawkę inh.', '60 dawek ', '', ''),
+    ('Alvesco 80', 'Rp', '80 µg/dawkę inh.', '120 dawek ', '', ''),
+    ('Alvesco 160', 'Rp', '160 µg/dawkę inh.', '60 dawek ', '', ''),
+    ('Alvesco 160', 'Rp', '160 µg/dawkę inh.', '120 dawek ', '', ''),
+    ('Amantix', 'Rp', '200 mg/500 ml', '10 but. 500 ml ', '', ''),
+    ('Amantix', 'Rp', '100 mg', '30 szt. ', '', ''),
+    ('Amantix', 'Rp', '100 mg', '100 szt. ', '', ''),
+    ('Amaryl 1', 'Rp', '1 mg', '30 szt. ', '', ''),
+    ('Amaryl 2', 'Rp', '2 mg', '30 szt. ', '', ''),
+    ('Amaryl 3', 'Rp', '3 mg', '30 szt. ', '', ''),
+    ('Amaryl 4', 'Rp', '4 mg', '30 szt. ', '', ''),
+    ('AmBisome liposomal', 'Rp', '50 mg', '1 fiolka + filtr membranowy ', '', ''),
+    ('AmbroHexal', 'Rp', '7,5 mg/ml', '5 amp. 2 ml ', '', ''),
+    ('Ambroksol Hasco', 'OTC', '30 mg/5 ml', '1 but. 150 ml ', '', ''),
+    ('Ambroksol Hasco Junior', 'OTC', '15 mg/5 ml', '1 but. 150 ml ', '', ''),
+    ('Ambroksol Hasco Max', 'OTC', '60 mg', '15 szt. ', '', ''),
+    ('Ambroksol Takeda', 'OTC', '30 mg/5 ml', '1 but. 150 ml ', '', ''),
+    ('Ambrolytin', 'OTC', '15 mg/5 ml', '1 but. 100 ml ', '', ''),
+    ('Ambrosol Teva', 'OTC', '15 mg/5 ml', '1 but. 120 ml ', '', ''),
+    ('Ambrosol Teva', 'OTC', '15 mg/5 ml', '1 but. 200 ml ', '', ''),
+    ('Ambrosol Teva', 'OTC', '30 mg/5 ml', '1 but. 120 ml ', '', ''),
+    ('Ambrosol Teva', 'OTC', '30 mg/5 ml', '1 but. 200 ml ', '', ''),
+    ('Ambroxol Dr. Max', 'OTC', '15 mg/5 ml', '1 but. 100 ml ', '', ''),
+    ('Ambroxol Dr. Max', 'OTC', '30 mg/5 ml', '1 but. 100 ml ', '', ''),
+    ('Amertil Bio', 'OTC', '10 mg', '7 szt. ', '', ''),
+    ('Amertil Bio', 'OTC', '10 mg', '10 szt. ', '', ''),
+    ('Amertil', 'Rp', '10 mg', '20 szt. ', '', ''),
+    ('Amertil', 'Rp', '10 mg', '30 szt. ', '', ''),
+    ('Amertil', 'Rp', '10 mg', '60 szt. ', '', ''),
+    ('Amgevita', 'Rpz', '20 mg/0,4 ml', '1 amp.-strzyk. 0,4 ml ', '', ''),
+    ('Amgevita', 'Rpz', '40 mg/0,8 ml', '2 amp.-strzyk. 0,8 ml ', '', ''),
+    ('Amgevita', 'Rpz', '40 mg/0,8 ml', '6 amp.-strzyk. 0,8 ml ', '', ''),
+    ('Amgevita', 'Rpz', '40 mg/0,8 ml', '2 wstrzykiwacze 0,8 ml ', '', ''),
+    ('Amgevita', 'Rpz', '40 mg/0,8 ml', '6 wstrzykiwaczy 0,8 ml ', '', ''),
+    ('Amikacin B. Braun', 'Rp', '250 mg/100 ml', '10 but. 100 ml ', '', ''),
+    ('Amikacin B. Braun', 'Rp', '500 mg/100 ml', '10 but. 100 ml ', '', ''),
+    ('Amikacin B. Braun', 'Rp', '1000 mg/100 ml', '10 but. 100 ml ', '', ''),
+    ('Amipryd', 'Rp', '100 mg', '30 szt. ', '', ''),
+    ('Amipryd', 'Rp', '200 mg', '30 szt. ', '', ''),
+    ('Amipryd', 'Rp', '400 mg', '30 szt. ', '', ''),
+    ('Amisan', 'Rp', '50 mg', '60 szt. ', '', ''),
+    ('Amisan', 'Rp', '200 mg', '30 szt. ', '', ''),
+    ('Amisan', 'Rp', '200 mg', '60 szt. ', '', ''),
+    ('Amisan', 'Rp', '400 mg', '30 szt. ', '', ''),
+    ('Amisan', 'Rp', '400 mg', '60 szt. ', '', ''),
+    ('Amitriptylinum VP', 'Rp', '10 mg', '60 szt. ', '', ''),
+    ('Amitriptylinum VP', 'Rp', '25 mg', '60 szt. ', '', ''),
+    ('Amizepin', 'Rp', '200 mg', '50 szt. ', '', ''),
+    ('Amlator', 'Rp', '10 mg + 5 mg', '30 szt. ', '', ''),
+    ('Amlator', 'Rp', '10 mg + 10 mg', '30 szt. ', '', ''),
+    ('Amlator', 'Rp', '20 mg + 5 mg', '30 szt. ', '', ''),
+    ('Amlator', 'Rp', '20 mg + 10 mg', '30 szt. ', '', ''),
+    ('Amlessa', 'Rp', '4 mg + 5 mg', '30 szt. ', '', ''),
+    ('Amlessa', 'Rp', '4 mg + 5 mg', '90 szt. ', '', ''),
+    ('Amlessa', 'Rp', '4 mg + 10 mg', '30 szt. ', '', ''),
+    ('Amlessa', 'Rp', '4 mg + 10 mg', '90 szt. ', '', ''),
+    ('Amlessa', 'Rp', '8 mg + 5 mg', '30 szt. ', '', ''),
+    ('Amlessa', 'Rp', '8 mg + 5 mg', '90 szt. ', '', ''),
+    ('Amlessa', 'Rp', '8 mg + 10 mg', '30 szt. ', '', ''),
+    ('Amlessa', 'Rp', '8 mg + 10 mg', '90 szt. ', '', ''),
+    ('Amlessini', 'Rp', '5,7 mg + 5 mg', '30 szt. ', '', ''),
+    ('Amlodipine Apotex', 'Rp', '5 mg', '30 szt. ', '', ''),
+    ('Amlodipine Apotex', 'Rp', '10 mg', '30 szt. ', '', ''),
+    ('Amlodipine Aurobindo', 'Rp', '5 mg', '30 szt. ', '', ''),
+    ('Amlodipine Aurobindo', 'Rp', '10 mg', '30 szt. ', '', ''),
+    ('Amlodipine Aurovitas', 'Rp', '5 mg', '30 szt. ', '', ''),
+    ('Amlodipine Aurovitas', 'Rp', '10 mg', '30 szt. ', '', ''),
+    ('Amlodipine Bluefish', 'Rp', '5 mg', '30 szt. ', '', ''),
+    ('Amlodipine Bluefish', 'Rp', '10 mg', '30 szt. ', '', ''),
+    ('Amlodipine Orion', 'Rp', '5 mg', '30 szt. ', '', ''),
+    ('Amlodipine Orion', 'Rp', '10 mg', '30 szt. ', '', ''),
+    ('Amlodipine Vitabalans', 'Rp', '5 mg', '30 szt. ', '', ''),
+    ('Amlodipine Vitabalans', 'Rp', '10 mg', '30 szt. ', '', ''),
+    ('Amlomyl', 'Rp', '5 mg', '30 szt. ', '', ''),
+    ('Amlomyl', 'Rp', '10 mg', '30 szt. ', '', ''),
+    ('Amlonor', 'Rp', '5 mg', '30 szt. ', '', ''),
+    ('Amlonor', 'Rp', '10 mg', '30 szt. ', '', ''),
+    ('Amlopin 5 mg', 'Rp', '5 mg', '30 szt. ', '', ''),
+    ('Amlopin 10 mg', 'Rp', '10 mg', '30 szt. ', '', ''),
+    ('Amlozek', 'Rp', '5 mg', '30 szt. ', '', ''),
+    ('Amlozek', 'Rp', '10 mg', '30 szt. ', '', ''),
+    ('Ammonaps', 'Rpz', '940 mg/g', '266 g ', '', ''),
+    ('Ammonaps', 'Rpz', '500 mg', '250 szt. ', '', ''),
+    ('Amoksiklav', 'Rp', '500 mg + 125 mg', '14 szt. ', '', ''),
+    ('Amoksiklav', 'Rp', '500 mg + 125 mg', '21 szt. ', '', ''),
+    ('Amoksiklav', 'Rp', '875 mg + 125 mg', '14 szt. ', '', ''),
+    ('Amoksiklav', 'Rp', '875 mg + 125 mg', '20 szt. ', '', ''),
+    ('Amoksiklav', 'Rp', '400 mg + 57 mg/5 ml', '1 but. 35 ml ', '', ''),
+    ('Amoksiklav', 'Rp', '400 mg + 57 mg/5 ml', '1 but. 70 ml ', '', ''),
+    ('Amoksiklav', 'Rp', '400 mg + 57 mg/5 ml', '1 but. 140 ml ', '', ''),
+    ('Amoksiklav', 'Rp', '875 mg + 125 mg', '14 saszetek ', '', ''),
+    ('Amoksiklav', 'Rp', '500 mg + 100 mg', '5 fiolek ', '', ''),
+    ('Amoksiklav', 'Rp', '1000 mg + 200 mg', '5 fiolek ', '', ''),
+    ('Amoksiklav Quicktab 625 mg', 'Rp', '500 mg + 125 mg', '14 szt. ', '', ''),
+    ('Amoksiklav Quicktab 1000 mg', 'Rp', '875 mg + 125 mg', '14 szt. ', '', ''),
+    ('Amorolak', 'OTC', '50 mg/ml', '1 but. 3 ml ', '', ''),
+    ('Amotaks Dis', 'Rp', '500 mg', ' Amotaks Dis (Rp)', '', ''),
+    ('Amotaks Dis', 'Rp', '750 mg', ' Amotaks Dis (Rp)', '', ''),
+    ('Amotaks', 'Rp', '500 mg', ' Amotaks (Rp)', '', ''),
+    ('Amotaks', 'Rp', '1000 mg', ' Amotaks (Rp)', '', ''),
+    ('Amoxicillin Aurovitas', 'Rp', '750 mg', ' Amoxicillin Aurovitas (Rp)', '', ''),
+    ('Amoxicillin + Clavulanic Acid Aurovitas', 'Rp', '875 mg + 125 mg', '14 szt. ', '', ''),
+    ('Ampicillin TZF', 'Rp', '500 mg', '1 fiolka ', '', ''),
+    ('Ampicillin TZF', 'Rp', '1000 mg', '1 fiolka ', '', ''),
+    ('Ampicillin TZF', 'Rp', '2000 mg', '1 fiolka ', '', ''),
+    ('Ampres', 'Rp', '10 mg/ml', '10 amp. 5 ml ', '', ''),
+    ('Ampril HD', 'Rp', '5 mg + 25 mg', '30 szt. ', '', ''),
+    ('Ampril HL', 'Rp', '2,5 mg + 12,5 mg', '30 szt. ', '', ''),
+    ('Ampril 2,5 mg', 'Rp', '2,5 mg', '30 szt. ', '', ''),
+    ('Ampril 5 mg', 'Rp', '5 mg', '30 szt. ', '', ''),
+    ('Ampril 5 mg', 'Rp', '5 mg', '60 szt. ', '', ''),
+    ('Ampril 10 mg', 'Rp', '10 mg', '30 szt. ', '', ''),
+    ('Ampril 10 mg', 'Rp', '10 mg', '60 szt. ', '', ''),
+    ('Amylan', 'Rp', '500 mg + 125 mg', '14 szt. ', '', ''),
+    ('Amylan', 'Rp', '875 mg + 125 mg', '14 szt. ', '', ''),
+    ('Anacard medica protect', 'OTC', '75 mg', '60 szt. ', '', ''),
+    ('Anafranil', 'Rp', '10 mg', '30 szt. ', '', ''),
+    ('Anafranil', 'Rp', '25 mg', '30 szt. ', '', ''),
+    ('Anafranil SR 75', 'Rp', '75 mg', '20 szt. ', '', ''),
+    ('Anagrelid Aurovitas', 'Rpz', '0,5 mg', '100 szt. ', '', ''),
+    ('Anagrelide Accord', 'Rpz', '0,5 mg', '100 szt. ', '', ''),
+    ('Anagrelide Accord', 'Rpz', '1 mg', '100 szt. ', '', ''),
+    ('Anagrelide Bioton', 'Rpz', '0,5 mg', '100 szt. ', '', ''),
+    ('Anagrelide Glenmark', 'Rpz', '0,5 mg', '100 szt. ', '', ''),
+    ('Anagrelide Mylan', 'Rpz', '0,5 mg', '100 szt. ', '', ''),
+    ('Anagrelide Ranbaxy', 'Rpz', '0,5 mg', '100 szt. ', '', ''),
+    ('Anagrelide Sandoz', 'Rpz', '0,5 mg', '100 szt. ', '', ''),
+    ('Anagrelide Stada', 'Rpz', '0,5 mg', '100 szt. ', '', ''),
+    ('Anagrelide Vipharm', 'Rpz', '0,5 mg', '100 szt. ', '', ''),
+    ('Anagrelide Vipharm', 'Rpz', '1 mg', '100 szt. ', '', ''),
+    ('Anagrelide Zentiva', 'Rpz', '0,5 mg', '100 szt. ', '', ''),
+    ('Anapran', 'Rp', '275 mg', '20 szt. ', '', ''),
+    ('Anapran', 'Rp', '275 mg', '60 szt. ', '', ''),
+    ('Anapran', 'Rp', '550 mg', '20 szt. ', '', ''),
+    ('Anapran', 'Rp', '550 mg', '60 szt. ', '', ''),
+    ('Anapran EC', 'Rp', '250 mg', '20 szt. ', '', ''),
+    ('Anapran EC', 'Rp', '250 mg', '60 szt. ', '', ''),
+    ('Anapran EC', 'Rp', '500 mg', '20 szt. ', '', ''),
+    ('Anapran EC', 'Rp', '500 mg', '60 szt. ', '', ''),
+    ('Anastrozol Bluefish', 'Rp', '1 mg', '28 szt. ', '', ''),
+    ('Anastrozol Teva', 'Rp', '1 mg', '28 szt. ', '', ''),
+    ('Andepin', 'Rp', '20 mg', '30 szt. ', '', ''),
+    ('Androcur', 'Rp', '50 mg', '20 szt. ', '', ''),
+    ('Androcur', 'Rp', '50 mg', '50 szt. ', '', ''),
+    ('Androstatin', 'Rp', '1 mg', '28 szt. ', '', ''),
+    ('Androster', 'Rp', '5 mg', '30 szt. ', '', ''),
+    ('Androster', 'Rp', '5 mg', '90 szt. ', '', ''),
+    ('Androtop', 'Rp', '50 mg/5 g', '30 saszetek 5 g ', '', ''),
+    ('Androtop', 'Rp', '16,2 mg/g', '1 poj. 88 g ', '', ''),
+    ('Anesderm', 'Rp', '25 mg + 25 mg/g', ' Anesderm (Rp)', '', ''),
+    ('Anesteloc', 'Rp', '20 mg', '28 szt. ', '', ''),
+    ('Anesteloc', 'Rp', '20 mg', '56 szt. ', '', ''),
+    ('Anesteloc', 'Rp', '40 mg', '28 szt. ', '', ''),
+    ('Anesteloc', 'Rp', '40 mg', '56 szt. ', '', ''),
+    ('Anesteloc Max', 'OTC', '20 mg', '7 szt. ', '', ''),
+    ('Anesteloc Max', 'OTC', '20 mg', '14 szt. ', '', ''),
+    ('Angeliq', 'Rp', '1 mg + 2 mg', '28 szt. ', '', ''),
+    ('Angiletta', 'Rp', '0,03 mg + 2 mg', '21 szt. ', '', ''),
+    ('Angiletta', 'Rp', '0,03 mg + 2 mg', '3 x 21 szt. ', '', ''),
+    ('Anidulafungina Accord', 'Rpz', '100 mg', '1 fiolka ', '', ''),
+    ('Anidulafungin Sandoz', 'Rpz', '100 mg', '1 fiolka ', '', ''),
+    ('Anoro Ellipta', 'Rp', '55 µg + 22 µg', '30 dawek ', '', ''),
+    ('Anticol', 'Rp', '500 mg', '30 szt. ', '', ''),
+    ('Antidol 15', 'OTC', '500 mg + 15 mg', '10 szt. ', '', ''),
+    ('Antidral', 'OTC', '100 mg/g', '1 but. 50 ml ', '', ''),
+    ('Antinervinum', 'OTC', '1032 mg + 903 mg + 645 mg/5 ml', '1 but. 200 g ', '', ''),
+    ('Antiprost', 'Rp', '5 mg', '30 szt. ', '', ''),
+    ('AntyGrypin dzień', 'OTC', '500 mg + 150 mg + 50 mg', '10 szt. ', '', ''),
+    ('AntyGrypin noc', 'OTC', '500 mg + 200 mg + 4 mg', '10 saszetek ', '', ''),
+    ('AntyGrypin noc', 'OTC', '500 mg + 200 mg + 4 mg', '10 szt. ', '', ''),
+    ('Antypot', 'OTC', '10 mg + 100 mg/g', '1 op. 30 g ', '', ''),
+    ('Anzorin', 'Rp', '5 mg', '28 szt. ', '', ''),
+    ('Anzorin', 'Rp', '10 mg', '28 szt. ', '', ''),
+    ('Anzorin', 'Rp', '15 mg', '28 szt. ', '', ''),
+    ('Anzorin', 'Rp', '20 mg', '28 szt. ', '', ''),
+    ('Apap ból i gorączka C Plus', 'OTC', '500 mg + 300 mg', '10 szt. ', '', ''),
+    ('Apap Caps', 'OTC', '500 mg', '10 szt. ', '', ''),
+    ('Apap dla dzieci Forte', 'OTC', '200 mg/5 ml', '1 but. 85 ml ', '', ''),
+    ('Apap Extra', 'OTC', '500 mg + 65 mg', '6 szt. ', '', ''),
+    ('Apap Extra', 'OTC', '500 mg + 65 mg', '10 szt. ', '', ''),
+    ('Apap Extra', 'OTC', '500 mg + 65 mg', '24 szt. ', '', ''),
+    ('Apap Extra', 'OTC', '500 mg + 65 mg', '50 szt. ', '', ''),
+    ('Apap', 'OTC', '500 mg', '2 szt. ', '', ''),
+    ('Apap', 'OTC', '500 mg', '6 szt. ', '', ''),
+    ('Apap', 'OTC', '500 mg', '12 szt. ', '', ''),
+    ('Apap', 'OTC', '500 mg', '24 szt. ', '', ''),
+    ('Apap', 'OTC', '500 mg', '50 szt. ', '', ''),
+    ('Apap', 'OTC', '500 mg', '100 szt. ', '', ''),
+    ('Apap intense', 'OTC', '200 mg + 500 mg', '10 szt. ', '', ''),
+    ('Apap Junior', 'OTC', '250 mg', '10 saszetek ', '', ''),
+    ('Apap Noc', 'OTC', '500 mg + 25 mg', '6 szt. ', '', ''),
+    ('Apap Noc', 'OTC', '500 mg + 25 mg', '12 szt. ', '', ''),
+    ('Apap Noc', 'OTC', '500 mg + 25 mg', '24 szt. ', '', ''),
+    ('Apap Noc', 'OTC', '500 mg + 25 mg', '50 szt. ', '', ''),
+    ('Apap Przeziębienie', 'OTC', '650 mg + 50 mg + 10 mg', '8 saszetek ', '', ''),
+    ('Apap Przeziębienie Junior', 'OTC', '300 mg + 20 mg + 5 mg', '6 saszetek ', '', ''),
+    ('Aparxon PR', 'Rp', '2 mg', '28 szt. ', '', ''),
+    ('Aparxon PR', 'Rp', '4 mg', '28 szt. ', '', ''),
+    ('Aparxon PR', 'Rp', '8 mg', '28 szt. ', '', ''),
+    ('Aperisan', 'OTC', '200 mg/g', '1 tuba 10 g ', '', ''),
+    ('Aphtin Aflofarm', 'OTC', '200 mg/g', '1 but. 10 g ', '', ''),
+    ('Aphtin', 'OTC', '200 mg/g', '1 but. 10 g ', '', ''),
+    ('Aphtin', 'OTC', '200 mg/g', '1 but. 10 g ', '', ''),
+    ('Aphtin', 'OTC', '200 mg/g', '1 op. 10 g ', '', ''),
+    ('Aphtin', 'OTC', '200 mg/g', '1 poj. 10 g ', '', ''),
+    ('Apiclar', 'Rp', '250 mg', '14 szt. ', '', ''),
+    ('Apiclar', 'Rp', '500 mg', '14 szt. ', '', ''),
+    ('Apidra', 'Rp', '100 j./ml', '1 fiolka 10 ml ', '', ''),
+    ('Apidra', 'Rp', '100 j./ml', '5 wkładów 3 ml ', '', ''),
+    ('Apidra SoloStar', 'Rp', '100 j./ml', '5 wstrzykiwaczy 3 ml ', '', ''),
+    ('Apiprax', 'Rp', '15 mg', '28 szt. ', '', ''),
+    ('Apipulmol', 'OTC', '2 g + 0,09 g/100 g', '1 but. 120 ml ', '', ''),
+    ('Apitussic', 'OTC', '52 mg/5 ml', '1 but. 120 ml ', '', ''),
+    ('Apo-Atorva', 'Rp', '10 mg', '30 szt. ', '', ''),
+    ('Apo-Atorva', 'Rp', '20 mg', '30 szt. ', '', ''),
+    ('Apo-Atorva', 'Rp', '30 mg', '30 szt. ', '', ''),
+    ('Apo-Atorva', 'Rp', '30 mg', '60 szt. ', '', ''),
+    ('Apo-Atorva', 'Rp', '40 mg', '30 szt. ', '', ''),
+    ('ApoBetina', 'Rp', '8 mg', '100 szt. ', '', ''),
+    ('ApoBetina', 'Rp', '16 mg', '60 szt. ', '', ''),
+    ('ApoBetina', 'Rp', '24 mg', '60 szt. ', '', ''),
+    ('Apo-Clodin', 'Rp', '250 mg', '30 szt. ', '', ''),
+    ('Apo-Clodin', 'Rp', '250 mg', '60 szt. ', '', '');
+
+
+insert into availability_in_warehouse values
+    (1, 179),
+	(2, 187),
+	(4, 136),
+	(5, 291),
+	(6, 6),
+	(8, 60),
+	(10, 168),
+	(11, 68),
+	(12, 136),
+	(14, 68),
+	(15, 164),
+	(16, 100),
+	(19, 39),
+	(20, 170),
+	(21, 103),
+	(22, 62),
+	(23, 104),
+	(25, 224),
+	(26, 291),
+	(28, 159),
+	(29, 251),
+	(31, 195),
+	(32, 94),
+	(33, 258),
+	(34, 143),
+	(35, 109),
+	(37, 204),
+	(38, 24),
+	(39, 247),
+	(40, 232),
+	(41, 19),
+	(42, 207),
+	(43, 154),
+	(45, 13),
+	(46, 161),
+	(47, 72),
+	(49, 167),
+	(50, 174),
+	(52, 233),
+	(53, 138),
+	(54, 238),
+	(56, 178),
+	(57, 238),
+	(58, 134),
+	(59, 274),
+	(60, 217),
+	(62, 127),
+	(63, 243),
+	(65, 16),
+	(67, 115),
+	(68, 217),
+	(69, 113),
+	(70, 73),
+	(71, 45),
+	(73, 32),
+	(74, 6),
+	(75, 96),
+	(77, 70),
+	(78, 78),
+	(79, 175),
+	(80, 137),
+	(81, 125),
+	(83, 33),
+	(84, 114),
+	(85, 20),
+	(86, 86),
+	(87, 159),
+	(88, 147),
+	(89, 125);
+
+insert into pharmacy(pharmacy_name) values
+    ('APTEKA POD RATUSZEM'),
+    ('APTEKA SUPER-PHARM'),
+    ('APTEKA OGÓLNODOSTĘPNA "POD PODWÓJNYM ZŁOTYM ORŁEM" SPÓŁKA JAWNA'),
+    ('APTEKA VITA'),
+    ('APTEKA NA SZEWSKIEJ'),
+    ('APTEKA DR.MAX'),
+    ('APTEKA SUPER PHARM'),
+    ('APTEKA DR. MAX'),
+    ('APTEKA "TUMSKA"'),
+    ('APTEKA PIASKOWA'),
+    ('APTEKA CEF@RM 36,6'),
+    ('APTEKA WROCŁAWSKA'),
+    ('APTEKA CEF@RM 36,6'),
+    ('APTEKA "ZA FOSĄ"'),
+    ('APTEKA DOM LEKÓW'),
+    ('APTEKA ZIKO'),
+    ('APTEKA ZIKO'),
+    ('APTEKA SŁONECZNA'),
+    ('APTEKA DOM LEKÓW'),
+    ('APTEKA POMORSKA S.C.'),
+    ('APTEKA LEKOSFERA DGA 12'),
+    ('APTEKA ZIEMOWITA'),
+    ('APTEKA SILESIA 3'),
+    ('APTEKA AMICUS III'),
+    ('APTEKA "DR ZDROWIE"'),
+    ('APTEKA CEDRUS'),
+    ('APTEKA GRABISZYŃSKA'),
+    ('APTEKA MEDICOVER APTEKA'),
+    ('APTEKA MEDICOVER'),
+    ('APTEKA O.O. BONIFRATRÓW'),
+    ('APTEKA ZDROWIE'),
+    ('APTEKA "POD SKRZYDŁEM ANIOŁA"'),
+    ('APTEKA "MIESZCZAŃSKA"'),
+    ('APTEKA "BRANIBORSKA"'),
+    ('APTEKA DR.MAX'),
+    ('APTEKA DR.MAX'),
+    ('APTEKA ZIKO'),
+    ('APTEKA API'),
+    ('APTEKA PRZY PRZYCHODNI'),
+    ('APTEKA MAK'),
+    ('APTEKA MEDFARM'),
+    ('APTEKA MAK'),
+    ('APTEKA PINIA'),
+    ('APTEKA LEGE ARTIS S.J.'),
+    ('APTEKA  ŚW.WINCENTEGO'),
+    ('APTEKA VERONICA'),
+    ('APTEKA MAK'),
+    ('APTEKA CZTERY PORY ROKU'),
+    ('APTEKA LEGE ARTIS S.J.'),
+    ('APTEKA "SŁONECZNA"'),
+    ('APTEKA ŚW.TOMASZA'),
+    ('APTEKA SPOŁECZNA NA SĘPA SZARZYŃSKIEGO GRUPA NOWA FARMACJA'),
+    ('APTEKA KATEDRALNA'),
+    ('APTEKA SILESIA'),
+    ('APTEKA SŁONECZNA BIEDRONKA'),
+    ('APTEKA HERBA S.C.DANUTA KONOPACKA,KATARZYNA FIUTOWSKA'),
+    ('APTEKA DR.MAX'),
+    ('APTEKA GINSANA'),
+    ('APTEKA EXPRESSPHARM V'),
+    ('APTEKA "LIBRA"'),
+    ('APTEKA LEGE ARTIS'),
+    ('APTEKA POD SŁOŃCEM'),
+    ('APTEKA "ARKA"'),
+    ('APTEKA WRATISLAVIA II S.C.'),
+    ('APTEKA WRATISLAVIA II'),
+    ('APTEKA ARONIA'),
+    ('APTEKA LEKOSFERA DGA 10'),
+    ('APTEKA HETMAŃSKA'),
+    ('APTEKA NIEZAPOMINAJKA DLA CAŁEJ RODZINY'),
+    ('APTEKA SUPER-PHARM'),
+    ('APTEKA HIPOKRATES'),
+    ('APTEKA LEKOSFERA DGA17'),
+    ('APTEKA TĘCZOWA 3'),
+    ('APTEKA GRUNWALDZKA'),
+    ('APTEKA CEF@RM 36,6'),
+    ('APTEKA MNISZEK SP. J.'),
+    ('"APTEKA PRZY PL. HISZFELDA"'),
+    ('APTEKA CEF@RM 36,6'),
+    ('APTEKA VISCI'),
+    ('APTEKA PIASTOWSKA'),
+    ('APTEKA "GRAFIT"'),
+    ('APTEKA "LEGE ARTIS"'),
+    ('APTEKA RUMIANEK'),
+    ('APTEKA RUBUS'),
+    ('APTEKA ''ALGA'' JOANNA ARAŹNY, ILONA OTLEWSKA S.C.'),
+    ('APTEKA "PRZY PROXIMUM"'),
+    ('APTEKA ALOES'),
+    ('APTEKA SILESIA 4'),
+    ('APTEKA JANTAROWA'),
+    ('APTEKA POD AKACJAMI'),
+    ('APTEKA POD KALINĄ'),
+    ('APTEKA DOM LEKÓW'),
+    ('APTEKA "VITRUM"'),
+    ('APTEKA "HIBISCUS"'),
+    ('APTEKA MEDICOVER APTEKA'),
+    ('APTEKA "ARKADIA"'),
+    ('APTEKA WRATISLAVIA III'),
+    ('APTEKA "CZEKOLADOWA2"'),
+    ('APTEKA "FRANCUSKA"'),
+    ('APTEKA "OSTROBRAMSKA" S.C.'),
+    ('APTEKA NA DAMROTA'),
+    ('APTEKA POPOWICKA'),
+    ('APTEKA FRANCUSKA'),
+    ('APTEKA ACER'),
+    ('APTEKA WRATISLAVIA'),
+    ('APTEKA POD FILAREM'),
+    ('APTEKA AKSAMITNA'),
+    ('APTEKA NA OBORNICKIEJ'),
+    ('APTEKA DR.MAX'),
+    ('APTEKA ŚLICZNA'),
+    ('APTEKA WIŚNIOWA DRIVE'),
+    ('APTEKA LEKOSFERA DGA23'),
+    ('APTEKA "MIODOWA"'),
+    ('APTEKA MAK'),
+    ('APTEKA "MULTI-LEK" SPÓŁKA JAWNA'),
+    ('APTEKA "SŁONECZNA BIEDRONKA"'),
+    ('APTEKA "POŁUDNIOWA"'),
+    ('APTEKA ŻMIGRODZKA'),
+    ('APTEKA SILESIA 2'),
+    ('APTEKA DR.MAX'),
+    ('APTEKA PRZY LEGNICKIEJ'),
+    ('APTEKA NA ZDROWIE'),
+    ('APTEKA SUPER-PHARM APTEKA MAGNOLIA PARK'),
+    ('APTEKA POMARAŃCZOWA'),
+    ('APTEKA WAWRZYNEK S.C.'),
+    ('APTEKA LEKOSFERA DGA 1'),
+    ('APTEKA DR. OPTIMA'),
+    ('APTEKA "POD JAWORAMI"'),
+    ('APTEKA PRZY KRYNICKIEJ'),
+    ('APTEKA BIOGENES.'),
+    ('APTEKA AMICUS II'),
+    ('APTEKA ZDROWIE'),
+    ('APTEKA BIAŁOWIESKA'),
+    ('APTEKA "KARŁOWICKA"'),
+    ('APTEKA MILLENIUM'),
+    ('APTEKA SŁONECZNA BIEDRONKA'),
+    ('APTEKA AMICUS IV'),
+    ('APTEKA AMICUS'),
+    ('APTEKA "WANILIA"'),
+    ('APTEKA Z MISIEM'),
+    ('APTEKA "REMEDIUM"'),
+    ('APTEKA "POD JEMIOŁĄ"'),
+    ('APTEKA WALERIANA'),
+    ('APTEKA DR.MAX'),
+    ('APTEKA BEZPIECZNA'),
+    ('APTEKA NA ZDROWIE'),
+    ('APTEKA PRZY WEIGLA'),
+    ('APTEKA LEKOSFERA DGA 11'),
+    ('APTEKA "AB"  SP. Z O.O.'),
+    ('APTEKA AGAT'),
+    ('APTEKA OLIMPIJSKA'),
+    ('APTEKA TARNOGAJSKA'),
+    ('APTEKA AKADEMICKA'),
+    ('APTEKA EURO-APTEKA'),
+    ('APTEKA "WYSOKOGÓRSKA"'),
+    ('APTEKA PULSANTIS S.C.'),
+    ('APTEKA NA OSTATNIM GROSZU'),
+    ('APTEKA KRÓLEWSKA'),
+    ('APTEKA "TWOJA"'),
+    ('APTEKA LAWENDA'),
+    ('APTEKA "PRZY NETTO"'),
+    ('APTEKA LOBELIA'),
+    ('APTEKA "MALVA"'),
+    ('APTEKA ŚW.WOJCIECHA'),
+    ('APTEKA DR.MAX'),
+    ('APTEKA PRO HOMINE'),
+    ('APTEKA W PRZYCHODNI NA BISKUPINIE'),
+    ('"APTEKA U DAWIDA"'),
+    ('APTEKA NA BULWARZE IKARA'),
+    ('APTEKA HELVETIA'),
+    ('APTEKA DR.MAX'),
+    ('APTEKA "RADIX" SPÓŁKA CYWILNA MARIAN, ŁUKASZ SZLÓSARCZYK'),
+    ('APTEKA LEGE ARTIS'),
+    ('APTEKA "PRZY MARINO"'),
+    ('APTEKA LOTNICZA'),
+    ('APTEKA RÓŻA WIATRÓW S.C.'),
+    ('APTEKA MOJA'),
+    ('APTEKA GRECKA'),
+    ('APTEKA "WERBENA"'),
+    ('APTEKA NIEZAPOMINAJKA DLA CAŁEJ RODZINY'),
+    ('APTEKA SZMARAGDOWA BIS'),
+    ('APTEKA BERBERYS'),
+    ('APTEKA "KRZYCKA"'),
+    ('APTEKA "DA VINCI"'),
+    ('APTEKA KSIĘŻĘCA'),
+    ('APTEKA GEMINI'),
+    ('APTEKA LEGE ARTIS'),
+    ('APTEKA LEGE ARTIS'),
+    ('APTEKA MEDIC'),
+    ('APTEKA TĘCZOWA'),
+    ('APTEKA PRZYJAŹNI'),
+    ('APTEKA "POD DĘBAMI"'),
+    ('APTEKA PRIMA'),
+    ('APTEKA MEDICEO DRIVE'),
+    ('APTEKA BISKUPIN S.C.'),
+    ('APTEKA NOVA'),
+    ('APTEKA POD WĘŻEM'),
+    ('APTEKA NA RONDZIE'),
+    ('APTEKA NA KOZANOWIE'),
+    ('APTEKA CEF@RM 36,6'),
+    ('APTEKA APTEKI ARNIKA'),
+    ('APTEKA AMAVITA'),
+    ('APTEKA LEKOSFERA DGA22'),
+    ('APTEKA OŁTASZYŃSKA'),
+    ('APTEKA ORCHIDEA'),
+    ('APTEKA RODZINNA'),
+    ('APTEKA ABSYNT'),
+    ('APTEKA "PARAFIALNA"'),
+    ('APTEKA DOMOWA "ORCHOWSKA"'),
+    ('APTEKA KRZEMIENIECKA'),
+    ('APTEKA "DOKERSKA"'),
+    ('APTEKA ALPEJSKA'),
+    ('APTEKA KUŻNIKI'),
+    ('APTEKA SIELSKA'),
+    ('APTEKA OLIMPIA'),
+    ('APTEKA "MUCHOBORSKA"'),
+    ('APTEKA CALENDULA'),
+    ('APTEKA AVICENNA'),
+    ('APTEKA SARBINOWSKA'),
+    ('APTEKA BROCHOWSKA'),
+    ('APTEKA VIVALDIEGO'),
+    ('APTEKA DROHOBYCKA'),
+    ('APTEKA "CZEKOLADOWA"'),
+    ('APTEKA "NASZA APTEKA"'),
+    ('APTEKA "NA DOBRE I NA ZŁE" WALDEMAR CIACH'),
+    ('APTEKA NIEZAPOMINAJKA DLA CAŁEJ RODZINY'),
+    ('APTEKA EXPRESSPHARM VII'),
+    ('APTEKA STRACHOCIŃSKA'),
+    ('APTEKA MILLENIUM'),
+    ('APTEKA "OSIEDLOWA"'),
+    ('APTEKA NA WOJNOWIE'),
+    ('APTEKA "POLESKA"'),
+    ('APTEKA "RUMIANKOWA"  "FEMI" S.C.'),
+    ('APTEKA RUMIANEK'),
+    ('APTEKA "LEGE ARTIS"'),
+    ('APTEKA SUPER-PHARM'),
+    ('APTEKA "EXPRESSPHARM"'),
+    ('APTEKA EXPRESSPHARM II'),
+    ('APTEKA SAMBUCUS'),
+    ('APTEKA ZIELONA'),
+    ('APTEKA AKTYWNA'),
+    ('APTEKA DLA ZDROWIA'),
+    ('APTEKA "BEŻOWA"'),
+    ('APTEKA "ZŁOTNICKA"'),
+    ('APTEKA DĘBOWA'),
+    ('APTEKA BELLADONNA'),
+    ('APTEKA "POD ŚW. ANTONIM"'),
+    ('APTEKA EXPRESSPHARM IV'),
+    ('APTEKA LEŚNICKA'),
+    ('APTEKA "OGRODOWA" SPÓŁKA JAWNA');
+
+do $$ begin
+    perform setseed(1);
+
+    for pharmacy_id in 1..(select count(pharmacy_id) from pharmacy) loop
+        for medicine_id in 1..(select count(medicine_id) from medicine) loop
+            if (select random()) > 0.7 then
+                insert
+                    into medicine_in_pharmacy (pharmacy_id, medicine_id, quantity)
+                    values(pharmacy_id, medicine_id, ceil(random() * 30));
+            end if;
+        end loop;
+    end loop;
+end; $$;
+
+insert into prescription(expiration_date, client_id, prescription_type) values
+    ('2021-08-03', 1, 'Rpw'),
+    ('2022-03-17', 2, 'OTC'),
+    ('2020-08-10', 3, 'Rpw'),
+    ('2021-02-04', 4, 'Rp'),
+    ('2020-10-10', 5, 'Rpw'),
+    ('2021-11-05', 6, 'Rpw'),
+    ('2021-03-15', 7, 'OTC'),
+    ('2021-07-26', 8, 'Rpz'),
+    ('2022-03-08', 9, 'Rpz'),
+    ('2021-01-05', 10, 'Rpw'),
+    ('2020-11-23', 11, 'Rpz'),
+    ('2021-03-03', 12, 'OTC'),
+    ('2020-10-09', 13, 'OTC'),
+    ('2020-09-15', 14, 'Rp'),
+    ('2020-11-05', 15, 'Rpw'),
+    ('2020-09-02', 16, 'OTC'),
+    ('2020-08-29', 17, 'Rpw'),
+    ('2021-02-19', 18, 'OTC'),
+    ('2021-02-06', 19, 'Rpz'),
+    ('2020-10-23', 20, 'Rpw'),
+    ('2020-10-25', 21, 'Rp'),
+    ('2021-11-13', 22, 'OTC'),
+    ('2021-01-02', 23, 'Rpw'),
+    ('2022-01-15', 24, 'Rp'),
+    ('2021-06-11', 25, 'Rp'),
+    ('2022-01-16', 26, 'Rp'),
+    ('2021-10-01', 27, 'Rpz'),
+    ('2022-04-16', 28, 'Rpw'),
+    ('2021-05-31', 29, 'Rpw'),
+    ('2021-08-23', 30, 'Rpw'),
+    ('2021-05-04', 31, 'OTC'),
+    ('2022-05-22', 32, 'Rpw'),
+    ('2022-02-06', 33, 'Rp'),
+    ('2022-04-04', 34, 'OTC'),
+    ('2021-04-19', 35, 'Rpw'),
+    ('2020-11-03', 36, 'OTC'),
+    ('2022-03-24', 37, 'Rpw'),
+    ('2021-12-29', 38, 'OTC'),
+    ('2021-07-14', 39, 'Rpz'),
+    ('2020-07-14', 40, 'Rpw'),
+    ('2022-05-18', 41, 'Rpw'),
+    ('2021-10-06', 42, 'Rpz'),
+    ('2021-08-31', 43, 'Rpw'),
+    ('2022-04-20', 44, 'Rpz'),
+    ('2020-09-16', 45, 'OTC'),
+    ('2021-09-09', 46, 'Rpz'),
+    ('2020-06-28', 47, 'Rpz'),
+    ('2021-05-08', 48, 'Rpz'),
+    ('2021-05-24', 49, 'Rpw'),
+    ('2020-10-12', 50, 'OTC'),
+    ('2021-06-17', 51, 'Rpw'),
+    ('2020-11-04', 52, 'Rpz'),
+    ('2020-08-07', 53, 'Rpz'),
+    ('2022-01-15', 54, 'Rpz'),
+    ('2020-06-24', 55, 'Rpw'),
+    ('2021-08-18', 56, 'Rpz'),
+    ('2021-04-09', 57, 'OTC'),
+    ('2022-05-12', 58, 'Rpw'),
+    ('2021-10-01', 59, 'Rpz'),
+    ('2021-07-16', 60, 'Rpw'),
+    ('2020-09-30', 61, 'Rp'),
+    ('2020-12-20', 62, 'Rpw'),
+    ('2020-12-12', 63, 'Rpz'),
+    ('2021-09-07', 64, 'OTC'),
+    ('2022-03-24', 65, 'OTC'),
+    ('2022-04-10', 66, 'Rpw'),
+    ('2021-09-26', 67, 'Rp'),
+    ('2020-11-29', 68, 'Rpz'),
+    ('2022-01-12', 69, 'Rp'),
+    ('2020-07-29', 70, 'OTC'),
+    ('2020-12-14', 71, 'Rpz'),
+    ('2022-02-23', 72, 'Rpw'),
+    ('2021-11-13', 73, 'Rpz'),
+    ('2021-06-03', 74, 'Rp'),
+    ('2020-06-02', 75, 'Rp'),
+    ('2021-08-04', 76, 'Rpw'),
+    ('2020-12-27', 77, 'Rp'),
+    ('2022-05-03', 78, 'Rpw'),
+    ('2021-07-10', 79, 'OTC'),
+    ('2021-12-30', 80, 'Rpw'),
+    ('2020-12-07', 81, 'Rpw'),
+    ('2021-07-01', 82, 'Rpw'),
+    ('2021-01-17', 83, 'Rpz'),
+    ('2021-11-04', 84, 'Rp'),
+    ('2021-06-25', 85, 'Rp'),
+    ('2020-12-12', 86, 'Rp'),
+    ('2021-10-02', 87, 'Rpz'),
+    ('2020-10-15', 88, 'Rpw'),
+    ('2022-01-20', 89, 'Rpw'),
+    ('2021-01-18', 90, 'Rpw'),
+    ('2020-09-19', 91, 'Rpz'),
+    ('2022-04-30', 92, 'OTC'),
+    ('2021-05-17', 93, 'OTC'),
+    ('2020-09-20', 94, 'Rp'),
+    ('2022-01-20', 95, 'Rp'),
+    ('2022-01-08', 96, 'OTC');
+
+insert into active_substance(international_name, "name", description) values
+    ('Acarbose', 'Akarboza', 'Doustny lek przeciwcukrzycowy - inhibitor alfa-glukozydaz.  '),
+    ('Acebutolol', 'Acebutolol', 'Selektywny lek beta-adrenolityczny.'),
+    ('Acenocoumarol', 'Acenokumarol', 'Lek przeciwzakrzepowy - antagonista witaminy K.'),
+    ('Acetylcysteine', 'Acetylocysteina', 'Lek mukolityczny. Lek stosowany w przypadku przedawkowania paracetamolu.'),
+    ('Acetylsalicylic acid', 'Kwas acetylosalicylowy', 'Lek przeciwbólowy i przeciwgorączkowy z grupy pochodnych kwasu salicylowego. Lek przeciwzakrzepowy.'),
+    ('Aciclovir', 'Acyklowir', 'Lek przeciwwirusowy aktywny wobec wirusa opyszczki typu 1 i 2, wirusa ospy wietrznej i półpaśca - analog nukleozydowy.'),
+    ('Acitretin', 'Acytretyna', 'Lek przeciwłuszczycowy - pochodna retinoidowa.'),
+    ('Adalimumab', 'Adalimumab', 'Lek immunosupresyjny - inhibitor TNF-alfa.'),
+    ('Adapalene', 'Adapalen', 'Lek przeciwtrądzikowy - pochodna retinoidowa.'),
+    ('Adenosine', 'Adenozyna', 'Lek przeciwarytmiczny klasy IV.'),
+    ('Aesculus hippocastanum', 'Kasztanowiec zwyczajny', 'Lek zmniejszający przepuszczalność i uszczelniający naczynia włosowate.'),
+    ('Agomelatine', 'Agomelatyna', ''),
+    ('Alclometasone', 'Alklometazon', 'Glikokortykosteroid.'),
+    ('Alectinib', 'Alektynib', 'Lek przeciwnowotworowy - inhibitor kinazy chłoniaka anaplastycznego (ALK).'),
+    ('Alfacalcidol', 'Alfakalcydol', 'Analog witaminy D.'),
+    ('Alfuzosin', 'Alfuzosyna', 'Lek stosowany w łagodnym rozroście gruczołu krokowego - selektywny antagonista postsynaptycznych receptorów alfa-adrenergicznych.'),
+    ('Allantoine', 'Alantoina', 'Lek o działaniu przeciwzapalnym i przyspieszającym gojenie ran.'),
+    ('Allium sativum', 'Czosnek pospolity', 'Surowiec roślinny o właściwościach przeciwbakteryjnych, przeciwgrzybiczych, żółciopędnych i obniżających stężenie cholesterolu we krwi.'),
+    ('Allopurinol', 'Allopurynol', 'Lek zmniejszający stężenie kwasu moczowego.'),
+    ('Almotriptan', 'Almotryptan', 'Lek przeciwmigrenowy - swoisty i wybiórczy agonista receptorów serotoninowych 5-HT1D.  '),
+    ('Aloe arborescens', 'Aloes drzewiasty', 'Surowiec roślinny o właściwościach immunostymulujących.'),
+    ('Aloe vera', 'Aloes zwyczajny', 'Surowiec roślinny o właściwościach immunostymulujących.'),
+    ('Aloe', 'Alona', 'Lek przeczyszczający kontaktowy.'),
+    ('Alprazolam', 'Alprazolam', 'Anksjolityk z grupy pochodnych benzodiazepiny.'),
+    ('Amantadine', 'Amantadyna', 'Lek przeciwparkinsonowski - pochodna adamantanu.'),
+    ('Ambroxol', 'Ambroksol', 'Lek mukolityczny.'),
+    ('Amikacin', 'Amikacyna', 'Antybiotyk aminoglikozydowy.'),
+    ('Amiodarone', 'Amiodaron', 'Lek przeciwarytmiczny klasy III.'),
+    ('Amisulpride', 'Amisulpryd', 'Lek przeciwpsychotyczny z grupy pochodnych benzamidu.'),
+    ('Amitriptyline', 'Amitryptylina', 'Lek przeciwdepresyjny - nieselektywny inibitor wychwytu zwrotnego monoamin.'),
+    ('Amlodipine', 'Amlodypina', 'Lek blokujący kanały wapniowe o selektywnym działaniu naczyniowym - pochodna dihydropirydiny.'),
+    ('Amorolfine', 'Amorolfina', 'Lek przeciwgrzybiczy - pochodna morfoliny.'),
+    ('Amoxicillin and clavulanic acid', 'Amoksycylina i kwas klawulanowy', 'Antybiotyk z grupy penicylin w połączeniu z inhibitorem beta-laktamazy.'),
+    ('Amoxicillin', 'Amoksycylina', 'Antybiotyk z grupy penicylin o szerokim spektrum działania.'),
+    ('Ampicillin and sulbactam', 'Ampicylina i sulbaktam', 'Antybiotyk z grupy penicylin w połączeniu z inhibitorem beta-laktamazy.'),
+    ('Ampicillin', 'Ampicylina', 'Antybiotyk z grupy penicylin o szerokim spektrum działania.'),
+    ('Anagrelide', 'Anagrelid', 'Lek zmniejszający liczbę trombocytów we krwi.'),
+    ('Anastrozole', 'Anastrozol', 'Lek przeciwnowotworowy - niesteroidowy inhibitor aromatazy.'),
+    ('Anidulafungin', 'Anidulafungina', 'Lek przeciwgrzybiczy - półsyntetyczna echizokandyna.'),
+    ('Aripiprazole', 'Arypiprazol', 'Lek przeciwpsychotyczny.'),
+    ('Ascorbic acid - vitamin C', 'Kwas askorbowy - witamina C', 'Witamina C.'),
+    ('Atorvastatin', 'Atorwastatyna', 'Lek modyfikujący stężenie lipidów - inhibitor reduktazy HMG-CoA.'),
+    ('Azelastine', 'Azelastyna', 'Lek przeciwhistaminowy.'),
+    ('Bacitracin', 'Bacytracyna', 'Antybiotyk polipeptydowy.'),
+    ('Benzydamine', 'Benzydamina', 'Niesteroidowy lek przeciwzapalny.'),
+    ('Betahistine', 'Betahistyna', 'Lek stosowany przeciw zawrotom głowy.'),
+    ('Bifidobacterium lactis', 'Bifidobacterium lactis', ''),
+    ('Biperiden', 'Biperyden', 'Lek przeciwparkinsonowski o działaniu cholinolitycznym.'),
+    ('Boric acid', 'Kwas borowy', 'Środek antyseptyczny.'),
+    ('Brigatinib', 'Brygatynib', 'Lek przeciwnowotworowy - inhibitor kinazy chłoniaka anaplastycznego (ALK).'),
+    ('Brimonidine', 'Brymonidyna', 'Lek obniżający ciśnienie śródgałkowe - selektywny agonista receptora alfa-2-adrenergicznego.'),
+    ('Budesonide', 'Budezonid', 'Glikokortykosteroid.'),
+    ('Caffeine', 'Kofeina', 'Lek działający pobudzająco na OUN.'),
+    ('Calcium and magnesium compounds', 'Związki wapnia i magnezu', 'Lek zobojętniający nadmiar kwasu solnego w soku żołądkowym.'),
+    ('Calcium chloride', 'Chlorek wapnia', ''),
+    ('Calcium compounds', 'Związki wapnia', 'Lek zobojętniający nadmiar kwasu solnego w soku żołądkowym.'),
+    ('Calcium dobesilate', 'Dobezylan wapnia', 'Lek regulujący czynność naczyń włosowatych.'),
+    ('Calcium pantothenate', 'Pantotenian wapnia', 'Witamina B5.'),
+    ('Calcium', 'Wapń', ''),
+    ('Carbamazepine', 'Karbamazepina', 'Lek przeciwpadaczkowy z grupy pochodnych karboksamidu.'),
+    ('Caryophyllus oil', 'Olejek goździkowy', 'Surowiec roślinny o właściwościach antyseptycznych, przeciwzapalnych, znieczulających i znoszących wzdęcia.'),
+    ('Celecoxib', 'Celekoksyb', 'Selektywny inhibitor COX-2.'),
+    ('Cetirizine', 'Cetyryzyna', 'Lek przeciwhistaminowy z grupy pochodnych piperazyny.'),
+    ('Chlorhexidine', 'Chlorheksydyna', 'Środek antyseptyczny.'),
+    ('Chloroprocaine', 'Chloroprokaina', 'Środek miejscowo znieczulający z grupy estrów kwasu aminobenzoesowego.'),
+    ('Chlorpheniramine', 'Chlorfenyramina', 'Lek przeciwhistaminowy z grupy pochodnych alkiloaminy.'),
+    ('Ciclesonide', 'Cyklezonid', 'Glikokortykosteroid.'),
+    ('Cinnamon oil', 'Olejek cynamonowy', 'Surowiec roślinny o właściwościach przeciwbakteryjnych, pobudzających wydzielanie soków trawiennych. Stosowany na skórę działa rozgrzewająco.'),
+    ('Citicoline', 'Cytykolina', 'Lek psychostymulujący.'),
+    ('Citronella oil', 'Olejek cytronelowy', 'Surowiec roślinny o właściwościach pobudzających, łagodnie rozgrzewających.'),
+    ('Clarithromycin', 'Klarytromycyna', 'Antybiotyk makrolidowy.'),
+    ('Clindamycin', 'Klindamycyna', ''),
+    ('Clomipramine', 'Klomipramina', 'Lek przeciwdepresyjny - nieselektywny inibitor wychwytu zwrotnego monoamin.'),
+    ('Clopidogrel', 'Klopidogrel', 'Lek przeciwzakrzepowy - inhibitor krzepnięcia.'),
+    ('Codeine', 'Kodeina', 'Lek przeciwkaszlowy.'),
+    ('Colecalciferol - vitamin D3', 'Cholekalcyferol - witamina D3', 'Witamina D3.'),
+    ('Crataegus sp.', 'Głóg', 'Surowiec roślinny o działaniu tonizującym na mięsień sercowy oraz przeciwskurczowym na mięśnie gładkie jelit i naczyń krwionośnych (w tym naczyń wieńcowych i naczyń mózgowych).'),
+    ('Crocus sativus', 'Szafran uprawny', ''),
+    ('Cyproterone', 'Cyproteron', 'Antyandrogen.'),
+    ('Cytarabine', 'Cytarabina', 'Lek przeciwnowotworowy z grupy antymetabolitów - analog pirymidyn.'),
+    ('DHA - docosahexaenoic acid', 'DHA - kwas dokozaheksaenowy', 'Związek chemiczny z grupy wielonienasyconych kwasów tłuszczowych typu omega-3.'),
+    ('Darvadstrocel', 'Darwadstrocel', 'Darwadstrocel zawiera namnożone komórki macierzyste pobrane z tkanki tłuszczowej, wykazujące działanie immunomodulacyjne i przeciwzapalne w miejscach ze stanem zapalnym.'),
+    ('Desloratadine', 'Desloratadyna', 'Lek przeciwhistaminowy.'),
+    ('Dexpanthenol', 'Dekspantenol', ''),
+    ('Dextromethorphan', 'Dekstrometorfan', 'Lek przeciwkaszlowy.'),
+    ('Diethylamine salicylate', 'Salicylan dietyloaminy', 'Niesteroidowy lek przeciwzapalny - pochodna kwasu salicylowego.'),
+    ('Diosmin', 'Diosmina', 'Lek wpływający na elastyczność naczyń.'),
+    ('Diphenhydramine', 'Difenhydramina', ''),
+    ('Diphtheria toxoid', 'Szczepionka przeciw błonicy', 'Szczepionka przeciwbłonicza.'),
+    ('Disulfiram', 'Disulfiram', 'Lek stosowany w leczeniu uzależnienia od alkoholu.'),
+    ('Doxazosin', 'Doksazosyna', 'Lek przeciwnadciśnieniowy - selektywny i kompetycyjny antagonista postsynaptycznych receptorów alfa-1-adrenergicznych.'),
+    ('Dutasteride', 'Dutasteryd', 'Lek stosowany w łagodnym rozroście gruczołu krokowego - wybiórczy inhibitor 5-alfa reduktazy testosteronu.'),
+    ('Ectoin', 'Ektoina', 'Substancja pochodzenia naturalnego, wykazująca właściwości stabilizujące błony komórkowe oraz zmniejszające stan zapalny.'),
+    ('Electrolytes and glucose', 'Elektrolity i glukoza', ''),
+    ('Electrolytes', 'Elektrolity', ''),
+    ('Epinephrine', 'Epinefryna', 'Lek pobudzający układ sercowo-naczyniowy.'),
+    ('Erenumab', 'Erenumab', 'Lek przeciwmigrenowy - przeciwciało monoklonalne.'),
+    ('Erythromycin', 'Erytromycyna', 'Antybiotyk makrolidowy.'),
+    ('Escin', 'Escyna', 'Lek wpływający na elastyczność naczyń.'),
+    ('Escitalopram', 'Escytalopram', 'Lek przeciwdepresyjny - selektywny inhibitor wychwytu zwrotnego serotoniny.'),
+    ('Estradiol and dienogest', 'Estradiol i dienogest', ''),
+    ('Estradiol and drospirenone', 'Estradiol i drospirenon', ''),
+    ('Estradiol and dydrogesterone', 'Estradiol i dydrogesteron', ''),
+    ('Estradiol and medroxyprogesterone', 'Estradiol i medroksyprogesteron', ''),
+    ('Estradiol and nomegestrol', 'Estradiol i nomegestrol', ''),
+    ('Estradiol and norethisterone', 'Estradiol i noretysteron', ''),
+    ('Estradiol and norgestrel', 'Estradiol i norgestrel', ''),
+    ('Estradiol and prasterone', 'Estradiol i prasteron', ''),
+    ('Estradiol', 'Estradiol', 'Estrogen.'),
+    ('Everolimus', 'Ewerolimus', 'Lek przeciwnowotworowy - inhibitor kinazy mTOR. Lek immunosupresyjny selektywny.'),
+    ('Febuxostat', 'Febuksostat', ''),
+    ('Ferrous', 'Żelazo', ''),
+    ('Fexofenadine', 'Feksofenadyna', 'Lek przeciwhistaminowy.'),
+    ('Filgrastim', 'Filgrastym', 'Lek immunostymulujący - ludzki czynnik wzrostu granulocytów.'),
+    ('Finasteride', 'Finasteryd', 'Lek stosowany w łagodnym rozroście gruczołu krokowego - wybiórczy inhibitor 5-alfa reduktazy testosteronu. Lek pobudzający wzrost włosów.'),
+    ('Flucytosine', 'Flucytozyna', 'Lek przeciwgrzybiczy.'),
+    ('Fluoxetine', 'Fluoksetyna', 'Lek przeciwdepresyjny - selektywny inhibitor wychwytu zwrotnego serotoniny.'),
+    ('Fluticasone furoate', 'Furoinian flutykazonu', 'Glikokortykosteroid.'),
+    ('Fluticasone', 'Flutykazon', 'Glikokortykosteroid.'),
+    ('Foeniculum vulgare', 'Koper włoski', ''),
+    ('Folic acid', 'Kwas foliowy', 'Kwas foliowy.'),
+    ('Formoterol', 'Formoterol', ''),
+    ('Fosfomycin', 'Fosfomycyna', 'Antybiotyk - pochodna kwasu fosfonowego.'),
+    ('Fremanezumab', 'Fremanezumab', 'Lek przeciwmigrenowy - przeciwciało monoklonalne.'),
+    ('Glimepiride', 'Glimepiryd', 'Doustny lek przeciwcukrzycowy - pochodna sulfonylomocznika.'),
+    ('Heparin', 'Heparyna', 'Lek przeciwzakrzepowy.'),
+    ('Heparinoid', 'Heparynoid', ''),
+    ('Hydrochlorothiazide', 'Hydrochlorotiazyd', 'Lek moczopędny tiazydowy.'),
+    ('Ibuprofen', 'Ibuprofen', 'Niesteroidowy lek przeciwzapalny - pochodna kwasu propionowego.'),
+    ('Imiquimod', 'Imikwimod', 'Lek przeciwwirusowy.'),
+    ('Isotretinoin', 'Izotretynoina', 'Lek przeciwtrądzikowy - pochodna retinoidowa.'),
+    ('Ketorolac', 'Ketorolak', 'Niesteroidowy lek przeciwzapalny.'),
+    ('Lactobacillus acidophilus', 'Lactobacillus acidophilus', ''),
+    ('Lactobacillus salivarius', 'Lactobacillus salivarius', ''),
+    ('Lactoferrin', 'Laktoferyna', 'Wielofunkcyjne białko z grupy transferyn, wykazujące duże powinowactwo do jonów żelaza.'),
+    ('Laronidase', 'Laronidaza', 'Lek stosowany w zaburzeniach metabolicznych.'),
+    ('Latanoprost', 'Latanoprost', 'Lek obniżający ciśnienie śródgałkowe - analog prostaglandyny F2alfa.'),
+    ('Lemon oil', 'Olejek cytrynowy', 'Surowiec roślinny o właściwościach odkażających i przeciwzapalnych. Stosowany na skórę działa rozgrzewająco.'),
+    ('Levocetirizine', 'Lewocetyryzyna', 'Lek przeciwhistaminowy z grupy pochodnych piperazyny.'),
+    ('Levomenthol', 'Lewomentol', 'Surowiec roślinny o właściwościach rozszerzających oskrzela i ułatwiających oddychanie, upłynniających wydzieliny śluzowe. Stosowany na skórę działa przeciwświądowo, znieczulająco, słabo antyseptycznie.'),
+    ('Lidocaine', 'Lidokaina', 'Środek miejscowo znieczulający o budowie amidowej. Lek przeciwarytmiczny klasy IB.'),
+    ('Losartan', 'Losartan', 'Bloker receptora angiotensyny II.'),
+    ('Marrubium vulgare', 'Szanta zwyczajna', ''),
+    ('Matricaria recutita', 'Rumianek pospolity', 'Surowiec roślinny o właściwościach przeciwzapalnych na błonę śluzową przewodu pokarmowego (zwłaszcza żołądka) i spazmolitycznych (głównie na mięśnie jelit).'),
+    ('Melissa officinalis', 'Melisa lekarska', 'Surowiec roślinny o właściwościach uspokajających oraz przeciwskurczowych i zwiększających wydzielanie soków trawiennych.'),
+    ('Meloxicam', 'Meloksykam', 'Niesteroidowy lek przeciwzapalny z grupy oksykamów.'),
+    ('Melphalan', 'Melfalan', 'Cytostatyk z grupy związków alkilujących.'),
+    ('Mentha piperita oil', 'Olejek mięty pieprzowej', 'Surowiec roślinny o właściwościach pobudzających wydzielanie soków trawiennych, głównie żołądka, rozkurczowych, żółciopędnych i wiatropędnych. Stosowany na skórę wywiera działanie przeciwzapalne, antyseptyczne i chłodzące.'),
+    ('Menthol', 'Mentol', 'Surowiec roślinny o właściwościach rozszerzających oskrzela i ułatwiających oddychanie, upłynniających wydzieliny śluzowe. Stosowany na skórę działa przeciwświądowo, znieczulająco, słabo antyseptycznie.'),
+    ('Minoxidil', 'Minoksydyl', 'Lek przeciwnadciśnieniowy działający bezpośrednio na mięśnie gładkie naczyń krwionośnych. Lek pobudzający wzrost włosów.'),
+    ('Mometasone', 'Mometazon', 'Glikokortykosteroid.'),
+    ('Naltrexone', 'Naltrekson', 'Lek stosowany w leczeniu uzależnienia od alkoholu.'),
+    ('Nanocolloidal silver', 'Nanokoloid srebra', ''),
+    ('Naproxen', 'Naproksen', 'Niesteroidowy lek przeciwzapalny - pochodna kwasu propionowego.'),
+    ('Neomycin', 'Neomycyna', 'Antybiotyk aminoglikozydowy.'),
+    ('Netupitant', 'Netupitant', 'Lek przeciwwymiotny - wybiórczy antagonista działający na ludzkie receptory neurokininowe 1 (NK1) substancji P.'),
+    ('Olanzapine', 'Olanzapina', 'Lek przeciwpsychotyczny z grupy pochodnych benzodiazepiny.'),
+    ('Omeprazole', 'Omeprazol', 'Lek hamujący wydzielanie kwasu solnego w żołądku - inibitor pompy protonowej.'),
+    ('Opatrunek regulujący poziom wilgotności rany z dodatkami', 'Opatrunek regulujący poziom wilgotności rany z dodatkami', ''),
+    ('Oxycodone', 'Oksykodon', 'Opioidowy lek przeciwbólowy.'),
+    ('Oxymetazoline', 'Oksymetazolina', 'Sympatykomimetyk.'),
+    ('Palonosetron', 'Palonosetron', 'Lek przeciwwymiotny - silny i wybiórczy antagonista receptorów serotoninowych typu 3 (5-HT3). '),
+    ('Pantoprazole', 'Pantoprazol', 'Lek hamujący wydzielanie kwasu solnego w żołądku - inibitor pompy protonowej.'),
+    ('Paracetamol', 'Paracetamol', 'Lek przeciwbólowy i przeciwgorączkowy z grupy anilidów.'),
+    ('Pediococcus pentosaceus', 'Pediococcus pentosaceus', ''),
+    ('Pefloxacin', 'Pefloksacyna', 'Chemioterapeutyk z grupy fluorochinolonów.'),
+    ('Pentoxifylline', 'Pentoksyfilina', 'Lek rozszerzający naczynia obwodowe - pochodna puryny.'),
+    ('Perilla frutescens', 'Pachnotka zwyczajna', ''),
+    ('Perindopril', 'Peryndopryl', 'Inhibitor konwertazy angiotensyny.'),
+    ('Pertussis vaccine', 'Szczepionka przeciw krztuścowi', 'Szczepionka przeciw krztuścowi.'),
+    ('Phenylephrine', 'Fenylefryna', 'Sympatykomimetyk.'),
+    ('Policresulen', 'Polikrezulen', 'Chemioterapeutyk.'),
+    ('Polidocanol', 'Polidokanol', 'Lek stosowany w leczeniu żylaków - środek do skleroterapii.'),
+    ('Prednisolone', 'Prednizolon', 'Glikokortykosteroid.'),
+    ('Prilocaine', 'Prylokaina', 'Środek miejscowo znieczulający o budowie amidowej.'),
+    ('Proxymetacaine', 'Proksymetakaina', 'Środek miejscowo znieczulający.'),
+    ('Pseudoephedrine', 'Pseudoefedryna', 'Sympatykomimetyk.'),
+    ('Pyridoxine - vitamin B6', 'Pirydoksyna - witamina B6', 'Witamina B6.'),
+    ('Quercetin', 'Kwercetyna', ''),
+    ('Quinapril', 'Chinapryl', 'Inhibitor konwertazy angiotensyny.'),
+    ('Ramipril', 'Ramipryl', 'Inhibitor konwertazy angiotensyny.'),
+    ('Resorcinol', 'Rezorcyna', 'Lek o działaniu keratolitycznym i antyseptycznym.'),
+    ('Riociguat', 'Riocyguat', 'Lek obniżający ciśnienie stosowany w tętniczym nadciśnieniu płucnym.'),
+    ('Ropinirole', 'Ropinirol', 'Lek przeciwparkinsonowski - agonista receptorów dopaminergicznych.'),
+    ('Rupatadine', 'Rupatadyna', ''),
+    ('Salicylic acid', 'Kwas salicylowy', 'Lek o działaniu keratolitycznym.'),
+    ('Salmeterol', 'Salmeterol', 'Lek do stosowania w chorobach obturacyjnych dróg oddechowych - selektywny agonista receptora beta2-adrenergicznego.'),
+    ('Selenium', 'Selen', 'Selen.'),
+    ('Solifenacin', 'Solifenacyna', 'Spazmolityk działający na mięśnie gładkie układu moczowego.'),
+    ('Sulfogaiacol', 'Sulfogwajakol', 'Lek wykrztuśny.'),
+    ('Tacrolimus', 'Takrolimus', ''),
+    ('Tadalafil', 'Tadalafil', 'Inhibitor fosfodiesterazy typu 5 - stosowany w zaburzeniach erekcji oraz w nadciśnieniu płucnym.'),
+    ('Tamsulosin', 'Tamsulosyna', 'Lek stosowany w łagodnym rozroście gruczołu krokowego - selektywny antagonista postsynaptycznych receptorów alfa-adrenergicznych.'),
+    ('Telmisartan', 'Telmisartan', 'Bloker receptora angiotensyny II.'),
+    ('Testosterone', 'Testosteron', 'Androgen.'),
+    ('Tetanus toxoid', 'Szczepionka przeciw tężcowi', 'Szczepionka przeciwtężcowa.'),
+    ('Thymol', 'Tymol', 'Surowiec roślinny o działaniu wykrztuśnym, odkażającym, pobudzającym wydzielanie soku żołądkowego, trzustkowego i enzymów jelitowych.'),
+    ('Ticlopidine', 'Tyklopidyna', 'Lek przeciwzakrzepowy - inhibitor krzepnięcia.'),
+    ('Timolol', 'Tymolol', 'Lek obniżający ciśnienie śródgałkowe - nieselektywny bloker receptorów beta-adrenergicznych. '),
+    ('Tramadol', 'Tramadol', 'Opioidowy lek przeciwbólowy.'),
+    ('Tretinoin', 'Tretynoina', 'Lek przeciwtrądzikowy - pochodna retinoidowa. Lek przeciwnowotworowy z grupy retinoidów.'),
+    ('Trifarotene', 'Trifaroten', 'Lek przeciwtrądzikowy - pochodna retinoidowa.'),
+    ('Triprolidine', 'Tryprolidyna', 'Lek przeciwhistaminowy.'),
+    ('Ubidecarenone', 'Ubidekarenon', 'Lek o działaniu antyoksydacyjnym, immunostymulującym i przeciwmiażdżycowym.'),
+    ('Umeclidinium bromide', 'Bromek umeklidyniowy', ''),
+    ('Valeriana officinalis', 'Kozłek lekarski', 'Surowiec roślinny o działaniu uspokajającym.'),
+    ('Venlafaxine', 'Wenlafaksyna', 'Lek przeciwdepresyjny - inhibitor wychwytu zwrotnego serotoniny i noradrenaliny.'),
+    ('Vilanterol', 'Wilanterol', ''),
+    ('Zinc acetate', 'Octan cynku', 'Lek stosowany w zaburzeniach metabolicznych - blokujący wchłanianie miedzi.'),
+    ('Zinc oxide', 'Tlenek cynku', 'Lek o działaniu przeciwświądowym i wysuszającym.'),
+    ('Zinc sulfate', 'Siarczan cynku', ''),
+    ('Zinc undecylenate', 'Undecylian cynku', 'Lek przeciwgrzybiczy.'),
+    ('Zinc', 'Cynk', ''),
+    ('Zingiber officinale', 'Imbir lekarski', 'Surowiec roślinny o działaniu zapobiegającym nudnościom.');
+
+
+insert into medicine_substance_map(medicine_id, active_substance_id) 
+select medicine_id, (select active_substance_id from active_substance where international_name='Salicylic acid') from medicine where trade_name='ABE'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acarbose') from medicine where trade_name='Adeksa'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acebutolol') from medicine where trade_name='Acebutolol Aurovitas'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acenocoumarol') from medicine where trade_name='Acenocumarol WZF'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylcysteine') from medicine where trade_name='ACC Hot'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylcysteine') from medicine where trade_name='ACC classic'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylcysteine') from medicine where trade_name='ACC mini'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylcysteine') from medicine where trade_name='ACC optima Active'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylcysteine') from medicine where trade_name='ACC optima Hot'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylcysteine') from medicine where trade_name='ACC optima'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylcysteine') from medicine where trade_name='ACC'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylcysteine') from medicine where trade_name='Acetylcysteine Sandoz'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylcysteine') from medicine where trade_name='Acetylcysteinum Flegamina'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylsalicylic acid') from medicine where trade_name='Abrea'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylsalicylic acid') from medicine where trade_name='Acard 300 mg'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylsalicylic acid') from medicine where trade_name='Acard'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylsalicylic acid') from medicine where trade_name='Acesan'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylsalicylic acid') from medicine where trade_name='Alka-Seltzer'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylsalicylic acid') from medicine where trade_name='Anacard medica protect'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acetylsalicylic acid') from medicine where trade_name='AntyGrypin dzień'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Aciclovir') from medicine where trade_name='Aciclovir Ziaja'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Acitretin') from medicine where trade_name='Acitren'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Adalimumab') from medicine where trade_name='Amgevita'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Adapalene') from medicine where trade_name='Acnelec'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Aesculus hippocastanum') from medicine where trade_name='Aesculan'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Agomelatine') from medicine where trade_name='Agolek'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Agomelatine') from medicine where trade_name='Agomelatine +pharma'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Agomelatine') from medicine where trade_name='Agomelatine Adamed'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Agomelatine') from medicine where trade_name='Agomelatine G.L. Pharma'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Agomelatine') from medicine where trade_name='Agomelatine NeuroPharma'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Agomelatine') from medicine where trade_name='Agomelatyna Egis'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Alclometasone') from medicine where trade_name='Afloderm'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Alectinib') from medicine where trade_name='Alecensa'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Alfacalcidol') from medicine where trade_name='Alfadiol'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Alfuzosin') from medicine where trade_name='Alfabax'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Alfuzosin') from medicine where trade_name='Alfurion'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Alfuzosin') from medicine where trade_name='Alfuzostad'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Alfuzosin') from medicine where trade_name='Alugen'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Allantoine') from medicine where trade_name='Alantan Plus'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Allantoine') from medicine where trade_name='Alantan'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Allantoine') from medicine where trade_name='Alantavit'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Allium sativum') from medicine where trade_name='Alliofil'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Allium sativum') from medicine where trade_name='Alliomint'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Allopurinol') from medicine where trade_name='Allupol'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Almotriptan') from medicine where trade_name='Almozen'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Aloe') from medicine where trade_name='Alax'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Alprazolam') from medicine where trade_name='Afobam'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Alprazolam') from medicine where trade_name='Alpragen'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Alprazolam') from medicine where trade_name='Alprazolam Aurovitas'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Alprazolam') from medicine where trade_name='Alprox'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amantadine') from medicine where trade_name='Amantix'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ambroxol') from medicine where trade_name='Aflegan'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ambroxol') from medicine where trade_name='AmbroHexal'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ambroxol') from medicine where trade_name='Ambroksol Hasco Junior'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ambroxol') from medicine where trade_name='Ambroksol Hasco Max'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ambroxol') from medicine where trade_name='Ambroksol Hasco'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ambroxol') from medicine where trade_name='Ambroksol Takeda'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ambroxol') from medicine where trade_name='Ambrolytin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ambroxol') from medicine where trade_name='Ambrosol Teva'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ambroxol') from medicine where trade_name='Ambroxol Dr. Max'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amikacin') from medicine where trade_name='Amikacin B. Braun'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amisulpride') from medicine where trade_name='Amipryd'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amisulpride') from medicine where trade_name='Amisan'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amitriptyline') from medicine where trade_name='Amitriptylinum VP'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Adipine'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Agen'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Aldan'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Almiden'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Alneta'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Alortia'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Amlator'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Amlessa'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Amlessini'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Amlodipine Apotex'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Amlodipine Aurobindo'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Amlodipine Aurovitas'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Amlodipine Bluefish'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Amlodipine Orion'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Amlodipine Vitabalans'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Amlomyl'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Amlonor'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Amlopin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amlodipine') from medicine where trade_name='Amlozek'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amorolfine') from medicine where trade_name='Amorolak'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amoxicillin and clavulanic acid') from medicine where trade_name='Amoksiklav Quicktab'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amoxicillin and clavulanic acid') from medicine where trade_name='Amoksiklav'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amoxicillin and clavulanic acid') from medicine where trade_name='Amoxicillin + Clavulanic Acid Aurovitas'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amoxicillin and clavulanic acid') from medicine where trade_name='Amylan'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amoxicillin') from medicine where trade_name='Amotaks Dis'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Amoxicillin') from medicine where trade_name='Amoxicillin Aurovitas'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ampicillin') from medicine where trade_name='Ampicillin TZF'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Anagrelide') from medicine where trade_name='Anagrelid Aurovitas'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Anagrelide') from medicine where trade_name='Anagrelide Accord'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Anagrelide') from medicine where trade_name='Anagrelide Bioton'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Anagrelide') from medicine where trade_name='Anagrelide Glenmark'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Anagrelide') from medicine where trade_name='Anagrelide Mylan'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Anagrelide') from medicine where trade_name='Anagrelide Ranbaxy'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Anagrelide') from medicine where trade_name='Anagrelide Sandoz'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Anagrelide') from medicine where trade_name='Anagrelide Stada'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Anagrelide') from medicine where trade_name='Anagrelide Vipharm'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Anagrelide') from medicine where trade_name='Anagrelide Zentiva'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Anastrozole') from medicine where trade_name='Anastrozol Bluefish'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Anastrozole') from medicine where trade_name='Anastrozol Teva'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Anidulafungin') from medicine where trade_name='Anidulafungin Sandoz'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Anidulafungin') from medicine where trade_name='Anidulafungina Accord'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Aripiprazole') from medicine where trade_name='Abilify Maintena'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Aripiprazole') from medicine where trade_name='Abilify'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Aripiprazole') from medicine where trade_name='Apiprax'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ascorbic acid - vitamin C') from medicine where trade_name='AntyGrypin dzień'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ascorbic acid - vitamin C') from medicine where trade_name='AntyGrypin noc'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ascorbic acid - vitamin C') from medicine where trade_name='Apap Przeziębienie Junior'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ascorbic acid - vitamin C') from medicine where trade_name='Apap Przeziębienie'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ascorbic acid - vitamin C') from medicine where trade_name='Apap ból i gorączka C Plus'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Atorvastatin') from medicine where trade_name='Amlator'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Atorvastatin') from medicine where trade_name='Apo-Atorva'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Azelastine') from medicine where trade_name='Acatar Allergy'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Bacitracin') from medicine where trade_name='Altabactin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Benzydamine') from medicine where trade_name='Actusept'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Betahistine') from medicine where trade_name='ApoBetina'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Biperiden') from medicine where trade_name='Akineton SR'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Biperiden') from medicine where trade_name='Akineton'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Boric acid') from medicine where trade_name='Antypot'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Brigatinib') from medicine where trade_name='Alunbrig'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Brimonidine') from medicine where trade_name='Alphagan'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Budesonide') from medicine where trade_name='Airbufo Forspiro'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Caffeine') from medicine where trade_name='AntyGrypin dzień'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Caffeine') from medicine where trade_name='Apap Extra'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Calcium dobesilate') from medicine where trade_name='Adproctin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Carbamazepine') from medicine where trade_name='Amizepin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Celecoxib') from medicine where trade_name='Aclexa'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Cetirizine') from medicine where trade_name='Alermed'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Cetirizine') from medicine where trade_name='Alerzina'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Cetirizine') from medicine where trade_name='AlleMax'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Cetirizine') from medicine where trade_name='Allertec WZF'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Cetirizine') from medicine where trade_name='Allertec'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Cetirizine') from medicine where trade_name='Amertil Bio'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Cetirizine') from medicine where trade_name='Amertil'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Chloroprocaine') from medicine where trade_name='Ampres'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Chlorpheniramine') from medicine where trade_name='AntyGrypin noc'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ciclesonide') from medicine where trade_name='Alvesco'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Clarithromycin') from medicine where trade_name='Apiclar'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Clindamycin') from medicine where trade_name='Acnatac'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Clomipramine') from medicine where trade_name='Anafranil SR'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Clomipramine') from medicine where trade_name='Anafranil'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Clopidogrel') from medicine where trade_name='Agregex'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Codeine') from medicine where trade_name='Antidol'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Colecalciferol - vitamin D3') from medicine where trade_name='Alantavit'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Crataegus sp.') from medicine where trade_name='Antinervinum'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Cyproterone') from medicine where trade_name='Androcur'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Darvadstrocel') from medicine where trade_name='Alofisel'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Desloratadine') from medicine where trade_name='Aerius'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Desloratadine') from medicine where trade_name='AlergoTeva'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Desloratadine') from medicine where trade_name='Aleric Deslo Active'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Dexpanthenol') from medicine where trade_name='Acodin Duo'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Dexpanthenol') from medicine where trade_name='Alantan Plus'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Dextromethorphan') from medicine where trade_name='Acodin Duo'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Dextromethorphan') from medicine where trade_name='Acodin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Dextromethorphan') from medicine where trade_name='Acti-trin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Dextromethorphan') from medicine where trade_name='Actifed'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Dextromethorphan') from medicine where trade_name='Agrypin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Diosmin') from medicine where trade_name='Aflavic Comfort'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Diosmin') from medicine where trade_name='Aflavic Max'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Diphenhydramine') from medicine where trade_name='Apap Noc'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Disulfiram') from medicine where trade_name='Anticol'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Doxazosin') from medicine where trade_name='Adadox'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Dutasteride') from medicine where trade_name='Adadut'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Dutasteride') from medicine where trade_name='Adatam Duo'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Epinephrine') from medicine where trade_name='Adrenalina Aguettant'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Epinephrine') from medicine where trade_name='Adrenalina WZF 0,1%'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Epinephrine') from medicine where trade_name='Adrenalina WZF'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Erenumab') from medicine where trade_name='Aimovig'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Erythromycin') from medicine where trade_name='Aknemycin Plus'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Erythromycin') from medicine where trade_name='Aknemycin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Escitalopram') from medicine where trade_name='Aciprex'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Estradiol and drospirenone') from medicine where trade_name='Angeliq'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Estradiol and norethisterone') from medicine where trade_name='Activelle'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Estradiol') from medicine where trade_name='Alpicort E'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Everolimus') from medicine where trade_name='Afinitor'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Febuxostat') from medicine where trade_name='Adenuric'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Fexofenadine') from medicine where trade_name='Allegra Telfast 180'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Fexofenadine') from medicine where trade_name='Allegra'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Fexofenadine') from medicine where trade_name='Allertec Fexo'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Filgrastim') from medicine where trade_name='Accofil'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Finasteride') from medicine where trade_name='Adaster'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Finasteride') from medicine where trade_name='Androstatin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Finasteride') from medicine where trade_name='Androster'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Finasteride') from medicine where trade_name='Antiprost'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Fluoxetine') from medicine where trade_name='Andepin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Fluticasone') from medicine where trade_name='AirFluSal Forspiro'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Folic acid') from medicine where trade_name='Acidum folicum Hasco'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Folic acid') from medicine where trade_name='Acidum folicum Richter'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Formoterol') from medicine where trade_name='Airbufo Forspiro'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Fosfomycin') from medicine where trade_name='Afastural'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Fremanezumab') from medicine where trade_name='Ajovy'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Glimepiride') from medicine where trade_name='Amaryl'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Hydrochlorothiazide') from medicine where trade_name='Actelsar HCT'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Hydrochlorothiazide') from medicine where trade_name='Ampril HD'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Hydrochlorothiazide') from medicine where trade_name='Ampril HL'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ibuprofen') from medicine where trade_name='Acatar Zatoki'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ibuprofen') from medicine where trade_name='Apap intense'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Imiquimod') from medicine where trade_name='Aldara'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Isotretinoin') from medicine where trade_name='Aknenormin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ketorolac') from medicine where trade_name='Acular'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Laronidase') from medicine where trade_name='Aldurazyme'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Latanoprost') from medicine where trade_name='Akistan Duo'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Latanoprost') from medicine where trade_name='Akistan'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Levocetirizine') from medicine where trade_name='Alergimed'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Lidocaine') from medicine where trade_name='Aesculan'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Lidocaine') from medicine where trade_name='Anesderm'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Losartan') from medicine where trade_name='Alortia'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Melphalan') from medicine where trade_name='Alkeran'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Minoxidil') from medicine where trade_name='Alocutan Forte'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Minoxidil') from medicine where trade_name='Alocutan'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Minoxidil') from medicine where trade_name='Alopexy'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Mometasone') from medicine where trade_name='Aleric Spray'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Naltrexone') from medicine where trade_name='Adepend'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Naproxen') from medicine where trade_name='Aleve'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Naproxen') from medicine where trade_name='Anapran'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Neomycin') from medicine where trade_name='Altabactin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Netupitant') from medicine where trade_name='Akynzeo'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Olanzapine') from medicine where trade_name='Anzorin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Omeprazole') from medicine where trade_name='Agastin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Oxycodone') from medicine where trade_name='Accordeon'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Oxymetazoline') from medicine where trade_name='Acatar Control'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Oxymetazoline') from medicine where trade_name='Afrin ND'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Oxymetazoline') from medicine where trade_name='Afrin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Palonosetron') from medicine where trade_name='Akynzeo'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Palonosetron') from medicine where trade_name='Aloxi'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Pantoprazole') from medicine where trade_name='Anesteloc Max'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Pantoprazole') from medicine where trade_name='Anesteloc'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='Acenol'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='Agrypin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='Antidol'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='AntyGrypin noc'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='Apap Caps'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='Apap Extra'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='Apap Junior'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='Apap Noc'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='Apap Przeziębienie Junior'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='Apap Przeziębienie'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='Apap ból i gorączka C Plus'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='Apap dla dzieci Forte'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='Apap intense'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Paracetamol') from medicine where trade_name='Apap'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Pentoxifylline') from medicine where trade_name='Agapurin SR'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Pentoxifylline') from medicine where trade_name='Agapurin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Perindopril') from medicine where trade_name='Amlessa'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Perindopril') from medicine where trade_name='Amlessini'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Phenylephrine') from medicine where trade_name='Apap Przeziębienie Junior'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Phenylephrine') from medicine where trade_name='Apap Przeziębienie'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Policresulen') from medicine where trade_name='Albothyl'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Polidocanol') from medicine where trade_name='Aethoxysklerol'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Prednisolone') from medicine where trade_name='Alpicort E'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Prednisolone') from medicine where trade_name='Alpicort'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Prilocaine') from medicine where trade_name='Anesderm'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Proxymetacaine') from medicine where trade_name='Alcaine'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Pseudoephedrine') from medicine where trade_name='Acatar Acti-Tabs'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Pseudoephedrine') from medicine where trade_name='Acatar Zatoki'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Pseudoephedrine') from medicine where trade_name='Acti-trin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Pseudoephedrine') from medicine where trade_name='Actifed'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Pseudoephedrine') from medicine where trade_name='Agrypin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Quinapril') from medicine where trade_name='Accupro'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Quinapril') from medicine where trade_name='Acurenal'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ramipril') from medicine where trade_name='Ampril HD'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ramipril') from medicine where trade_name='Ampril HL'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ramipril') from medicine where trade_name='Ampril'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Riociguat') from medicine where trade_name='Adempas'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ropinirole') from medicine where trade_name='Adartrel'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ropinirole') from medicine where trade_name='Aparxon PR'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Rupatadine') from medicine where trade_name='Alerprof'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Salicylic acid') from medicine where trade_name='Acerin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Salicylic acid') from medicine where trade_name='Alpicort E'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Salicylic acid') from medicine where trade_name='Alpicort'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Salicylic acid') from medicine where trade_name='Antypot'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Salmeterol') from medicine where trade_name='AirFluSal Forspiro'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Solifenacin') from medicine where trade_name='Adablok'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Sulfogaiacol') from medicine where trade_name='Apipulmol'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Sulfogaiacol') from medicine where trade_name='Apitussic'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Tacrolimus') from medicine where trade_name='Advagraf'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Tadalafil') from medicine where trade_name='Adalift'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Tamsulosin') from medicine where trade_name='Adatam Duo'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Tamsulosin') from medicine where trade_name='Adatam'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Telmisartan') from medicine where trade_name='Actelsar HCT'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Telmisartan') from medicine where trade_name='Actelsar'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Testosterone') from medicine where trade_name='Androtop'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ticlopidine') from medicine where trade_name='Aclotin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Ticlopidine') from medicine where trade_name='Apo-Clodin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Timolol') from medicine where trade_name='Akistan Duo'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Tramadol') from medicine where trade_name='Adamon SR'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Tretinoin') from medicine where trade_name='Acnatac'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Tretinoin') from medicine where trade_name='Aknemycin Plus'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Trifarotene') from medicine where trade_name='Aklief'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Triprolidine') from medicine where trade_name='Acatar Acti-Tabs'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Triprolidine') from medicine where trade_name='Acti-trin'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Triprolidine') from medicine where trade_name='Actifed'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Umeclidinium bromide') from medicine where trade_name='Anoro Ellipta'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Valeriana officinalis') from medicine where trade_name='Antinervinum'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Venlafaxine') from medicine where trade_name='Alventa'
+union select medicine_id, (select active_substance_id from active_substance where international_name='Vilanterol') from medicine where trade_name='Anoro Ellipta';
+
+
+insert into warehouse_order(pharmacy_id, order_date, order_status) values
+    (85, '2022-04-07', 'being_fulfilled'),
+    (41, '2021-09-28', 'being_fulfilled'),
+    (26, '2022-03-07', 'not_yet_placed'),
+    (194, '2020-10-18', 'delivered'),
+    (230, '2020-07-29', 'being_fulfilled'),
+    (210, '2021-10-03', 'not_yet_placed'),
+    (127, '2021-08-18', 'being_fulfilled'),
+    (41, '2022-02-26', 'being_fulfilled'),
+    (203, '2020-08-08', 'delivered'),
+    (128, '2021-07-06', 'being_fulfilled'),
+    (155, '2021-08-11', 'not_yet_placed'),
+    (38, '2021-11-12', 'delivered'),
+    (22, '2020-11-12', 'not_yet_placed'),
+    (185, '2021-12-12', 'delivered'),
+    (36, '2022-04-10', 'being_fulfilled'),
+    (177, '2022-01-22', 'not_yet_placed'),
+    (78, '2021-06-01', 'delivered'),
+    (42, '2022-01-10', 'delivered'),
+    (180, '2021-05-25', 'delivered'),
+    (140, '2021-07-09', 'being_fulfilled'),
+    (243, '2020-11-04', 'being_fulfilled'),
+    (107, '2020-06-18', 'being_fulfilled'),
+    (66, '2021-12-10', 'being_fulfilled'),
+    (17, '2021-06-10', 'being_fulfilled'),
+    (32, '2020-06-11', 'delivered'),
+    (161, '2021-01-17', 'delivered'),
+    (48, '2020-12-05', 'delivered'),
+    (206, '2021-04-24', 'not_yet_placed'),
+    (94, '2021-04-26', 'being_fulfilled'),
+    (37, '2020-08-29', 'not_yet_placed'),
+    (21, '2021-02-15', 'not_yet_placed'),
+    (245, '2022-03-04', 'being_fulfilled'),
+    (118, '2021-10-10', 'delivered'),
+    (108, '2020-12-09', 'being_fulfilled'),
+    (75, '2021-09-11', 'not_yet_placed'),
+    (251, '2020-06-12', 'delivered'),
+    (156, '2022-03-06', 'delivered'),
+    (12, '2022-03-18', 'not_yet_placed'),
+    (17, '2020-11-07', 'delivered'),
+    (75, '2021-06-21', 'being_fulfilled'),
+    (104, '2021-01-25', 'being_fulfilled'),
+    (141, '2022-05-22', 'not_yet_placed'),
+    (172, '2021-04-21', 'not_yet_placed'),
+    (71, '2020-07-05', 'not_yet_placed'),
+    (242, '2021-02-02', 'delivered'),
+    (66, '2020-08-09', 'delivered'),
+    (164, '2022-04-29', 'not_yet_placed'),
+    (250, '2021-02-15', 'delivered'),
+    (243, '2020-09-02', 'delivered'),
+    (203, '2021-12-24', 'not_yet_placed'),
+    (226, '2022-01-25', 'delivered'),
+    (77, '2021-07-30', 'delivered'),
+    (207, '2020-07-27', 'delivered'),
+    (99, '2021-11-06', 'delivered'),
+    (3, '2022-03-03', 'delivered'),
+    (223, '2021-04-02', 'delivered'),
+    (33, '2021-03-05', 'being_fulfilled'),
+    (27, '2022-04-06', 'not_yet_placed'),
+    (194, '2021-12-27', 'delivered'),
+    (158, '2021-08-19', 'not_yet_placed'),
+    (55, '2022-02-08', 'being_fulfilled'),
+    (76, '2021-03-23', 'not_yet_placed'),
+    (223, '2022-02-27', 'being_fulfilled'),
+    (245, '2021-04-18', 'being_fulfilled'),
+    (9, '2021-04-30', 'being_fulfilled'),
+    (132, '2020-06-09', 'being_fulfilled'),
+    (113, '2021-07-16', 'being_fulfilled'),
+    (86, '2021-05-26', 'not_yet_placed'),
+    (92, '2020-06-20', 'not_yet_placed'),
+    (23, '2021-09-04', 'delivered'),
+    (191, '2022-02-21', 'being_fulfilled'),
+    (153, '2021-05-15', 'not_yet_placed'),
+    (25, '2020-06-20', 'not_yet_placed'),
+    (176, '2021-01-29', 'delivered'),
+    (146, '2022-01-16', 'delivered'),
+    (119, '2022-04-12', 'being_fulfilled'),
+    (162, '2021-09-10', 'delivered'),
+    (96, '2021-03-01', 'not_yet_placed'),
+    (145, '2021-07-25', 'delivered'),
+    (195, '2020-11-24', 'delivered'),
+    (239, '2020-05-20', 'not_yet_placed'),
+    (9, '2021-06-09', 'delivered'),
+    (109, '2020-05-14', 'delivered'),
+    (223, '2020-10-16', 'delivered'),
+    (136, '2022-05-20', 'not_yet_placed'),
+    (152, '2020-08-06', 'being_fulfilled'),
+    (76, '2020-07-18', 'not_yet_placed'),
+    (76, '2021-11-20', 'being_fulfilled'),
+    (197, '2022-02-07', 'delivered'),
+    (43, '2020-08-27', 'being_fulfilled'),
+    (76, '2020-05-29', 'not_yet_placed'),
+    (200, '2021-07-10', 'not_yet_placed'),
+    (221, '2020-11-04', 'delivered'),
+    (28, '2021-07-15', 'being_fulfilled'),
+    (130, '2021-01-14', 'delivered'),
+    (145, '2022-01-22', 'being_fulfilled'),
+    (244, '2021-07-05', 'being_fulfilled'),
+    (48, '2020-06-11', 'delivered'),
+    (7, '2021-10-26', 'not_yet_placed'),
+    (5, '2021-08-29', 'being_fulfilled'),
+    (125, '2021-10-08', 'being_fulfilled'),
+    (119, '2021-05-31', 'delivered'),
+    (196, '2020-10-20', 'delivered'),
+    (25, '2020-12-01', 'delivered'),
+    (142, '2020-10-12', 'being_fulfilled'),
+    (33, '2022-01-06', 'being_fulfilled'),
+    (226, '2021-07-10', 'being_fulfilled'),
+    (228, '2021-09-02', 'not_yet_placed'),
+    (111, '2020-08-06', 'delivered'),
+    (228, '2021-07-04', 'delivered'),
+    (16, '2020-11-29', 'delivered'),
+    (221, '2021-04-28', 'being_fulfilled'),
+    (172, '2020-06-28', 'not_yet_placed'),
+    (183, '2020-05-17', 'not_yet_placed'),
+    (133, '2021-11-06', 'being_fulfilled'),
+    (173, '2020-08-24', 'being_fulfilled'),
+    (217, '2020-09-01', 'delivered'),
+    (246, '2022-03-31', 'being_fulfilled'),
+    (136, '2021-03-22', 'not_yet_placed'),
+    (120, '2022-02-15', 'delivered'),
+    (5, '2020-05-19', 'delivered'),
+    (226, '2020-06-28', 'delivered'),
+    (135, '2022-04-20', 'delivered'),
+    (103, '2021-03-09', 'not_yet_placed'),
+    (57, '2020-10-23', 'being_fulfilled'),
+    (90, '2021-12-26', 'being_fulfilled'),
+    (242, '2022-01-09', 'delivered'),
+    (120, '2020-12-10', 'delivered'),
+    (237, '2021-01-20', 'not_yet_placed'),
+    (70, '2022-04-26', 'being_fulfilled'),
+    (223, '2020-11-23', 'not_yet_placed'),
+    (116, '2021-01-07', 'not_yet_placed'),
+    (208, '2021-03-14', 'being_fulfilled'),
+    (89, '2020-10-07', 'not_yet_placed'),
+    (151, '2021-07-27', 'delivered'),
+    (223, '2021-08-23', 'not_yet_placed'),
+    (94, '2020-07-10', 'being_fulfilled'),
+    (7, '2022-03-02', 'delivered'),
+    (169, '2020-08-16', 'not_yet_placed'),
+    (215, '2022-03-07', 'delivered'),
+    (28, '2020-09-11', 'not_yet_placed'),
+    (129, '2021-09-23', 'not_yet_placed'),
+    (14, '2022-03-15', 'being_fulfilled'),
+    (150, '2021-09-06', 'being_fulfilled'),
+    (164, '2021-10-12', 'being_fulfilled'),
+    (163, '2022-03-07', 'not_yet_placed'),
+    (32, '2021-11-16', 'delivered'),
+    (154, '2021-08-17', 'being_fulfilled'),
+    (37, '2021-11-01', 'not_yet_placed'),
+    (90, '2020-07-26', 'not_yet_placed'),
+    (42, '2021-06-15', 'being_fulfilled'),
+    (3, '2021-08-16', 'being_fulfilled'),
+    (156, '2022-02-05', 'delivered'),
+    (251, '2020-07-28', 'delivered'),
+    (207, '2020-10-06', 'being_fulfilled'),
+    (187, '2020-10-29', 'not_yet_placed'),
+    (35, '2021-05-29', 'not_yet_placed'),
+    (15, '2021-01-23', 'being_fulfilled'),
+    (229, '2021-10-05', 'delivered'),
+    (148, '2021-06-18', 'delivered'),
+    (149, '2021-08-08', 'delivered'),
+    (135, '2021-10-07', 'delivered'),
+    (4, '2020-07-12', 'delivered'),
+    (106, '2021-06-09', 'being_fulfilled'),
+    (116, '2020-12-14', 'not_yet_placed'),
+    (148, '2021-01-25', 'delivered'),
+    (27, '2022-01-29', 'delivered'),
+    (217, '2021-08-31', 'not_yet_placed'),
+    (16, '2021-11-07', 'not_yet_placed'),
+    (123, '2022-02-06', 'delivered'),
+    (129, '2020-10-18', 'delivered'),
+    (64, '2021-05-05', 'being_fulfilled'),
+    (99, '2021-09-15', 'delivered'),
+    (119, '2022-03-21', 'delivered'),
+    (1, '2022-01-17', 'delivered'),
+    (128, '2021-10-18', 'not_yet_placed'),
+    (160, '2020-11-21', 'delivered'),
+    (174, '2020-11-17', 'delivered'),
+    (37, '2022-01-25', 'being_fulfilled'),
+    (227, '2022-03-03', 'delivered'),
+    (229, '2021-03-09', 'being_fulfilled'),
+    (138, '2021-03-03', 'being_fulfilled'),
+    (108, '2020-10-05', 'not_yet_placed'),
+    (136, '2020-10-16', 'delivered'),
+    (165, '2020-07-17', 'being_fulfilled'),
+    (20, '2021-04-16', 'not_yet_placed'),
+    (120, '2021-12-11', 'not_yet_placed'),
+    (148, '2020-06-05', 'being_fulfilled'),
+    (125, '2022-03-04', 'not_yet_placed'),
+    (229, '2020-06-11', 'delivered'),
+    (79, '2021-03-12', 'not_yet_placed'),
+    (76, '2022-02-13', 'being_fulfilled'),
+    (94, '2021-03-18', 'being_fulfilled'),
+    (247, '2022-04-02', 'not_yet_placed'),
+    (125, '2020-09-18', 'not_yet_placed'),
+    (22, '2022-03-16', 'being_fulfilled'),
+    (207, '2021-12-21', 'delivered'),
+    (61, '2021-10-01', 'delivered'),
+    (44, '2020-06-26', 'being_fulfilled'),
+    (133, '2021-07-30', 'delivered'),
+    (17, '2022-05-19', 'not_yet_placed'),
+    (93, '2021-05-13', 'not_yet_placed'),
+    (2, '2021-09-25', 'delivered'),
+    (96, '2021-06-24', 'delivered'),
+    (107, '2020-11-02', 'delivered'),
+    (107, '2020-05-29', 'delivered'),
+    (26, '2020-10-13', 'being_fulfilled'),
+    (4, '2022-03-03', 'delivered'),
+    (12, '2022-01-14', 'being_fulfilled'),
+    (54, '2020-11-30', 'delivered'),
+    (189, '2021-08-04', 'not_yet_placed'),
+    (117, '2021-03-09', 'not_yet_placed'),
+    (230, '2020-12-10', 'being_fulfilled'),
+    (122, '2022-01-05', 'being_fulfilled'),
+    (139, '2020-11-14', 'not_yet_placed'),
+    (3, '2020-08-27', 'not_yet_placed'),
+    (105, '2020-06-16', 'delivered'),
+    (154, '2020-09-29', 'delivered'),
+    (249, '2022-05-07', 'being_fulfilled'),
+    (186, '2021-03-14', 'being_fulfilled'),
+    (28, '2021-09-14', 'not_yet_placed'),
+    (178, '2021-05-11', 'being_fulfilled'),
+    (145, '2021-09-08', 'not_yet_placed'),
+    (245, '2021-05-07', 'being_fulfilled'),
+    (50, '2021-03-11', 'delivered'),
+    (88, '2021-03-18', 'being_fulfilled'),
+    (211, '2021-02-10', 'not_yet_placed'),
+    (83, '2022-01-20', 'not_yet_placed'),
+    (218, '2022-05-21', 'delivered'),
+    (248, '2021-03-20', 'being_fulfilled'),
+    (57, '2021-11-04', 'being_fulfilled'),
+    (243, '2021-01-21', 'being_fulfilled'),
+    (89, '2021-07-23', 'delivered'),
+    (69, '2020-06-22', 'not_yet_placed'),
+    (217, '2021-09-16', 'being_fulfilled'),
+    (128, '2021-12-20', 'not_yet_placed'),
+    (169, '2021-05-30', 'delivered'),
+    (228, '2021-05-09', 'delivered'),
+    (185, '2021-02-14', 'delivered'),
+    (12, '2020-10-06', 'being_fulfilled'),
+    (228, '2021-02-11', 'not_yet_placed'),
+    (200, '2022-01-27', 'delivered'),
+    (223, '2020-10-27', 'not_yet_placed'),
+    (227, '2020-08-24', 'not_yet_placed'),
+    (173, '2021-04-28', 'being_fulfilled'),
+    (172, '2020-11-03', 'being_fulfilled'),
+    (44, '2021-10-05', 'not_yet_placed'),
+    (59, '2022-01-19', 'being_fulfilled'),
+    (239, '2021-10-31', 'delivered'),
+    (151, '2022-03-04', 'delivered'),
+    (12, '2020-07-21', 'being_fulfilled'),
+    (234, '2021-12-14', 'delivered'),
+    (37, '2020-08-02', 'not_yet_placed'),
+    (30, '2022-04-24', 'delivered'),
+    (85, '2021-11-24', 'not_yet_placed'),
+    (8, '2022-03-12', 'being_fulfilled'),
+    (189, '2020-09-26', 'not_yet_placed'),
+    (103, '2021-04-23', 'being_fulfilled'),
+    (92, '2021-11-24', 'not_yet_placed'),
+    (192, '2020-08-13', 'delivered'),
+    (50, '2021-06-01', 'not_yet_placed'),
+    (217, '2020-10-04', 'not_yet_placed'),
+    (140, '2020-05-25', 'delivered'),
+    (64, '2021-11-17', 'being_fulfilled'),
+    (205, '2021-11-25', 'delivered'),
+    (226, '2022-02-04', 'being_fulfilled'),
+    (63, '2021-03-25', 'not_yet_placed'),
+    (130, '2021-02-21', 'not_yet_placed'),
+    (105, '2021-04-03', 'delivered'),
+    (19, '2021-02-26', 'being_fulfilled'),
+    (159, '2022-02-08', 'not_yet_placed'),
+    (71, '2022-01-26', 'delivered'),
+    (123, '2021-07-25', 'delivered'),
+    (49, '2020-10-06', 'delivered'),
+    (61, '2020-06-13', 'delivered'),
+    (131, '2021-10-14', 'delivered'),
+    (240, '2020-09-14', 'delivered'),
+    (81, '2022-04-18', 'delivered'),
+    (175, '2020-08-13', 'delivered'),
+    (203, '2021-07-19', 'not_yet_placed'),
+    (148, '2020-08-10', 'being_fulfilled'),
+    (129, '2020-10-02', 'delivered'),
+    (214, '2020-07-21', 'being_fulfilled'),
+    (233, '2021-10-21', 'not_yet_placed'),
+    (221, '2021-05-21', 'not_yet_placed'),
+    (20, '2021-10-14', 'delivered'),
+    (157, '2021-09-27', 'delivered'),
+    (101, '2022-01-08', 'delivered'),
+    (108, '2020-05-26', 'not_yet_placed'),
+    (11, '2021-02-02', 'delivered'),
+    (84, '2020-08-08', 'not_yet_placed'),
+    (224, '2020-05-12', 'not_yet_placed'),
+    (129, '2021-09-26', 'delivered'),
+    (191, '2021-07-13', 'being_fulfilled'),
+    (32, '2022-01-22', 'being_fulfilled'),
+    (90, '2020-10-23', 'delivered'),
+    (17, '2021-12-08', 'not_yet_placed'),
+    (110, '2021-08-20', 'being_fulfilled'),
+    (128, '2021-01-30', 'delivered'),
+    (40, '2022-02-12', 'delivered'),
+    (54, '2021-02-06', 'not_yet_placed'),
+    (202, '2022-02-13', 'delivered'),
+    (232, '2021-06-24', 'delivered'),
+    (212, '2020-10-16', 'not_yet_placed'),
+    (232, '2020-08-31', 'being_fulfilled'),
+    (71, '2021-01-05', 'not_yet_placed'),
+    (252, '2022-04-19', 'being_fulfilled'),
+    (199, '2021-03-06', 'not_yet_placed'),
+    (59, '2022-03-18', 'delivered'),
+    (110, '2022-04-29', 'delivered'),
+    (115, '2022-01-03', 'not_yet_placed'),
+    (158, '2021-01-17', 'not_yet_placed'),
+    (155, '2020-06-15', 'not_yet_placed'),
+    (115, '2022-03-20', 'delivered'),
+    (41, '2020-09-04', 'not_yet_placed'),
+    (59, '2021-09-07', 'delivered'),
+    (174, '2021-01-06', 'being_fulfilled'),
+    (21, '2021-06-29', 'being_fulfilled'),
+    (22, '2022-01-26', 'not_yet_placed'),
+    (91, '2020-10-24', 'delivered'),
+    (27, '2021-09-23', 'not_yet_placed'),
+    (231, '2022-04-16', 'not_yet_placed'),
+    (180, '2020-11-02', 'delivered'),
+    (237, '2020-09-26', 'being_fulfilled'),
+    (23, '2020-12-30', 'being_fulfilled'),
+    (35, '2021-12-15', 'delivered'),
+    (57, '2022-05-15', 'not_yet_placed'),
+    (80, '2020-05-16', 'not_yet_placed'),
+    (63, '2021-05-03', 'delivered'),
+    (227, '2021-04-14', 'not_yet_placed'),
+    (10, '2021-09-05', 'not_yet_placed'),
+    (75, '2020-06-29', 'not_yet_placed'),
+    (97, '2021-01-16', 'not_yet_placed'),
+    (235, '2020-08-14', 'not_yet_placed'),
+    (67, '2021-06-18', 'being_fulfilled'),
+    (251, '2022-03-01', 'being_fulfilled'),
+    (217, '2020-08-06', 'delivered'),
+    (27, '2022-02-28', 'delivered'),
+    (152, '2022-04-21', 'not_yet_placed'),
+    (28, '2020-10-24', 'delivered'),
+    (106, '2021-08-04', 'delivered'),
+    (210, '2020-07-16', 'not_yet_placed'),
+    (244, '2021-09-05', 'delivered'),
+    (70, '2020-12-16', 'delivered'),
+    (149, '2021-02-18', 'delivered'),
+    (58, '2020-07-07', 'delivered'),
+    (228, '2021-08-27', 'not_yet_placed'),
+    (198, '2022-01-27', 'being_fulfilled'),
+    (81, '2021-03-13', 'not_yet_placed'),
+    (205, '2021-11-25', 'being_fulfilled'),
+    (105, '2022-04-14', 'being_fulfilled'),
+    (57, '2021-10-10', 'delivered'),
+    (26, '2022-05-11', 'not_yet_placed'),
+    (197, '2022-05-19', 'being_fulfilled'),
+    (139, '2022-05-24', 'being_fulfilled'),
+    (26, '2021-09-06', 'delivered'),
+    (56, '2022-05-25', 'not_yet_placed'),
+    (194, '2021-11-03', 'being_fulfilled'),
+    (216, '2021-11-25', 'not_yet_placed'),
+    (246, '2022-01-31', 'being_fulfilled'),
+    (139, '2022-02-27', 'delivered'),
+    (93, '2022-03-04', 'not_yet_placed'),
+    (220, '2020-12-30', 'delivered'),
+    (77, '2020-11-24', 'not_yet_placed'),
+    (144, '2020-11-16', 'delivered'),
+    (165, '2021-05-09', 'being_fulfilled'),
+    (164, '2021-10-22', 'not_yet_placed'),
+    (228, '2020-10-05', 'not_yet_placed'),
+    (16, '2021-01-22', 'being_fulfilled'),
+    (37, '2020-11-11', 'being_fulfilled'),
+    (191, '2022-04-21', 'not_yet_placed'),
+    (167, '2021-04-09', 'not_yet_placed'),
+    (84, '2022-05-23', 'being_fulfilled'),
+    (117, '2021-07-25', 'not_yet_placed'),
+    (72, '2021-11-02', 'delivered'),
+    (94, '2020-06-03', 'delivered'),
+    (203, '2020-10-15', 'not_yet_placed'),
+    (247, '2020-12-10', 'delivered'),
+    (28, '2020-12-17', 'being_fulfilled'),
+    (27, '2022-03-15', 'delivered'),
+    (96, '2020-12-09', 'being_fulfilled'),
+    (37, '2022-01-30', 'being_fulfilled'),
+    (193, '2021-07-26', 'being_fulfilled'),
+    (152, '2020-07-30', 'not_yet_placed'),
+    (198, '2021-03-01', 'being_fulfilled'),
+    (212, '2021-12-19', 'delivered'),
+    (147, '2021-06-16', 'not_yet_placed'),
+    (22, '2022-02-27', 'being_fulfilled'),
+    (64, '2020-10-13', 'being_fulfilled'),
+    (33, '2022-04-08', 'delivered'),
+    (182, '2021-07-27', 'delivered'),
+    (87, '2020-12-30', 'not_yet_placed'),
+    (94, '2021-05-01', 'not_yet_placed'),
+    (78, '2021-08-10', 'being_fulfilled'),
+    (250, '2022-02-08', 'being_fulfilled'),
+    (170, '2021-06-22', 'being_fulfilled'),
+    (181, '2022-02-18', 'delivered'),
+    (154, '2021-03-28', 'not_yet_placed'),
+    (70, '2020-10-02', 'not_yet_placed'),
+    (98, '2021-08-11', 'delivered'),
+    (123, '2020-12-03', 'being_fulfilled'),
+    (65, '2020-11-06', 'being_fulfilled'),
+    (175, '2021-12-25', 'not_yet_placed'),
+    (32, '2021-06-16', 'being_fulfilled'),
+    (164, '2021-11-24', 'being_fulfilled'),
+    (30, '2021-09-11', 'delivered'),
+    (25, '2020-12-18', 'delivered'),
+    (121, '2021-08-26', 'being_fulfilled'),
+    (43, '2021-12-08', 'being_fulfilled'),
+    (18, '2021-07-11', 'not_yet_placed'),
+    (37, '2020-08-13', 'being_fulfilled'),
+    (205, '2021-09-20', 'not_yet_placed'),
+    (7, '2022-01-10', 'being_fulfilled'),
+    (89, '2021-03-28', 'not_yet_placed'),
+    (142, '2020-09-11', 'delivered'),
+    (225, '2021-02-08', 'being_fulfilled'),
+    (86, '2021-04-20', 'not_yet_placed'),
+    (97, '2021-06-23', 'being_fulfilled'),
+    (231, '2022-04-09', 'being_fulfilled'),
+    (47, '2020-05-24', 'not_yet_placed'),
+    (147, '2021-01-12', 'being_fulfilled'),
+    (29, '2022-05-07', 'being_fulfilled'),
+    (126, '2021-06-03', 'being_fulfilled'),
+    (129, '2020-11-07', 'not_yet_placed'),
+    (241, '2020-09-12', 'delivered'),
+    (155, '2021-08-07', 'not_yet_placed'),
+    (43, '2021-08-05', 'not_yet_placed'),
+    (90, '2022-04-03', 'delivered'),
+    (140, '2020-12-21', 'delivered'),
+    (139, '2021-09-07', 'not_yet_placed'),
+    (152, '2021-04-18', 'not_yet_placed'),
+    (27, '2021-06-18', 'delivered'),
+    (32, '2021-04-20', 'being_fulfilled'),
+    (30, '2020-12-21', 'delivered'),
+    (191, '2022-04-22', 'being_fulfilled'),
+    (103, '2022-01-22', 'delivered'),
+    (201, '2021-03-14', 'being_fulfilled'),
+    (82, '2021-07-27', 'being_fulfilled'),
+    (192, '2021-10-26', 'not_yet_placed'),
+    (19, '2021-07-13', 'not_yet_placed'),
+    (64, '2020-06-16', 'not_yet_placed'),
+    (18, '2022-05-08', 'not_yet_placed'),
+    (19, '2020-10-10', 'delivered'),
+    (141, '2022-04-12', 'not_yet_placed'),
+    (31, '2020-12-30', 'delivered'),
+    (237, '2020-10-01', 'being_fulfilled'),
+    (108, '2021-10-28', 'not_yet_placed'),
+    (45, '2021-07-16', 'not_yet_placed'),
+    (171, '2022-05-21', 'delivered'),
+    (233, '2021-03-25', 'not_yet_placed'),
+    (62, '2021-02-12', 'delivered'),
+    (151, '2021-10-29', 'being_fulfilled'),
+    (194, '2020-05-25', 'not_yet_placed'),
+    (111, '2021-07-18', 'delivered'),
+    (196, '2021-03-28', 'delivered'),
+    (74, '2021-12-17', 'delivered'),
+    (90, '2021-12-22', 'being_fulfilled'),
+    (5, '2020-12-15', 'being_fulfilled'),
+    (12, '2020-11-23', 'not_yet_placed'),
+    (147, '2021-05-26', 'being_fulfilled'),
+    (126, '2021-07-21', 'not_yet_placed'),
+    (26, '2020-10-08', 'being_fulfilled'),
+    (120, '2021-08-02', 'delivered'),
+    (215, '2021-11-19', 'being_fulfilled'),
+    (142, '2021-01-17', 'being_fulfilled'),
+    (200, '2021-01-24', 'not_yet_placed'),
+    (30, '2022-02-17', 'delivered'),
+    (61, '2020-06-25', 'being_fulfilled'),
+    (84, '2021-10-14', 'not_yet_placed'),
+    (220, '2021-07-26', 'being_fulfilled'),
+    (249, '2021-12-26', 'not_yet_placed'),
+    (225, '2021-06-20', 'not_yet_placed'),
+    (79, '2021-06-16', 'delivered'),
+    (71, '2020-07-05', 'delivered'),
+    (232, '2020-09-07', 'not_yet_placed'),
+    (16, '2020-07-14', 'delivered'),
+    (73, '2021-05-18', 'being_fulfilled'),
+    (160, '2021-07-15', 'being_fulfilled'),
+    (227, '2022-03-16', 'not_yet_placed'),
+    (82, '2021-11-05', 'being_fulfilled'),
+    (158, '2020-07-07', 'delivered'),
+    (173, '2020-06-13', 'delivered'),
+    (85, '2020-05-19', 'delivered'),
+    (10, '2022-05-07', 'delivered'),
+    (54, '2021-07-13', 'not_yet_placed'),
+    (48, '2022-02-15', 'not_yet_placed'),
+    (60, '2020-12-11', 'not_yet_placed'),
+    (79, '2021-06-05', 'not_yet_placed'),
+    (133, '2021-04-04', 'delivered'),
+    (190, '2021-11-29', 'delivered'),
+    (54, '2021-12-03', 'not_yet_placed'),
+    (157, '2020-12-08', 'not_yet_placed'),
+    (155, '2021-02-07', 'not_yet_placed'),
+    (130, '2022-02-15', 'not_yet_placed'),
+    (189, '2021-11-21', 'delivered'),
+    (102, '2021-09-09', 'not_yet_placed'),
+    (49, '2021-03-27', 'being_fulfilled'),
+    (141, '2022-03-25', 'not_yet_placed'),
+    (143, '2020-05-11', 'not_yet_placed'),
+    (53, '2021-08-02', 'being_fulfilled'),
+    (124, '2021-08-20', 'not_yet_placed'),
+    (61, '2021-05-30', 'being_fulfilled'),
+    (5, '2020-11-24', 'delivered'),
+    (111, '2021-07-10', 'not_yet_placed'),
+    (89, '2022-03-07', 'not_yet_placed'),
+    (227, '2021-11-02', 'being_fulfilled'),
+    (132, '2020-09-21', 'delivered'),
+    (84, '2020-09-17', 'not_yet_placed'),
+    (202, '2021-04-15', 'being_fulfilled'),
+    (49, '2021-11-26', 'delivered'),
+    (103, '2021-02-04', 'not_yet_placed'),
+    (74, '2022-03-07', 'being_fulfilled'),
+    (233, '2020-09-08', 'not_yet_placed'),
+    (176, '2022-02-28', 'not_yet_placed'),
+    (249, '2020-06-10', 'not_yet_placed'),
+    (81, '2020-08-01', 'not_yet_placed'),
+    (32, '2020-10-26', 'delivered'),
+    (36, '2020-10-19', 'being_fulfilled'),
+    (16, '2020-12-04', 'delivered'),
+    (80, '2021-09-23', 'delivered'),
+    (124, '2021-06-12', 'being_fulfilled'),
+    (192, '2021-04-25', 'being_fulfilled'),
+    (239, '2022-04-30', 'being_fulfilled'),
+    (63, '2022-03-26', 'being_fulfilled'),
+    (169, '2020-10-10', 'being_fulfilled'),
+    (243, '2022-02-13', 'being_fulfilled'),
+    (139, '2020-11-28', 'not_yet_placed'),
+    (234, '2020-06-03', 'delivered'),
+    (77, '2020-05-23', 'being_fulfilled'),
+    (55, '2021-04-28', 'not_yet_placed'),
+    (157, '2020-09-05', 'not_yet_placed'),
+    (47, '2022-03-26', 'being_fulfilled'),
+    (140, '2020-07-02', 'delivered'),
+    (231, '2022-03-09', 'delivered'),
+    (94, '2020-08-20', 'being_fulfilled'),
+    (154, '2021-07-08', 'delivered'),
+    (218, '2020-10-01', 'delivered'),
+    (99, '2020-09-07', 'not_yet_placed'),
+    (145, '2020-11-24', 'delivered'),
+    (52, '2021-10-02', 'delivered'),
+    (34, '2021-02-22', 'delivered'),
+    (251, '2020-07-11', 'being_fulfilled'),
+    (55, '2021-02-10', 'delivered'),
+    (55, '2021-09-26', 'delivered'),
+    (24, '2022-05-17', 'delivered'),
+    (142, '2021-01-08', 'not_yet_placed'),
+    (161, '2020-12-07', 'not_yet_placed'),
+    (212, '2020-11-12', 'not_yet_placed'),
+    (125, '2021-04-05', 'delivered'),
+    (153, '2021-03-24', 'delivered'),
+    (142, '2020-11-01', 'delivered'),
+    (202, '2021-11-26', 'being_fulfilled'),
+    (37, '2022-05-06', 'being_fulfilled'),
+    (155, '2021-09-25', 'delivered'),
+    (145, '2021-04-14', 'being_fulfilled'),
+    (177, '2021-12-29', 'delivered'),
+    (168, '2021-01-30', 'delivered'),
+    (187, '2022-03-08', 'not_yet_placed'),
+    (188, '2020-11-14', 'delivered'),
+    (192, '2020-09-19', 'being_fulfilled'),
+    (39, '2021-03-12', 'not_yet_placed'),
+    (250, '2021-03-25', 'not_yet_placed'),
+    (180, '2021-10-03', 'delivered'),
+    (243, '2020-10-06', 'delivered'),
+    (2, '2021-08-07', 'delivered'),
+    (83, '2020-07-24', 'being_fulfilled'),
+    (232, '2021-04-26', 'delivered'),
+    (223, '2021-12-12', 'being_fulfilled'),
+    (185, '2022-03-30', 'being_fulfilled'),
+    (31, '2021-06-13', 'not_yet_placed'),
+    (154, '2021-04-03', 'not_yet_placed'),
+    (62, '2021-07-23', 'not_yet_placed'),
+    (23, '2021-10-18', 'being_fulfilled'),
+    (163, '2020-10-23', 'delivered'),
+    (128, '2021-04-10', 'being_fulfilled'),
+    (102, '2022-04-05', 'being_fulfilled'),
+    (165, '2022-02-14', 'delivered'),
+    (140, '2020-10-03', 'not_yet_placed'),
+    (147, '2021-08-28', 'being_fulfilled'),
+    (147, '2021-04-23', 'being_fulfilled'),
+    (248, '2022-01-17', 'being_fulfilled'),
+    (249, '2021-03-12', 'being_fulfilled'),
+    (6, '2020-10-28', 'being_fulfilled'),
+    (130, '2021-02-08', 'not_yet_placed'),
+    (237, '2021-09-10', 'not_yet_placed'),
+    (173, '2021-01-26', 'not_yet_placed'),
+    (92, '2020-09-22', 'delivered'),
+    (134, '2022-03-23', 'not_yet_placed'),
+    (137, '2022-05-14', 'not_yet_placed'),
+    (111, '2022-05-15', 'delivered'),
+    (235, '2021-10-15', 'delivered'),
+    (162, '2021-02-27', 'not_yet_placed'),
+    (226, '2021-06-07', 'delivered'),
+    (151, '2022-02-14', 'not_yet_placed'),
+    (65, '2020-09-04', 'not_yet_placed'),
+    (131, '2021-07-04', 'not_yet_placed'),
+    (73, '2022-02-13', 'not_yet_placed'),
+    (162, '2021-08-18', 'delivered'),
+    (41, '2021-05-18', 'delivered'),
+    (146, '2021-05-05', 'being_fulfilled'),
+    (246, '2021-07-10', 'being_fulfilled'),
+    (136, '2020-11-16', 'being_fulfilled'),
+    (216, '2020-06-21', 'delivered'),
+    (144, '2020-06-21', 'being_fulfilled'),
+    (203, '2021-09-20', 'being_fulfilled'),
+    (135, '2020-06-23', 'delivered'),
+    (231, '2021-08-03', 'delivered'),
+    (30, '2021-08-04', 'being_fulfilled'),
+    (175, '2022-05-17', 'being_fulfilled'),
+    (142, '2020-05-25', 'not_yet_placed'),
+    (87, '2021-10-19', 'delivered'),
+    (201, '2021-11-02', 'being_fulfilled'),
+    (30, '2020-12-01', 'not_yet_placed'),
+    (214, '2021-08-29', 'being_fulfilled'),
+    (159, '2021-03-06', 'not_yet_placed'),
+    (118, '2020-09-06', 'not_yet_placed'),
+    (15, '2021-02-06', 'being_fulfilled'),
+    (252, '2020-08-25', 'delivered'),
+    (220, '2020-10-08', 'not_yet_placed'),
+    (66, '2020-11-29', 'delivered'),
+    (190, '2021-05-09', 'being_fulfilled'),
+    (95, '2021-12-28', 'not_yet_placed'),
+    (157, '2021-12-22', 'being_fulfilled'),
+    (251, '2021-09-12', 'being_fulfilled'),
+    (83, '2021-11-30', 'not_yet_placed'),
+    (19, '2020-11-04', 'not_yet_placed'),
+    (122, '2022-04-14', 'not_yet_placed'),
+    (9, '2021-01-02', 'delivered'),
+    (24, '2021-04-30', 'being_fulfilled'),
+    (17, '2021-08-05', 'not_yet_placed'),
+    (96, '2022-05-10', 'not_yet_placed'),
+    (225, '2020-09-10', 'being_fulfilled'),
+    (146, '2020-05-19', 'not_yet_placed'),
+    (53, '2021-05-19', 'being_fulfilled'),
+    (220, '2020-07-10', 'delivered'),
+    (245, '2020-08-09', 'being_fulfilled'),
+    (199, '2020-09-06', 'not_yet_placed'),
+    (247, '2021-10-07', 'delivered'),
+    (190, '2022-01-06', 'not_yet_placed'),
+    (175, '2020-06-02', 'being_fulfilled'),
+    (218, '2020-10-19', 'delivered'),
+    (198, '2022-04-03', 'delivered'),
+    (45, '2022-03-04', 'delivered'),
+    (77, '2022-01-13', 'delivered'),
+    (252, '2022-01-21', 'not_yet_placed'),
+    (137, '2021-05-25', 'delivered'),
+    (59, '2021-08-24', 'delivered'),
+    (143, '2020-12-11', 'delivered'),
+    (29, '2022-04-20', 'delivered'),
+    (114, '2022-04-19', 'not_yet_placed'),
+    (31, '2021-09-28', 'delivered'),
+    (157, '2021-08-06', 'delivered'),
+    (245, '2021-08-16', 'being_fulfilled'),
+    (92, '2021-08-16', 'delivered'),
+    (168, '2022-04-10', 'not_yet_placed'),
+    (109, '2020-10-03', 'delivered'),
+    (186, '2021-03-03', 'not_yet_placed'),
+    (153, '2022-02-17', 'delivered'),
+    (231, '2022-04-27', 'being_fulfilled'),
+    (204, '2022-04-23', 'not_yet_placed'),
+    (116, '2020-12-26', 'not_yet_placed'),
+    (140, '2021-06-20', 'being_fulfilled'),
+    (105, '2022-04-19', 'not_yet_placed'),
+    (34, '2022-05-03', 'delivered'),
+    (60, '2020-11-13', 'delivered'),
+    (99, '2021-08-18', 'not_yet_placed'),
+    (224, '2020-10-31', 'not_yet_placed'),
+    (138, '2020-12-11', 'delivered'),
+    (2, '2020-11-28', 'delivered'),
+    (250, '2022-04-23', 'delivered'),
+    (223, '2021-03-09', 'being_fulfilled'),
+    (225, '2020-05-25', 'being_fulfilled'),
+    (197, '2020-11-26', 'not_yet_placed'),
+    (10, '2020-10-12', 'being_fulfilled'),
+    (106, '2021-08-01', 'not_yet_placed'),
+    (191, '2021-12-05', 'not_yet_placed'),
+    (134, '2020-11-15', 'delivered'),
+    (93, '2021-07-18', 'delivered'),
+    (96, '2021-07-03', 'not_yet_placed'),
+    (39, '2020-12-27', 'not_yet_placed'),
+    (134, '2021-09-22', 'delivered'),
+    (238, '2021-10-07', 'delivered'),
+    (198, '2021-03-25', 'delivered'),
+    (51, '2020-12-27', 'not_yet_placed'),
+    (203, '2021-10-19', 'being_fulfilled'),
+    (130, '2021-11-09', 'delivered'),
+    (137, '2020-09-28', 'delivered'),
+    (31, '2021-03-07', 'being_fulfilled'),
+    (57, '2021-10-20', 'not_yet_placed'),
+    (11, '2020-11-25', 'being_fulfilled'),
+    (119, '2020-12-30', 'delivered'),
+    (68, '2022-03-28', 'delivered'),
+    (190, '2022-01-01', 'not_yet_placed'),
+    (17, '2021-09-23', 'delivered'),
+    (220, '2020-12-22', 'delivered'),
+    (37, '2022-03-03', 'delivered'),
+    (179, '2021-04-23', 'not_yet_placed'),
+    (57, '2022-05-13', 'not_yet_placed'),
+    (85, '2021-04-05', 'delivered'),
+    (81, '2021-04-16', 'being_fulfilled'),
+    (178, '2022-04-23', 'not_yet_placed'),
+    (22, '2020-10-07', 'being_fulfilled'),
+    (37, '2020-07-31', 'not_yet_placed'),
+    (234, '2021-03-26', 'delivered'),
+    (33, '2022-04-11', 'being_fulfilled'),
+    (240, '2020-06-24', 'not_yet_placed'),
+    (96, '2021-02-01', 'delivered'),
+    (18, '2020-06-04', 'not_yet_placed'),
+    (178, '2020-10-18', 'not_yet_placed'),
+    (207, '2022-05-21', 'delivered'),
+    (110, '2020-11-09', 'not_yet_placed'),
+    (91, '2021-07-11', 'being_fulfilled'),
+    (7, '2020-11-17', 'being_fulfilled'),
+    (78, '2020-09-04', 'delivered'),
+    (242, '2021-02-07', 'delivered'),
+    (212, '2020-09-12', 'not_yet_placed'),
+    (68, '2021-12-10', 'not_yet_placed'),
+    (144, '2022-01-25', 'being_fulfilled'),
+    (89, '2020-09-04', 'delivered'),
+    (242, '2022-02-14', 'delivered'),
+    (35, '2022-02-19', 'delivered'),
+    (80, '2020-10-17', 'being_fulfilled'),
+    (42, '2020-08-19', 'not_yet_placed'),
+    (15, '2021-05-15', 'being_fulfilled'),
+    (182, '2021-06-14', 'not_yet_placed'),
+    (229, '2021-12-14', 'not_yet_placed'),
+    (147, '2020-09-07', 'delivered'),
+    (237, '2021-08-03', 'delivered'),
+    (138, '2021-10-02', 'being_fulfilled'),
+    (143, '2021-11-02', 'being_fulfilled'),
+    (141, '2022-02-11', 'being_fulfilled'),
+    (152, '2020-07-13', 'not_yet_placed'),
+    (3, '2021-04-29', 'not_yet_placed'),
+    (230, '2021-07-06', 'being_fulfilled'),
+    (141, '2021-01-11', 'being_fulfilled'),
+    (212, '2021-03-08', 'delivered'),
+    (97, '2021-10-29', 'not_yet_placed'),
+    (89, '2021-10-26', 'delivered'),
+    (214, '2022-04-29', 'being_fulfilled'),
+    (179, '2021-09-10', 'being_fulfilled'),
+    (195, '2020-09-29', 'being_fulfilled'),
+    (25, '2022-05-06', 'being_fulfilled'),
+    (128, '2021-02-15', 'delivered'),
+    (238, '2022-01-13', 'delivered'),
+    (158, '2020-07-28', 'being_fulfilled'),
+    (232, '2022-02-28', 'delivered'),
+    (179, '2021-01-20', 'delivered'),
+    (105, '2020-07-08', 'not_yet_placed'),
+    (157, '2020-05-30', 'delivered'),
+    (173, '2021-01-04', 'not_yet_placed'),
+    (49, '2021-05-10', 'not_yet_placed'),
+    (141, '2021-09-20', 'not_yet_placed'),
+    (230, '2021-12-14', 'delivered'),
+    (70, '2021-06-15', 'not_yet_placed'),
+    (221, '2022-02-14', 'delivered'),
+    (131, '2022-02-11', 'delivered'),
+    (94, '2021-10-05', 'being_fulfilled'),
+    (179, '2020-10-13', 'being_fulfilled'),
+    (103, '2021-03-26', 'being_fulfilled'),
+    (101, '2021-09-26', 'delivered'),
+    (186, '2022-03-04', 'being_fulfilled'),
+    (77, '2021-04-18', 'being_fulfilled'),
+    (44, '2021-01-20', 'being_fulfilled'),
+    (203, '2020-08-05', 'delivered'),
+    (223, '2021-10-27', 'delivered'),
+    (76, '2021-12-12', 'not_yet_placed'),
+    (134, '2022-02-09', 'delivered'),
+    (228, '2022-02-16', 'delivered'),
+    (129, '2020-08-17', 'being_fulfilled'),
+    (7, '2021-06-09', 'delivered'),
+    (186, '2021-06-15', 'being_fulfilled'),
+    (82, '2021-05-22', 'delivered'),
+    (155, '2021-05-29', 'being_fulfilled'),
+    (30, '2022-01-21', 'being_fulfilled'),
+    (91, '2021-05-25', 'delivered'),
+    (107, '2020-06-13', 'being_fulfilled'),
+    (237, '2022-03-11', 'delivered'),
+    (218, '2021-01-18', 'delivered'),
+    (41, '2021-03-03', 'being_fulfilled'),
+    (76, '2020-06-16', 'not_yet_placed'),
+    (136, '2021-10-16', 'delivered'),
+    (48, '2021-04-08', 'not_yet_placed'),
+    (170, '2021-07-24', 'not_yet_placed'),
+    (45, '2021-04-06', 'being_fulfilled'),
+    (9, '2021-07-11', 'delivered'),
+    (233, '2021-12-14', 'delivered'),
+    (206, '2020-07-19', 'being_fulfilled'),
+    (219, '2021-03-14', 'being_fulfilled'),
+    (229, '2020-11-02', 'not_yet_placed'),
+    (88, '2021-07-14', 'delivered'),
+    (117, '2020-10-31', 'not_yet_placed'),
+    (246, '2020-08-26', 'delivered'),
+    (115, '2021-11-05', 'not_yet_placed'),
+    (89, '2021-09-25', 'being_fulfilled'),
+    (105, '2020-07-11', 'delivered'),
+    (139, '2021-06-09', 'delivered'),
+    (175, '2020-07-30', 'delivered'),
+    (249, '2021-10-03', 'being_fulfilled'),
+    (110, '2022-04-04', 'being_fulfilled'),
+    (33, '2021-12-04', 'not_yet_placed'),
+    (46, '2021-10-31', 'delivered'),
+    (145, '2021-07-08', 'delivered'),
+    (158, '2021-01-03', 'delivered'),
+    (160, '2021-11-18', 'delivered'),
+    (225, '2022-04-19', 'delivered'),
+    (9, '2020-12-17', 'being_fulfilled'),
+    (237, '2021-06-17', 'delivered'),
+    (20, '2022-02-12', 'delivered'),
+    (176, '2021-07-13', 'delivered'),
+    (48, '2021-09-12', 'not_yet_placed'),
+    (223, '2022-03-29', 'being_fulfilled'),
+    (248, '2021-02-04', 'being_fulfilled'),
+    (164, '2021-08-28', 'not_yet_placed'),
+    (36, '2021-05-25', 'not_yet_placed'),
+    (129, '2020-07-24', 'being_fulfilled'),
+    (100, '2021-04-08', 'delivered'),
+    (188, '2022-03-28', 'being_fulfilled'),
+    (17, '2021-06-10', 'being_fulfilled'),
+    (234, '2021-05-21', 'being_fulfilled'),
+    (68, '2022-02-23', 'not_yet_placed'),
+    (162, '2021-10-11', 'not_yet_placed'),
+    (243, '2021-04-14', 'delivered'),
+    (51, '2020-07-24', 'being_fulfilled'),
+    (133, '2021-01-26', 'not_yet_placed'),
+    (74, '2021-11-10', 'delivered'),
+    (141, '2021-07-04', 'not_yet_placed'),
+    (75, '2021-05-14', 'delivered'),
+    (133, '2022-02-23', 'not_yet_placed'),
+    (226, '2022-02-02', 'being_fulfilled'),
+    (13, '2021-12-10', 'being_fulfilled'),
+    (149, '2021-02-02', 'delivered'),
+    (115, '2021-03-29', 'being_fulfilled'),
+    (8, '2022-04-29', 'being_fulfilled'),
+    (46, '2020-11-07', 'delivered'),
+    (211, '2020-07-12', 'being_fulfilled'),
+    (178, '2021-07-02', 'being_fulfilled'),
+    (128, '2021-05-29', 'delivered'),
+    (12, '2021-08-22', 'being_fulfilled'),
+    (248, '2021-10-15', 'not_yet_placed'),
+    (65, '2022-05-12', 'not_yet_placed'),
+    (238, '2021-03-23', 'delivered'),
+    (232, '2022-03-18', 'being_fulfilled'),
+    (74, '2022-04-10', 'delivered'),
+    (185, '2022-05-23', 'not_yet_placed'),
+    (224, '2021-05-16', 'being_fulfilled'),
+    (40, '2020-12-26', 'being_fulfilled'),
+    (91, '2020-08-15', 'being_fulfilled'),
+    (8, '2021-10-01', 'being_fulfilled'),
+    (28, '2021-03-30', 'delivered'),
+    (139, '2021-10-21', 'not_yet_placed'),
+    (24, '2021-05-30', 'not_yet_placed'),
+    (68, '2021-12-01', 'not_yet_placed'),
+    (204, '2021-04-27', 'being_fulfilled'),
+    (225, '2021-02-23', 'not_yet_placed'),
+    (236, '2021-01-30', 'being_fulfilled'),
+    (144, '2022-01-14', 'not_yet_placed'),
+    (144, '2021-12-07', 'not_yet_placed'),
+    (222, '2020-06-17', 'being_fulfilled'),
+    (243, '2021-09-01', 'delivered'),
+    (10, '2021-02-05', 'delivered'),
+    (113, '2021-08-03', 'delivered'),
+    (92, '2021-01-23', 'not_yet_placed'),
+    (234, '2020-07-27', 'being_fulfilled'),
+    (5, '2021-12-27', 'delivered'),
+    (207, '2020-12-08', 'being_fulfilled'),
+    (225, '2021-03-31', 'being_fulfilled'),
+    (61, '2021-01-06', 'delivered'),
+    (247, '2020-08-20', 'not_yet_placed'),
+    (29, '2021-04-26', 'not_yet_placed'),
+    (34, '2021-08-08', 'being_fulfilled'),
+    (70, '2020-08-08', 'not_yet_placed'),
+    (185, '2021-04-23', 'delivered'),
+    (21, '2021-02-04', 'not_yet_placed'),
+    (135, '2020-09-19', 'being_fulfilled'),
+    (46, '2020-10-11', 'delivered'),
+    (92, '2021-09-07', 'delivered'),
+    (41, '2022-03-09', 'being_fulfilled'),
+    (70, '2021-04-14', 'being_fulfilled'),
+    (236, '2021-04-24', 'delivered'),
+    (230, '2020-05-16', 'being_fulfilled'),
+    (69, '2022-04-16', 'being_fulfilled'),
+    (212, '2020-10-23', 'delivered'),
+    (232, '2021-04-24', 'delivered'),
+    (77, '2022-05-18', 'not_yet_placed'),
+    (99, '2021-04-19', 'being_fulfilled'),
+    (30, '2021-10-30', 'delivered'),
+    (35, '2021-03-09', 'being_fulfilled'),
+    (163, '2021-11-02', 'delivered'),
+    (167, '2022-01-18', 'not_yet_placed'),
+    (74, '2021-10-09', 'delivered'),
+    (74, '2020-07-10', 'being_fulfilled'),
+    (144, '2021-03-05', 'delivered'),
+    (134, '2021-11-08', 'being_fulfilled'),
+    (200, '2021-08-24', 'not_yet_placed'),
+    (137, '2021-07-21', 'not_yet_placed'),
+    (125, '2021-09-19', 'delivered'),
+    (201, '2021-05-25', 'being_fulfilled'),
+    (26, '2020-11-17', 'not_yet_placed'),
+    (206, '2021-04-04', 'not_yet_placed'),
+    (202, '2021-04-08', 'being_fulfilled'),
+    (206, '2020-06-10', 'delivered'),
+    (42, '2021-08-25', 'delivered'),
+    (39, '2022-05-25', 'delivered'),
+    (193, '2021-11-21', 'not_yet_placed'),
+    (174, '2021-05-31', 'not_yet_placed'),
+    (226, '2020-12-26', 'being_fulfilled'),
+    (197, '2021-10-02', 'being_fulfilled'),
+    (110, '2020-10-12', 'delivered'),
+    (249, '2021-07-19', 'being_fulfilled'),
+    (41, '2022-04-04', 'being_fulfilled'),
+    (192, '2021-03-24', 'being_fulfilled'),
+    (27, '2020-09-22', 'being_fulfilled'),
+    (124, '2022-05-15', 'not_yet_placed'),
+    (109, '2021-03-08', 'delivered'),
+    (55, '2021-09-12', 'delivered'),
+    (107, '2022-04-18', 'being_fulfilled'),
+    (93, '2020-06-17', 'being_fulfilled'),
+    (137, '2020-09-16', 'delivered'),
+    (195, '2021-03-30', 'delivered'),
+    (150, '2021-01-19', 'not_yet_placed'),
+    (65, '2021-02-20', 'delivered'),
+    (117, '2021-06-03', 'being_fulfilled'),
+    (153, '2021-07-06', 'delivered'),
+    (21, '2022-05-19', 'delivered'),
+    (86, '2022-04-04', 'not_yet_placed'),
+    (44, '2020-09-21', 'being_fulfilled'),
+    (194, '2022-03-07', 'not_yet_placed'),
+    (196, '2022-03-13', 'being_fulfilled'),
+    (62, '2021-03-15', 'delivered'),
+    (5, '2021-12-16', 'not_yet_placed'),
+    (182, '2021-11-20', 'delivered'),
+    (138, '2021-08-20', 'being_fulfilled'),
+    (149, '2020-08-30', 'being_fulfilled'),
+    (181, '2021-07-28', 'not_yet_placed'),
+    (67, '2021-05-20', 'being_fulfilled'),
+    (57, '2021-11-27', 'being_fulfilled'),
+    (113, '2021-10-25', 'delivered'),
+    (72, '2021-05-05', 'delivered'),
+    (90, '2022-05-21', 'not_yet_placed'),
+    (33, '2021-07-27', 'delivered'),
+    (165, '2021-02-02', 'delivered'),
+    (116, '2022-01-21', 'being_fulfilled'),
+    (186, '2021-03-21', 'being_fulfilled'),
+    (50, '2020-05-25', 'not_yet_placed'),
+    (145, '2020-07-12', 'being_fulfilled'),
+    (159, '2022-04-22', 'not_yet_placed'),
+    (62, '2021-10-25', 'not_yet_placed'),
+    (75, '2022-04-20', 'not_yet_placed'),
+    (99, '2021-10-16', 'being_fulfilled'),
+    (205, '2021-11-24', 'being_fulfilled'),
+    (204, '2021-05-01', 'not_yet_placed'),
+    (180, '2020-06-30', 'being_fulfilled'),
+    (44, '2021-08-13', 'being_fulfilled'),
+    (223, '2021-10-25', 'not_yet_placed'),
+    (191, '2020-05-11', 'being_fulfilled'),
+    (90, '2021-08-02', 'delivered'),
+    (158, '2021-03-23', 'not_yet_placed'),
+    (3, '2021-11-17', 'being_fulfilled'),
+    (76, '2021-05-01', 'not_yet_placed'),
+    (194, '2021-11-09', 'delivered'),
+    (153, '2022-02-25', 'delivered'),
+    (253, '2021-01-22', 'delivered'),
+    (193, '2021-11-09', 'not_yet_placed'),
+    (134, '2021-05-18', 'not_yet_placed'),
+    (21, '2020-05-22', 'not_yet_placed'),
+    (247, '2021-06-27', 'delivered'),
+    (135, '2021-12-29', 'being_fulfilled'),
+    (182, '2021-11-17', 'being_fulfilled'),
+    (152, '2020-12-07', 'being_fulfilled'),
+    (5, '2021-01-13', 'being_fulfilled'),
+    (110, '2020-12-12', 'not_yet_placed'),
+    (193, '2021-01-10', 'not_yet_placed'),
+    (188, '2021-12-05', 'being_fulfilled'),
+    (26, '2021-05-25', 'not_yet_placed'),
+    (187, '2021-07-03', 'delivered'),
+    (97, '2022-01-11', 'not_yet_placed'),
+    (208, '2021-05-04', 'being_fulfilled'),
+    (38, '2020-07-18', 'delivered'),
+    (250, '2022-01-23', 'not_yet_placed'),
+    (41, '2022-03-04', 'delivered'),
+    (213, '2020-07-15', 'delivered'),
+    (100, '2020-10-11', 'being_fulfilled'),
+    (101, '2022-01-16', 'being_fulfilled'),
+    (163, '2021-11-05', 'being_fulfilled'),
+    (70, '2022-02-10', 'being_fulfilled'),
+    (201, '2021-10-08', 'being_fulfilled'),
+    (164, '2020-12-17', 'being_fulfilled'),
+    (91, '2021-12-15', 'not_yet_placed'),
+    (184, '2020-12-23', 'delivered'),
+    (36, '2021-12-23', 'not_yet_placed'),
+    (43, '2022-05-13', 'delivered'),
+    (203, '2020-11-17', 'delivered'),
+    (19, '2021-06-17', 'delivered'),
+    (121, '2020-10-16', 'delivered'),
+    (136, '2020-10-20', 'being_fulfilled'),
+    (199, '2020-08-22', 'delivered'),
+    (190, '2022-03-05', 'not_yet_placed'),
+    (112, '2021-01-18', 'not_yet_placed'),
+    (189, '2020-11-30', 'being_fulfilled'),
+    (222, '2021-11-12', 'delivered');
+
+insert into warehouse_order_item (warehouse_order_id, quantity, medicine_id) values
+    (9, 5, 79),
+    (9, 16, 247),
+    (7, 8, 529),
+    (8, 9, 421),
+    (1, 12, 527),
+    (5, 4, 157),
+    (10, 8, 17),
+    (7, 2, 345),
+    (7, 2, 265),
+    (5, 18, 247),
+    (8, 1, 257),
+    (1, 6, 507),
+    (1, 20, 163),
+    (8, 19, 187),
+    (7, 3, 533),
+    (3, 2, 94),
+    (8, 6, 443),
+    (4, 3, 79),
+    (6, 5, 123),
+    (5, 13, 325),
+    (8, 18, 246),
+    (5, 5, 244),
+    (7, 18, 249),
+    (7, 16, 32),
+    (1, 7, 491),
+    (4, 17, 374),
+    (1, 17, 420),
+    (5, 8, 480),
+    (2, 12, 499),
+    (7, 5, 262),
+    (10, 11, 459),
+    (8, 11, 131),
+    (4, 6, 373),
+    (3, 11, 58),
+    (4, 17, 438),
+    (6, 16, 527),
+    (9, 10, 309),
+    (8, 19, 192),
+    (8, 19, 520),
+    (4, 14, 163),
+    (10, 3, 256),
+    (9, 7, 95),
+    (5, 6, 397),
+    (5, 18, 17),
+    (10, 4, 310),
+    (6, 9, 221),
+    (4, 11, 283),
+    (3, 11, 384),
+    (1, 18, 399),
+    (3, 6, 418),
+    (9, 13, 156),
+    (3, 6, 303),
+    (1, 15, 323),
+    (6, 5, 495),
+    (1, 15, 369),
+    (5, 20, 382),
+    (2, 11, 44),
+    (1, 17, 101),
+    (8, 15, 171),
+    (1, 13, 74),
+    (6, 1, 470),
+    (7, 18, 90),
+    (2, 17, 145),
+    (3, 17, 545),
+    (6, 18, 145),
+    (9, 20, 463),
+    (4, 11, 517),
+    (2, 20, 51),
+    (3, 14, 138),
+    (9, 8, 340),
+    (6, 1, 78),
+    (1, 5, 277),
+    (2, 18, 499),
+    (5, 2, 88),
+    (6, 9, 202),
+    (9, 13, 77),
+    (5, 11, 461),
+    (5, 15, 110),
+    (3, 2, 542),
+    (9, 15, 372),
+    (2, 17, 137),
+    (7, 3, 458),
+    (7, 11, 337),
+    (6, 13, 272),
+    (4, 20, 128),
+    (5, 12, 91),
+    (9, 11, 121),
+    (4, 1, 329),
+    (4, 4, 274),
+    (4, 6, 403),
+    (9, 12, 351),
+    (2, 10, 328),
+    (6, 2, 202),
+    (5, 20, 18),
+    (4, 5, 173),
+    (6, 18, 116),
+    (1, 17, 67),
+    (9, 8, 297),
+    (3, 3, 57),
+    (7, 8, 88),
+    (3, 7, 321),
+    (7, 2, 496),
+    (5, 11, 507),
+    (7, 7, 147),
+    (3, 12, 293),
+    (7, 17, 539),
+    (8, 2, 530),
+    (6, 17, 497),
+    (10, 1, 6),
+    (7, 9, 443),
+    (2, 20, 223),
+    (1, 10, 19),
+    (9, 9, 460),
+    (6, 10, 343),
+    (7, 11, 310),
+    (5, 4, 57),
+    (9, 8, 259),
+    (2, 16, 341),
+    (8, 15, 17),
+    (3, 12, 85),
+    (6, 1, 42),
+    (9, 12, 308),
+    (3, 20, 265),
+    (8, 6, 150),
+    (6, 19, 131),
+    (4, 20, 564),
+    (8, 4, 473),
+    (3, 13, 355),
+    (10, 13, 232),
+    (9, 14, 207),
+    (1, 12, 458),
+    (3, 2, 224),
+    (7, 10, 164),
+    (6, 18, 351),
+    (9, 11, 228),
+    (3, 17, 482),
+    (8, 3, 450),
+    (8, 1, 538),
+    (9, 11, 210),
+    (5, 10, 138),
+    (4, 6, 193),
+    (3, 4, 336),
+    (4, 16, 405),
+    (8, 3, 506),
+    (4, 4, 403),
+    (1, 14, 114),
+    (2, 20, 554),
+    (10, 4, 517),
+    (4, 18, 420),
+    (8, 15, 285),
+    (3, 20, 80),
+    (4, 1, 227),
+    (1, 8, 217),
+    (2, 13, 316),
+    (1, 10, 417),
+    (1, 1, 536),
+    (2, 17, 471),
+    (8, 19, 270),
+    (9, 12, 37),
+    (5, 15, 197),
+    (8, 15, 138),
+    (5, 6, 562),
+    (1, 5, 342),
+    (3, 3, 214),
+    (4, 1, 459),
+    (9, 8, 17),
+    (1, 3, 542),
+    (4, 1, 415),
+    (6, 20, 280),
+    (6, 18, 553),
+    (7, 20, 406),
+    (5, 3, 285),
+    (10, 9, 269),
+    (1, 3, 233),
+    (2, 17, 268),
+    (8, 5, 168),
+    (3, 11, 236),
+    (9, 20, 312),
+    (2, 11, 435),
+    (8, 1, 514),
+    (7, 3, 91),
+    (4, 2, 299),
+    (1, 8, 18),
+    (7, 13, 509),
+    (4, 18, 286),
+    (10, 7, 453),
+    (10, 10, 455),
+    (9, 11, 14),
+    (6, 9, 112),
+    (9, 2, 89),
+    (5, 11, 432),
+    (9, 6, 351),
+    (6, 14, 267),
+    (2, 3, 442),
+    (7, 19, 180),
+    (6, 7, 92),
+    (3, 5, 64),
+    (8, 4, 466),
+    (1, 18, 64),
+    (4, 11, 283),
+    (1, 2, 273),
+    (10, 8, 11),
+    (6, 11, 281),
+    (5, 15, 9),
+    (9, 6, 398),
+    (10, 17, 146),
+    (8, 6, 301),
+    (7, 20, 456),
+    (7, 1, 282),
+    (4, 14, 106),
+    (4, 8, 307),
+    (4, 18, 291),
+    (7, 6, 370),
+    (7, 10, 466),
+    (2, 17, 118),
+    (3, 3, 58),
+    (8, 6, 496),
+    (6, 7, 18),
+    (2, 11, 34),
+    (2, 19, 415),
+    (2, 2, 207),
+    (4, 11, 204),
+    (10, 8, 406),
+    (2, 13, 41),
+    (7, 4, 406),
+    (6, 3, 318),
+    (6, 8, 205),
+    (8, 1, 157),
+    (5, 8, 262),
+    (10, 4, 3),
+    (1, 14, 510),
+    (1, 6, 299),
+    (7, 7, 49),
+    (6, 11, 57),
+    (10, 8, 537),
+    (5, 20, 250),
+    (10, 16, 175),
+    (5, 12, 495),
+    (8, 15, 140),
+    (5, 6, 6),
+    (6, 19, 350),
+    (4, 2, 258),
+    (6, 19, 131),
+    (2, 9, 541),
+    (7, 6, 210),
+    (3, 2, 461),
+    (2, 17, 66),
+    (8, 10, 531),
+    (10, 18, 340),
+    (3, 10, 182),
+    (5, 11, 48),
+    (1, 8, 59),
+    (3, 9, 309),
+    (1, 20, 55),
+    (2, 14, 264),
+    (3, 7, 550),
+    (10, 15, 182),
+    (1, 12, 184),
+    (1, 18, 545),
+    (1, 8, 498),
+    (8, 1, 233),
+    (2, 15, 365),
+    (7, 6, 147),
+    (8, 5, 80),
+    (5, 4, 380),
+    (7, 5, 385),
+    (7, 12, 85),
+    (2, 20, 162),
+    (5, 3, 18),
+    (4, 4, 534),
+    (5, 16, 44),
+    (4, 2, 564),
+    (4, 7, 291),
+    (6, 6, 283),
+    (6, 18, 285),
+    (5, 12, 196),
+    (5, 4, 217),
+    (8, 8, 47),
+    (8, 13, 560),
+    (8, 19, 223),
+    (2, 18, 453),
+    (8, 5, 556),
+    (9, 3, 183),
+    (6, 4, 478),
+    (4, 5, 476),
+    (8, 5, 555),
+    (3, 16, 76),
+    (10, 10, 253),
+    (3, 17, 536),
+    (9, 2, 45),
+    (2, 13, 161),
+    (1, 15, 128),
+    (3, 16, 493),
+    (1, 19, 67),
+    (10, 19, 442),
+    (7, 10, 502),
+    (8, 18, 55),
+    (5, 20, 478),
+    (6, 3, 232),
+    (7, 18, 387),
+    (1, 8, 486),
+    (4, 2, 123),
+    (4, 17, 487),
+    (5, 2, 503),
+    (2, 5, 488),
+    (9, 1, 379),
+    (9, 13, 193),
+    (8, 4, 173),
+    (6, 10, 215),
+    (5, 18, 415),
+    (6, 16, 168),
+    (6, 12, 150),
+    (6, 8, 85),
+    (6, 14, 502),
+    (7, 7, 525),
+    (8, 9, 427),
+    (3, 16, 238),
+    (8, 20, 317),
+    (1, 11, 34),
+    (4, 11, 531),
+    (2, 10, 238),
+    (7, 7, 52),
+    (5, 13, 510),
+    (10, 1, 23),
+    (7, 2, 469),
+    (10, 1, 455),
+    (10, 12, 28),
+    (1, 5, 247),
+    (3, 3, 112),
+    (6, 13, 223),
+    (6, 6, 379),
+    (3, 20, 536),
+    (2, 2, 123),
+    (4, 2, 129),
+    (7, 13, 137),
+    (9, 11, 451),
+    (4, 1, 437),
+    (10, 14, 508),
+    (6, 15, 412),
+    (10, 15, 309),
+    (4, 19, 357),
+    (2, 16, 445),
+    (5, 15, 403),
+    (4, 17, 456),
+    (5, 17, 362),
+    (4, 13, 43),
+    (5, 3, 342),
+    (6, 11, 262),
+    (2, 3, 242),
+    (5, 12, 402),
+    (3, 5, 23),
+    (9, 1, 470),
+    (5, 19, 556),
+    (9, 20, 13),
+    (3, 8, 66),
+    (2, 1, 188),
+    (8, 3, 139),
+    (5, 16, 110),
+    (9, 15, 549),
+    (5, 1, 217),
+    (5, 9, 564),
+    (7, 11, 407),
+    (4, 16, 315),
+    (2, 9, 521),
+    (4, 4, 93),
+    (8, 19, 240),
+    (5, 8, 298),
+    (4, 14, 440),
+    (3, 3, 235),
+    (7, 1, 200),
+    (9, 6, 556),
+    (5, 7, 527),
+    (3, 16, 199),
+    (1, 12, 442),
+    (10, 9, 462),
+    (7, 15, 528),
+    (2, 8, 425),
+    (10, 11, 564),
+    (7, 7, 373),
+    (2, 6, 300),
+    (6, 11, 433),
+    (7, 3, 52),
+    (7, 7, 12),
+    (3, 4, 524),
+    (4, 5, 489),
+    (7, 15, 197),
+    (5, 10, 366),
+    (4, 13, 30),
+    (7, 14, 198),
+    (8, 16, 201),
+    (7, 14, 100),
+    (5, 4, 468),
+    (8, 2, 510),
+    (10, 14, 287),
+    (6, 14, 88),
+    (1, 13, 338),
+    (4, 1, 417),
+    (7, 4, 429),
+    (4, 1, 377),
+    (4, 16, 556),
+    (1, 10, 456),
+    (7, 1, 433),
+    (1, 15, 151),
+    (1, 20, 454),
+    (2, 7, 57),
+    (10, 8, 88),
+    (9, 2, 260),
+    (10, 18, 58),
+    (10, 4, 163),
+    (4, 10, 489),
+    (1, 12, 427),
+    (2, 2, 192),
+    (2, 13, 111),
+    (9, 10, 370),
+    (3, 10, 73),
+    (9, 16, 213),
+    (10, 6, 468),
+    (1, 5, 249),
+    (10, 1, 120),
+    (4, 3, 196),
+    (8, 17, 236),
+    (1, 15, 7),
+    (5, 9, 530),
+    (4, 6, 392),
+    (7, 18, 387),
+    (8, 11, 122),
+    (7, 8, 535),
+    (2, 8, 73),
+    (5, 16, 301),
+    (5, 13, 471),
+    (7, 3, 279),
+    (1, 8, 378),
+    (1, 3, 355),
+    (1, 10, 425),
+    (3, 4, 193),
+    (2, 11, 265),
+    (5, 7, 170),
+    (6, 19, 418),
+    (1, 6, 523),
+    (8, 7, 176),
+    (8, 5, 205),
+    (6, 19, 173),
+    (1, 8, 119),
+    (7, 17, 291),
+    (2, 5, 218),
+    (9, 8, 481),
+    (1, 19, 456),
+    (4, 20, 265),
+    (8, 6, 312),
+    (5, 19, 477),
+    (10, 10, 194),
+    (9, 10, 320),
+    (5, 12, 255),
+    (2, 20, 369),
+    (7, 20, 5),
+    (7, 9, 77),
+    (10, 8, 514),
+    (8, 6, 35),
+    (1, 20, 47),
+    (7, 20, 436),
+    (1, 19, 92),
+    (8, 6, 75),
+    (7, 3, 54),
+    (9, 11, 547),
+    (10, 12, 426),
+    (1, 4, 540),
+    (10, 2, 254),
+    (1, 5, 492),
+    (3, 8, 36),
+    (1, 14, 35),
+    (5, 10, 284),
+    (8, 7, 237),
+    (8, 19, 76),
+    (8, 7, 459),
+    (2, 8, 41),
+    (8, 4, 11),
+    (7, 18, 551),
+    (10, 1, 335),
+    (7, 14, 459),
+    (3, 5, 33),
+    (9, 19, 343),
+    (2, 6, 471),
+    (8, 1, 461),
+    (5, 9, 370),
+    (2, 20, 394),
+    (3, 6, 491),
+    (10, 15, 335),
+    (9, 20, 318),
+    (3, 6, 535),
+    (10, 16, 280),
+    (5, 2, 293),
+    (4, 6, 20),
+    (8, 16, 520),
+    (6, 13, 312),
+    (9, 3, 186),
+    (3, 6, 538),
+    (3, 7, 48),
+    (10, 4, 70),
+    (3, 1, 18),
+    (9, 17, 138),
+    (2, 19, 182),
+    (9, 6, 335),
+    (2, 12, 526),
+    (8, 6, 113),
+    (7, 16, 289),
+    (8, 11, 68),
+    (6, 17, 430),
+    (2, 18, 463),
+    (2, 2, 301),
+    (2, 15, 500),
+    (6, 17, 462),
+    (7, 18, 471),
+    (3, 8, 438),
+    (6, 2, 342),
+    (9, 15, 153),
+    (8, 13, 232),
+    (3, 12, 36),
+    (5, 5, 323),
+    (1, 12, 122),
+    (2, 4, 9),
+    (4, 10, 290),
+    (1, 8, 325),
+    (4, 7, 455),
+    (1, 9, 461),
+    (4, 5, 5),
+    (4, 10, 401),
+    (8, 17, 218),
+    (3, 9, 409),
+    (2, 18, 80),
+    (10, 2, 46),
+    (6, 6, 84),
+    (10, 7, 486),
+    (1, 17, 295),
+    (1, 4, 249),
+    (10, 8, 126),
+    (6, 13, 271),
+    (2, 5, 280),
+    (2, 19, 130),
+    (8, 9, 38),
+    (9, 6, 527),
+    (6, 4, 144),
+    (2, 15, 297),
+    (10, 4, 162),
+    (8, 1, 504),
+    (9, 11, 247),
+    (2, 12, 416),
+    (3, 2, 119),
+    (6, 8, 548),
+    (2, 16, 69),
+    (3, 14, 480),
+    (6, 4, 434),
+    (6, 11, 105),
+    (4, 4, 201),
+    (5, 18, 541),
+    (7, 19, 309),
+    (7, 15, 71),
+    (8, 2, 443),
+    (4, 19, 369),
+    (2, 12, 491),
+    (3, 8, 305),
+    (5, 15, 417),
+    (5, 9, 425),
+    (3, 9, 416),
+    (7, 15, 531),
+    (6, 7, 558),
+    (8, 8, 278),
+    (4, 6, 183),
+    (2, 3, 520),
+    (8, 3, 509),
+    (2, 10, 170),
+    (10, 12, 242),
+    (9, 4, 493),
+    (8, 9, 468),
+    (4, 15, 493),
+    (7, 6, 143),
+    (7, 13, 71),
+    (6, 15, 316),
+    (2, 12, 428),
+    (7, 5, 234),
+    (6, 11, 228),
+    (7, 14, 184),
+    (7, 1, 280),
+    (2, 16, 312),
+    (6, 1, 539),
+    (9, 16, 115),
+    (9, 2, 419),
+    (10, 12, 406),
+    (5, 14, 211),
+    (8, 18, 213),
+    (8, 19, 220),
+    (4, 7, 326),
+    (7, 15, 132),
+    (2, 8, 218),
+    (9, 3, 71),
+    (4, 5, 531),
+    (2, 16, 190),
+    (3, 5, 318),
+    (5, 7, 19),
+    (4, 1, 135),
+    (5, 17, 186),
+    (7, 8, 251),
+    (1, 3, 288),
+    (2, 12, 113),
+    (6, 13, 227),
+    (6, 11, 530),
+    (2, 15, 135),
+    (7, 1, 223),
+    (6, 17, 152),
+    (8, 18, 331),
+    (8, 18, 315),
+    (3, 19, 495),
+    (10, 11, 19),
+    (9, 3, 118),
+    (8, 18, 500),
+    (2, 15, 275),
+    (2, 6, 84),
+    (4, 7, 491),
+    (2, 3, 47),
+    (7, 14, 189),
+    (7, 4, 64),
+    (3, 11, 507),
+    (3, 13, 436),
+    (2, 6, 412),
+    (2, 5, 524),
+    (8, 16, 230),
+    (5, 1, 144),
+    (1, 17, 446),
+    (4, 15, 217),
+    (6, 7, 403),
+    (9, 9, 162),
+    (6, 19, 94),
+    (7, 20, 31),
+    (4, 3, 353),
+    (5, 7, 337),
+    (3, 2, 476),
+    (6, 1, 316),
+    (5, 4, 25),
+    (6, 7, 457),
+    (8, 17, 286),
+    (9, 12, 457),
+    (6, 10, 494),
+    (9, 8, 210),
+    (7, 11, 110),
+    (3, 19, 434),
+    (9, 12, 322),
+    (2, 7, 324),
+    (5, 20, 462),
+    (1, 9, 162),
+    (10, 11, 225),
+    (9, 9, 551),
+    (4, 12, 131),
+    (5, 17, 122),
+    (3, 12, 85),
+    (1, 4, 332),
+    (4, 8, 274),
+    (10, 3, 464),
+    (8, 16, 171),
+    (4, 19, 492),
+    (8, 13, 380),
+    (8, 5, 150),
+    (8, 3, 455),
+    (10, 18, 522),
+    (1, 5, 11),
+    (5, 9, 384),
+    (9, 16, 438),
+    (8, 16, 19),
+    (8, 10, 450),
+    (6, 7, 396),
+    (6, 19, 347),
+    (2, 19, 424),
+    (10, 11, 49),
+    (3, 15, 363),
+    (5, 2, 90),
+    (3, 12, 62),
+    (3, 14, 17),
+    (8, 18, 451),
+    (3, 20, 531),
+    (1, 1, 32),
+    (2, 15, 189),
+    (10, 7, 436),
+    (6, 2, 462),
+    (9, 18, 111),
+    (4, 4, 105),
+    (5, 2, 235),
+    (2, 6, 376),
+    (4, 11, 506),
+    (7, 8, 35),
+    (5, 17, 493),
+    (6, 15, 178),
+    (8, 12, 27),
+    (6, 12, 186),
+    (6, 15, 422),
+    (10, 19, 10),
+    (4, 11, 333),
+    (10, 2, 332),
+    (5, 10, 529),
+    (9, 18, 538),
+    (5, 17, 171),
+    (7, 5, 32),
+    (10, 2, 155),
+    (4, 14, 262),
+    (7, 18, 382),
+    (7, 2, 225),
+    (3, 19, 35),
+    (9, 1, 72),
+    (8, 17, 184),
+    (9, 7, 562),
+    (5, 9, 409),
+    (2, 19, 14),
+    (3, 15, 287),
+    (8, 19, 35),
+    (5, 14, 377),
+    (7, 9, 164),
+    (8, 1, 22),
+    (1, 18, 222),
+    (1, 1, 9),
+    (4, 14, 173),
+    (9, 12, 145),
+    (6, 3, 341),
+    (2, 20, 265),
+    (8, 6, 430),
+    (8, 18, 532),
+    (3, 1, 496),
+    (6, 7, 481),
+    (6, 8, 471),
+    (2, 3, 372),
+    (6, 20, 489),
+    (1, 10, 48),
+    (8, 5, 296),
+    (5, 10, 307),
+    (4, 6, 382),
+    (5, 11, 189),
+    (3, 15, 45),
+    (10, 17, 149),
+    (7, 7, 540),
+    (4, 14, 563),
+    (1, 17, 230),
+    (6, 14, 178),
+    (6, 20, 124),
+    (7, 5, 217),
+    (7, 8, 481),
+    (10, 18, 132),
+    (7, 16, 475),
+    (9, 16, 33),
+    (5, 15, 518),
+    (4, 17, 210),
+    (3, 8, 292),
+    (9, 16, 111),
+    (1, 3, 370),
+    (2, 4, 195),
+    (9, 5, 387),
+    (1, 1, 191),
+    (6, 14, 359),
+    (7, 14, 243),
+    (1, 17, 62),
+    (5, 15, 58),
+    (5, 10, 513),
+    (3, 20, 37),
+    (9, 13, 162),
+    (6, 15, 113),
+    (8, 11, 342),
+    (3, 9, 151),
+    (1, 18, 467),
+    (10, 7, 398),
+    (7, 14, 190),
+    (10, 8, 354),
+    (4, 6, 273),
+    (5, 15, 544),
+    (3, 5, 381),
+    (1, 5, 190),
+    (5, 4, 519),
+    (4, 10, 52),
+    (2, 19, 244),
+    (10, 10, 240),
+    (10, 12, 46),
+    (4, 4, 453),
+    (9, 14, 69),
+    (8, 5, 153),
+    (1, 18, 204),
+    (7, 18, 166),
+    (1, 12, 314),
+    (2, 16, 276),
+    (2, 5, 361),
+    (2, 8, 440),
+    (10, 17, 516),
+    (4, 7, 91),
+    (6, 5, 387),
+    (2, 16, 263),
+    (1, 18, 219),
+    (1, 7, 209),
+    (10, 17, 247),
+    (2, 19, 432),
+    (2, 1, 451),
+    (9, 4, 83),
+    (8, 16, 113),
+    (2, 9, 295),
+    (9, 3, 434),
+    (3, 19, 446),
+    (6, 1, 53),
+    (7, 1, 217),
+    (7, 17, 439),
+    (3, 3, 258),
+    (4, 16, 14),
+    (1, 4, 492),
+    (2, 11, 379),
+    (7, 8, 505),
+    (2, 8, 341),
+    (2, 6, 64),
+    (7, 7, 2),
+    (5, 20, 520),
+    (9, 5, 46),
+    (9, 7, 314),
+    (9, 6, 77),
+    (2, 5, 539),
+    (4, 18, 286),
+    (1, 11, 266),
+    (2, 1, 563),
+    (10, 16, 469),
+    (1, 7, 346),
+    (7, 5, 399),
+    (10, 3, 536),
+    (1, 18, 132),
+    (7, 18, 559),
+    (8, 6, 231),
+    (6, 12, 359),
+    (9, 2, 5),
+    (4, 11, 263),
+    (1, 1, 364),
+    (5, 17, 421),
+    (10, 7, 325),
+    (8, 1, 60),
+    (3, 6, 302),
+    (7, 5, 166),
+    (2, 17, 333),
+    (5, 15, 23),
+    (3, 3, 523),
+    (2, 6, 356),
+    (2, 12, 308),
+    (5, 17, 162),
+    (4, 14, 304),
+    (2, 15, 241),
+    (9, 1, 507),
+    (1, 4, 143),
+    (3, 16, 381),
+    (2, 17, 179),
+    (4, 7, 93),
+    (6, 8, 266),
+    (5, 15, 404),
+    (6, 11, 131),
+    (7, 19, 210),
+    (2, 18, 501),
+    (10, 7, 310),
+    (10, 4, 71),
+    (8, 6, 511),
+    (6, 9, 360),
+    (4, 9, 27),
+    (3, 15, 105),
+    (1, 20, 329),
+    (6, 8, 240),
+    (4, 8, 537),
+    (8, 3, 348),
+    (4, 8, 447),
+    (5, 12, 157),
+    (6, 4, 10),
+    (10, 4, 339),
+    (2, 10, 167),
+    (3, 3, 106),
+    (3, 12, 553),
+    (4, 3, 467),
+    (10, 6, 338),
+    (8, 2, 100),
+    (4, 10, 279),
+    (9, 15, 304),
+    (7, 4, 339),
+    (6, 8, 385),
+    (8, 20, 169),
+    (5, 13, 369),
+    (10, 19, 70),
+    (6, 6, 465),
+    (5, 2, 375),
+    (7, 12, 543),
+    (1, 11, 410),
+    (2, 13, 197),
+    (10, 1, 134),
+    (2, 1, 104),
+    (3, 11, 300),
+    (10, 8, 80),
+    (3, 11, 164),
+    (9, 9, 424),
+    (2, 6, 12),
+    (8, 8, 100),
+    (10, 15, 6),
+    (10, 12, 303),
+    (6, 15, 251),
+    (3, 10, 485),
+    (10, 7, 452),
+    (9, 15, 172),
+    (8, 11, 295),
+    (4, 19, 508),
+    (6, 7, 380),
+    (9, 15, 284),
+    (9, 9, 563),
+    (7, 10, 152),
+    (1, 4, 437),
+    (1, 11, 250),
+    (7, 8, 330),
+    (4, 19, 542),
+    (10, 14, 411),
+    (5, 5, 105),
+    (5, 6, 462),
+    (2, 20, 25),
+    (4, 9, 506),
+    (6, 11, 391),
+    (10, 6, 215),
+    (1, 9, 241),
+    (9, 9, 433),
+    (2, 9, 458),
+    (1, 9, 195),
+    (10, 14, 305),
+    (4, 16, 109),
+    (5, 16, 317),
+    (2, 17, 357),
+    (9, 12, 297),
+    (3, 9, 382),
+    (9, 12, 247),
+    (1, 19, 25),
+    (2, 9, 67),
+    (5, 4, 326),
+    (4, 7, 479),
+    (1, 6, 71),
+    (9, 11, 556),
+    (3, 12, 49),
+    (9, 3, 425),
+    (10, 8, 101),
+    (1, 14, 89),
+    (9, 15, 206),
+    (6, 1, 327),
+    (10, 14, 319),
+    (1, 16, 233),
+    (5, 10, 206),
+    (5, 20, 237),
+    (5, 10, 336),
+    (7, 7, 317),
+    (5, 16, 288),
+    (4, 5, 388),
+    (6, 19, 36),
+    (8, 16, 488),
+    (3, 11, 490),
+    (3, 10, 55),
+    (10, 5, 264),
+    (7, 10, 302),
+    (5, 18, 208),
+    (7, 9, 485),
+    (5, 1, 343),
+    (9, 5, 451),
+    (3, 18, 80),
+    (2, 19, 504),
+    (3, 17, 382),
+    (5, 10, 213),
+    (6, 13, 329),
+    (3, 17, 323),
+    (9, 18, 102),
+    (1, 6, 89),
+    (6, 2, 477),
+    (7, 5, 282),
+    (3, 2, 542),
+    (7, 17, 237),
+    (4, 7, 366),
+    (10, 19, 18),
+    (6, 11, 164),
+    (9, 20, 402),
+    (1, 5, 404),
+    (8, 6, 314),
+    (5, 1, 97),
+    (3, 3, 108),
+    (8, 6, 34),
+    (8, 5, 490),
+    (5, 20, 290),
+    (7, 4, 160),
+    (5, 10, 109),
+    (4, 11, 443),
+    (7, 3, 206),
+    (3, 5, 255),
+    (3, 8, 345),
+    (10, 10, 68),
+    (2, 4, 387),
+    (5, 7, 170),
+    (1, 14, 548),
+    (3, 13, 49),
+    (5, 17, 395),
+    (8, 4, 374),
+    (5, 3, 69),
+    (4, 20, 108),
+    (1, 8, 510),
+    (8, 8, 493),
+    (8, 3, 291),
+    (1, 18, 382),
+    (3, 18, 384),
+    (2, 2, 325),
+    (9, 17, 494);
+    
+insert into psychotropy_evidence(client_id, active_substance_id, quantity, dispensed_date, pharmacy_id) values
+    (85, 209, 1, '2021-12-21', 60),
+    (11, 194, 2, '2020-11-10', 80),
+    (41, 80, 2, '2021-06-28', 31),
+    (95, 22, 2, '2020-11-16', 134),
+    (48, 165, 2, '2020-07-27', 53),
+    (35, 87, 2, '2021-12-31', 91),
+    (26, 120, 2, '2021-09-23', 163),
+    (1, 209, 2, '2021-01-25', 192),
+    (44, 41, 1, '2021-06-29', 143),
+    (79, 140, 2, '2021-05-07', 129),
+    (28, 193, 1, '2021-01-03', 142),
+    (53, 32, 1, '2021-06-05', 30),
+    (39, 9, 1, '2021-06-24', 18),
+    (67, 143, 2, '2020-12-11', 66),
+    (65, 147, 2, '2022-02-22', 57),
+    (16, 56, 1, '2021-01-18', 63),
+    (54, 96, 2, '2020-09-29', 110),
+    (19, 207, 1, '2021-02-04', 241),
+    (84, 118, 1, '2021-10-27', 9),
+    (91, 187, 1, '2020-07-07', 181),
+    (67, 191, 2, '2022-04-17', 56),
+    (19, 133, 1, '2022-02-28', 193),
+    (2, 38, 1, '2020-09-06', 86),
+    (26, 80, 2, '2021-02-13', 248),
+    (58, 134, 1, '2021-09-28', 74),
+    (65, 20, 1, '2021-10-02', 149),
+    (22, 142, 2, '2020-10-16', 104),
+    (55, 56, 2, '2021-10-11', 148),
+    (77, 64, 2, '2020-06-29', 73),
+    (87, 35, 2, '2021-01-20', 160),
+    (86, 3, 1, '2021-01-01', 53),
+    (72, 128, 2, '2021-01-26', 244),
+    (57, 104, 1, '2022-04-04', 90),
+    (89, 193, 1, '2021-06-18', 187),
+    (57, 13, 2, '2021-08-08', 85),
+    (10, 191, 1, '2022-05-21', 80),
+    (68, 213, 2, '2021-04-27', 185),
+    (59, 187, 1, '2022-05-16', 223),
+    (31, 205, 1, '2022-01-10', 151),
+    (55, 44, 2, '2020-09-18', 185),
+    (76, 52, 1, '2020-11-29', 41),
+    (28, 3, 1, '2021-11-27', 172),
+    (77, 76, 1, '2020-08-21', 74),
+    (37, 167, 1, '2020-05-12', 165),
+    (90, 58, 1, '2020-09-22', 156),
+    (6, 118, 1, '2020-11-02', 217),
+    (14, 194, 1, '2022-04-29', 132),
+    (88, 102, 2, '2020-10-12', 215),
+    (10, 113, 2, '2021-03-15', 21),
+    (76, 180, 1, '2021-07-28', 150),
+    (77, 187, 2, '2020-12-11', 71),
+    (75, 175, 2, '2021-10-21', 112),
+    (72, 158, 2, '2020-08-28', 246),
+    (16, 181, 1, '2020-10-02', 169),
+    (72, 146, 1, '2022-01-18', 210),
+    (89, 5, 2, '2022-03-15', 219),
+    (75, 85, 2, '2021-12-08', 28),
+    (3, 123, 1, '2020-08-10', 107),
+    (83, 99, 2, '2022-01-08', 42),
+    (74, 91, 1, '2020-10-09', 26),
+    (85, 127, 2, '2020-10-09', 247),
+    (37, 98, 1, '2021-08-06', 45),
+    (61, 104, 2, '2021-05-24', 221),
+    (43, 68, 1, '2021-08-16', 225),
+    (75, 130, 1, '2020-07-30', 61),
+    (19, 203, 2, '2020-12-25', 202),
+    (65, 49, 1, '2020-10-03', 98),
+    (53, 203, 2, '2020-05-25', 132),
+    (48, 197, 2, '2021-06-13', 8),
+    (34, 36, 1, '2021-08-10', 196),
+    (87, 149, 2, '2021-04-08', 176),
+    (83, 130, 2, '2020-10-31', 170),
+    (84, 171, 2, '2022-02-20', 237),
+    (49, 113, 1, '2022-03-28', 56),
+    (70, 21, 1, '2020-05-17', 3),
+    (47, 85, 1, '2021-04-15', 32),
+    (57, 198, 1, '2020-09-29', 2),
+    (3, 181, 1, '2022-02-20', 190),
+    (80, 22, 1, '2020-05-29', 109),
+    (62, 151, 1, '2021-05-03', 201),
+    (68, 16, 2, '2021-06-09', 87),
+    (40, 152, 2, '2021-12-16', 48),
+    (20, 160, 2, '2020-10-03', 88),
+    (48, 203, 2, '2022-04-11', 118),
+    (80, 38, 2, '2021-08-17', 172),
+    (81, 108, 1, '2021-11-15', 197),
+    (39, 183, 2, '2021-10-12', 63),
+    (62, 210, 2, '2022-04-20', 189),
+    (30, 50, 2, '2021-06-11', 1),
+    (28, 130, 2, '2021-05-20', 178),
+    (85, 23, 1, '2020-07-26', 202),
+    (60, 43, 2, '2021-05-28', 121),
+    (7, 151, 1, '2022-02-17', 180),
+    (11, 105, 1, '2022-02-15', 128),
+    (29, 187, 2, '2022-01-30', 143),
+    (79, 40, 2, '2021-05-13', 146),
+    (73, 115, 1, '2020-10-15', 58),
+    (38, 74, 2, '2022-01-15', 84),
+    (74, 5, 1, '2021-02-10', 23),
+    (29, 69, 2, '2021-05-20', 23);
+
+create function define_interaction(text, text, text, intensity) returns void as $$
+    insert into substance_interaction(substance_one, substance_two, description, intensity) values
+    (
+        (select active_substance_id from active_substance where international_name=$1),
+        (select active_substance_id from active_substance where international_name=$2),
+        $3,
+        $4
+    ), (
+        (select active_substance_id from active_substance where international_name=$2),
+        (select active_substance_id from active_substance where international_name=$1),
+        $3,
+        $4
+    );
+$$ language sql;
+
+do $$ begin
+    perform define_interaction('Alfuzosin', 'Acebutolol', '', 'moderate');
+    perform define_interaction('Alfuzosin', 'Adenosine', '', 'moderate');
+    perform define_interaction('Alprazolam', 'Acebutolol', '', 'moderate');
+    perform define_interaction('Alprazolam', 'Adalimumab', '', 'moderate');
+    perform define_interaction('Alprazolam', 'Alfuzosin', '', 'moderate');
+    perform define_interaction('Amiodarone', 'Acebutolol', '', 'moderate');
+    perform define_interaction('Amiodarone', 'Adalimumab', '', 'moderate');
+    perform define_interaction('Amiodarone', 'Adenosine', '', 'major');
+    perform define_interaction('Amiodarone', 'Alfuzosin', '', 'major');
+    perform define_interaction('Amiodarone', 'Alprazolam', '', 'minor');
+    perform define_interaction('Amisulpride', 'Acebutolol', '', 'moderate');
+    perform define_interaction('Amisulpride', 'Adenosine', '', 'major');
+    perform define_interaction('Amisulpride', 'Alfuzosin', '', 'major');
+    perform define_interaction('Amisulpride', 'Amiodarone', '', 'major');
+    perform define_interaction('Amitriptyline', 'Acebutolol', '', 'moderate');
+    perform define_interaction('Amitriptyline', 'Adenosine', '', 'moderate');
+    perform define_interaction('Amitriptyline', 'Alfuzosin', '', 'moderate');
+    perform define_interaction('Amitriptyline', 'Alprazolam', '', 'moderate');
+    perform define_interaction('Amitriptyline', 'Amantadine', '', 'moderate');
+    perform define_interaction('Amitriptyline', 'Amiodarone', '', 'major');
+    perform define_interaction('Amitriptyline', 'Amisulpride', '', 'major');
+    perform define_interaction('Amlodipine', 'Acebutolol', '', 'moderate');
+    perform define_interaction('Amlodipine', 'Adalimumab', '', 'moderate');
+    perform define_interaction('Amlodipine', 'Amisulpride', '', 'moderate');
+    perform define_interaction('Amoxicillin', 'Allopurinol', '', 'minor');
+    perform define_interaction('Ampicillin', 'Allopurinol', '', 'minor');
+    perform define_interaction('Ampicillin', 'Amikacin', '', 'moderate');
+    perform define_interaction('Anagrelide', 'Adenosine', '', 'major');
+    perform define_interaction('Anagrelide', 'Alfuzosin', '', 'major');
+    perform define_interaction('Anagrelide', 'Alprazolam', '', 'moderate');
+    perform define_interaction('Anagrelide', 'Amiodarone', '', 'major');
+    perform define_interaction('Anagrelide', 'Amisulpride', '', 'major');
+    perform define_interaction('Anagrelide', 'Amitriptyline', '', 'major');
+    perform define_interaction('Aripiprazole', 'Acarbose', '', 'moderate');
+    perform define_interaction('Aripiprazole', 'Acebutolol', '', 'moderate');
+    perform define_interaction('Aripiprazole', 'Alfuzosin', '', 'moderate');
+    perform define_interaction('Aripiprazole', 'Alprazolam', '', 'moderate');
+    perform define_interaction('Aripiprazole', 'Amantadine', '', 'moderate');
+    perform define_interaction('Aripiprazole', 'Amiodarone', '', 'moderate');
+    perform define_interaction('Aripiprazole', 'Amisulpride', '', 'moderate');
+    perform define_interaction('Aripiprazole', 'Amitriptyline', '', 'moderate');
+    perform define_interaction('Aripiprazole', 'Amlodipine', '', 'moderate');
+    perform define_interaction('Aripiprazole', 'Anagrelide', '', 'moderate');
+    perform define_interaction('Atorvastatin', 'Adalimumab', '', 'moderate');
+    perform define_interaction('Atorvastatin', 'Amiodarone', '', 'moderate');
+    perform define_interaction('Atorvastatin', 'Amlodipine', '', 'moderate');
+    perform define_interaction('Bacitracin', 'Amikacin', '', 'major');
+    perform define_interaction('Biperiden', 'Acebutolol', '', 'moderate');
+    perform define_interaction('Biperiden', 'Alprazolam', '', 'moderate');
+    perform define_interaction('Biperiden', 'Amantadine', '', 'moderate');
+    perform define_interaction('Biperiden', 'Amitriptyline', '', 'moderate');
+    perform define_interaction('Biperiden', 'Aripiprazole', '', 'moderate');
+    perform define_interaction('Brigatinib', 'Acarbose', '', 'moderate');
+    perform define_interaction('Brigatinib', 'Acebutolol', '', 'moderate');
+    perform define_interaction('Brigatinib', 'Adalimumab', '', 'major');
+    perform define_interaction('Brigatinib', 'Alectinib', '', 'moderate');
+    perform define_interaction('Brigatinib', 'Alprazolam', '', 'moderate');
+    perform define_interaction('Brigatinib', 'Amiodarone', '', 'moderate');
+    perform define_interaction('Brigatinib', 'Amitriptyline', '', 'moderate');
+    perform define_interaction('Brigatinib', 'Amlodipine', '', 'moderate');
+    perform define_interaction('Brigatinib', 'Atorvastatin', '', 'moderate');
+    perform define_interaction('Budesonide', 'Acebutolol', '', 'moderate');
+    perform define_interaction('Budesonide', 'Adalimumab', '', 'major');
+    perform define_interaction('Budesonide', 'Amiodarone', '', 'moderate');
+    perform define_interaction('Budesonide', 'Amlodipine', '', 'moderate');
+    perform define_interaction('Caffeine', 'Adenosine', '', 'moderate');
+    perform define_interaction('Caffeine', 'Anagrelide', '', 'moderate');
+    perform define_interaction('Carbamazepine', 'Adalimumab', '', 'moderate');
+    perform define_interaction('Carbamazepine', 'Adenosine', '', 'moderate');
+    perform define_interaction('Carbamazepine', 'Alprazolam', '', 'moderate');
+    perform define_interaction('Carbamazepine', 'Amiodarone', '', 'major');
+    perform define_interaction('Carbamazepine', 'Amitriptyline', '', 'moderate');
+    perform define_interaction('Carbamazepine', 'Amlodipine', '', 'major');
+    perform define_interaction('Carbamazepine', 'Anagrelide', '', 'moderate');
+    perform define_interaction('Carbamazepine', 'Aripiprazole', '', 'moderate');
+    perform define_interaction('Carbamazepine', 'Atorvastatin', '', 'moderate');
+    perform define_interaction('Celecoxib', 'Amikacin', '', 'moderate');
+    perform define_interaction('Celecoxib', 'Amiodarone', '', 'moderate');
+    perform define_interaction('Celecoxib', 'Amitriptyline', '', 'moderate');
+    perform define_interaction('Celecoxib', 'Aripiprazole', '', 'moderate');
+    perform define_interaction('Cetirizine', 'Alprazolam', '', 'moderate');
+    perform define_interaction('Cetirizine', 'Amitriptyline', '', 'moderate');
+    perform define_interaction('Cetirizine', 'Aripiprazole', '', 'moderate');
+    perform define_interaction('Chloroprocaine', 'Alprazolam', '', 'moderate');
+    perform define_interaction('Chlorpheniramine', 'Alprazolam', '', 'moderate');
+    perform define_interaction('Chlorpheniramine', 'Amantadine', '', 'moderate');
+    perform define_interaction('Chlorpheniramine', 'Amitriptyline', '', 'moderate');
+    perform define_interaction('Chlorpheniramine', 'Aripiprazole', '', 'moderate');
+    perform define_interaction('Clarithromycin', 'Acarbose', '', 'moderate');
+    perform define_interaction('Clarithromycin', 'Adenosine', '', 'moderate');
+    perform define_interaction('Clarithromycin', 'Alfuzosin', '', 'major');
+    perform define_interaction('Clarithromycin', 'Almotriptan', '', 'moderate');
+    perform define_interaction('Clarithromycin', 'Alprazolam', '', 'moderate');
+    perform define_interaction('Clarithromycin', 'Amiodarone', '', 'major');
+    perform define_interaction('Clarithromycin', 'Amisulpride', '', 'major');
+    perform define_interaction('Clarithromycin', 'Amitriptyline', '', 'moderate');
+    perform define_interaction('Clarithromycin', 'Amlodipine', '', 'moderate');
+    perform define_interaction('Clarithromycin', 'Amoxicillin', '', 'minor');
+    perform define_interaction('Clarithromycin', 'Ampicillin', '', 'minor');
+    perform define_interaction('Clarithromycin', 'Anagrelide', '', 'major');
+    perform define_interaction('Clarithromycin', 'Aripiprazole', '', 'moderate');
+    perform define_interaction('Clarithromycin', 'Atorvastatin', '', 'major');
+    perform define_interaction('Clindamycin', 'Ampicillin', '', 'minor');
+    perform define_interaction('Clomipramine', 'Acebutolol', '', 'moderate');
+    perform define_interaction('Clomipramine', 'Adenosine', '', 'moderate');
+    perform define_interaction('Clomipramine', 'Alfuzosin', '', 'moderate');
+    perform define_interaction('Clomipramine', 'Alprazolam', '', 'moderate');
+    perform define_interaction('Clomipramine', 'Amantadine', '', 'moderate');
+    perform define_interaction('Clomipramine', 'Amiodarone', '', 'major');
+    perform define_interaction('Clomipramine', 'Amisulpride', '', 'major');
+    perform define_interaction('Clomipramine', 'Amitriptyline', '', 'moderate');
+    perform define_interaction('Clomipramine', 'Anagrelide', '', 'major');
+    perform define_interaction('Clomipramine', 'Aripiprazole', '', 'moderate');
+    perform define_interaction('Clopidogrel', 'Amiodarone', '', 'moderate');
+    perform define_interaction('Clopidogrel', 'Atorvastatin', '', 'moderate');
+    perform define_interaction('Codeine', 'Acebutolol', '', 'moderate');
+    perform define_interaction('Codeine', 'Alfuzosin', '', 'moderate');
+    perform define_interaction('Codeine', 'Almotriptan', '', 'moderate');
+    perform define_interaction('Codeine', 'Alprazolam', '', 'major');
+    perform define_interaction('Codeine', 'Amiodarone', '', 'moderate');
+    perform define_interaction('Codeine', 'Amitriptyline', '', 'moderate');
+    perform define_interaction('Codeine', 'Amlodipine', '', 'moderate');
+    perform define_interaction('Codeine', 'Aripiprazole', '', 'major');
+    perform define_interaction('Cytarabine', 'Adalimumab', '', 'major');
+    perform define_interaction('Dextromethorphan', 'Alprazolam', '', 'moderate');
+    perform define_interaction('Dextromethorphan', 'Amiodarone', '', 'moderate');
+    perform define_interaction('Dextromethorphan', 'Aripiprazole', '', 'moderate');
+    perform define_interaction('Diphenhydramine', 'Acebutolol', '', 'moderate');
+    perform define_interaction('Diphenhydramine', 'Alfuzosin', '', 'moderate');
+    perform define_interaction('Diphenhydramine', 'Alprazolam', '', 'moderate');
+    perform define_interaction('Diphenhydramine', 'Amantadine', '', 'moderate');
+    perform define_interaction('Diphenhydramine', 'Amiodarone', '', 'moderate');
+    perform define_interaction('Diphenhydramine', 'Amitriptyline', '', 'moderate');
+    perform define_interaction('Diphenhydramine', 'Aripiprazole', '', 'moderate');
+    perform define_interaction('Disulfiram', 'Adalimumab', '', 'moderate');
+    perform define_interaction('Disulfiram', 'Alprazolam', '', 'moderate');
+    perform define_interaction('Disulfiram', 'Amiodarone', '', 'moderate');
+    perform define_interaction('Disulfiram', 'Amitriptyline', '', 'minor');
+    perform define_interaction('Disulfiram', 'Atorvastatin', '', 'moderate');
+    perform define_interaction('Doxazosin', 'Acebutolol', '', 'moderate');
+    perform define_interaction('Doxazosin', 'Alfuzosin', '', 'moderate');
+    perform define_interaction('Doxazosin', 'Amisulpride', '', 'moderate');
+    perform define_interaction('Doxazosin', 'Amitriptyline', '', 'moderate');
+    perform define_interaction('Doxazosin', 'Aripiprazole', '', 'moderate');
+    perform define_interaction('Dutasteride', 'Amiodarone', '', 'moderate');
+    perform define_interaction('Epinephrine', 'Acarbose', '', 'moderate');
+    perform define_interaction('Epinephrine', 'Acebutolol', '', 'moderate');
+    perform define_interaction('Epinephrine', 'Amisulpride', '', 'moderate');
+    perform define_interaction('Epinephrine', 'Amitriptyline', '', 'major');
+    perform define_interaction('Epinephrine', 'Aripiprazole', '', 'moderate');
+    perform define_interaction('Erythromycin', 'Adenosine', '', 'moderate');
+    perform define_interaction('Erythromycin', 'Alfuzosin', '', 'major');
+    perform define_interaction('Erythromycin', 'Almotriptan', '', 'moderate');
+    perform define_interaction('Erythromycin', 'Alprazolam', '', 'moderate');
+    perform define_interaction('Erythromycin', 'Amiodarone', '', 'major');
+    perform define_interaction('Erythromycin', 'Amisulpride', '', 'major');
+    perform define_interaction('Erythromycin', 'Amitriptyline', '', 'moderate');
+    perform define_interaction('Erythromycin', 'Amlodipine', '', 'moderate');
+    perform define_interaction('Erythromycin', 'Amoxicillin', '', 'minor');
+    perform define_interaction('Erythromycin', 'Ampicillin', '', 'minor');
+    perform define_interaction('Erythromycin', 'Anagrelide', '', 'major');
+    perform define_interaction('Erythromycin', 'Aripiprazole', '', 'moderate');
+    perform define_interaction('Erythromycin', 'Atorvastatin', '', 'major');
+    perform define_interaction('Escitalopram', 'Adenosine', '', 'major');
+    perform define_interaction('Escitalopram', 'Alfuzosin', '', 'major');
+    perform define_interaction('Escitalopram', 'Almotriptan', '', 'major');
+    perform define_interaction('Escitalopram', 'Alprazolam', '', 'moderate');
+    perform define_interaction('Escitalopram', 'Amiodarone', '', 'major');
+    perform define_interaction('Escitalopram', 'Amisulpride', '', 'major');
+    perform define_interaction('Escitalopram', 'Amitriptyline', '', 'major');
+    perform define_interaction('Escitalopram', 'Anagrelide', '', 'major');
+    perform define_interaction('Escitalopram', 'Aripiprazole', '', 'moderate');
+    perform define_interaction('Estradiol', 'Acarbose', '', 'moderate');
+    perform define_interaction('Estradiol', 'Amikacin', '', 'moderate');
+    perform define_interaction('Estradiol', 'Amitriptyline', '', 'minor');
+    perform define_interaction('Estradiol', 'Amoxicillin', '', 'moderate');
+    perform define_interaction('Estradiol', 'Ampicillin', '', 'moderate');
+    perform define_interaction('Estradiol', 'Anastrozole', '', 'moderate');
+    perform define_interaction('Estradiol', 'Atorvastatin', '', 'minor');
+    perform define_interaction('Everolimus', 'Acarbose', '', 'moderate');
+    perform define_interaction('Everolimus', 'Adalimumab', '', 'major');
+    perform define_interaction('Everolimus', 'Amikacin', '', 'major');
+    perform define_interaction('Everolimus', 'Amiodarone', '', 'moderate');
+    perform define_interaction('Everolimus', 'Amlodipine', '', 'moderate');
+    perform define_interaction('Flucytosine', 'Amikacin', '', 'moderate');
+    perform define_interaction('Fluoxetine', 'Adenosine', '', 'moderate');
+    perform define_interaction('Fluoxetine', 'Alfuzosin', '', 'moderate');
+    perform define_interaction('Fluoxetine', 'Almotriptan', '', 'major');
+    perform define_interaction('Fluoxetine', 'Alprazolam', '', 'moderate');
+    perform define_interaction('Fluoxetine', 'Amiodarone', '', 'major');
+    perform define_interaction('Fluoxetine', 'Amisulpride', '', 'major');
+    perform define_interaction('Fluoxetine', 'Amitriptyline', '', 'major');
+    perform define_interaction('Fluoxetine', 'Amlodipine', '', 'moderate');
+    perform define_interaction('Fluoxetine', 'Anagrelide', '', 'major');
+    perform define_interaction('Fluoxetine', 'Aripiprazole', '', 'moderate');
+    perform define_interaction('Formoterol', 'Acarbose', '', 'moderate');
+    perform define_interaction('Formoterol', 'Acebutolol', '', 'moderate');
+    perform define_interaction('Formoterol', 'Alfuzosin', '', 'moderate');
+    perform define_interaction('Formoterol', 'Amiodarone', '', 'moderate');
+    perform define_interaction('Formoterol', 'Amisulpride', '', 'moderate');
+    perform define_interaction('Formoterol', 'Amitriptyline', '', 'moderate');
+    perform define_interaction('Formoterol', 'Anagrelide', '', 'moderate');
+    perform define_interaction('Formoterol', 'Aripiprazole', '', 'moderate');
+    perform define_interaction('Glimepiride', 'Acebutolol', '', 'moderate');
+    perform define_interaction('Glimepiride', 'Acitretin', '', 'moderate');
+    perform define_interaction('Glimepiride', 'Amitriptyline', '', 'moderate');
+    perform define_interaction('Glimepiride', 'Aripiprazole', '', 'moderate');
+    perform define_interaction('Heparin', 'Ampicillin', '', 'minor');
+    perform define_interaction('Hydrochlorothiazide', 'Acarbose', '', 'moderate');
+    perform define_interaction('Hydrochlorothiazide', 'Acebutolol', '', 'moderate');
+    perform define_interaction('Hydrochlorothiazide', 'Alfuzosin', '', 'moderate');
+    perform define_interaction('Hydrochlorothiazide', 'Allopurinol', '', 'moderate');
+    perform define_interaction('Hydrochlorothiazide', 'Alprazolam', '', 'moderate');
+    perform define_interaction('Hydrochlorothiazide', 'Amantadine', '', 'minor');
+    perform define_interaction('Hydrochlorothiazide', 'Amiodarone', '', 'major');
+    perform define_interaction('Hydrochlorothiazide', 'Amisulpride', '', 'moderate');
+    perform define_interaction('Hydrochlorothiazide', 'Amitriptyline', '', 'moderate');
+    perform define_interaction('Hydrochlorothiazide', 'Amlodipine', '', 'minor');
+    perform define_interaction('Hydrochlorothiazide', 'Aripiprazole', '', 'moderate');
+    perform define_interaction('Ibuprofen', 'Acebutolol', '', 'moderate');
+    perform define_interaction('Ibuprofen', 'Amikacin', '', 'moderate');
+    perform define_interaction('Ibuprofen', 'Amlodipine', '', 'moderate');
+    perform define_interaction('Ibuprofen', 'Anagrelide', '', 'moderate');
+    perform define_interaction('Isotretinoin', 'Acitretin', '', 'major');
+    perform define_interaction('Ketorolac', 'Acebutolol', '', 'moderate');
+    perform define_interaction('Ketorolac', 'Amikacin', '', 'moderate');
+    perform define_interaction('Ketorolac', 'Amlodipine', '', 'moderate');
+    perform define_interaction('Ketorolac', 'Anagrelide', '', 'moderate');
+    perform define_interaction('Levocetirizine', 'Alprazolam', '', 'moderate');
+    perform define_interaction('Levocetirizine', 'Amitriptyline', '', 'moderate');
+    perform define_interaction('Levocetirizine', 'Aripiprazole', '', 'moderate');
+    perform define_interaction('Lidocaine', 'Acebutolol', '', 'moderate');
+    perform define_interaction('Lidocaine', 'Adalimumab', '', 'moderate');
+    perform define_interaction('Lidocaine', 'Alprazolam', '', 'moderate');
+    perform define_interaction('Lidocaine', 'Amikacin', '', 'minor');
+    perform define_interaction('Lidocaine', 'Amiodarone', '', 'moderate');
+    perform define_interaction('Lidocaine', 'Anagrelide', '', 'moderate');
+    perform define_interaction('Losartan', 'Alprazolam', '', 'moderate');
+    perform define_interaction('Losartan', 'Amisulpride', '', 'moderate');
+    perform define_interaction('Losartan', 'Amitriptyline', '', 'moderate');
+    perform define_interaction('Losartan', 'Aripiprazole', '', 'moderate');
+    perform define_interaction('Meloxicam', 'Acebutolol', '', 'moderate');
+    perform define_interaction('Meloxicam', 'Amikacin', '', 'moderate');
+    perform define_interaction('Meloxicam', 'Amlodipine', '', 'moderate');
+    perform define_interaction('Meloxicam', 'Anagrelide', '', 'moderate');
+    perform define_interaction('Melphalan', 'Adalimumab', '', 'major');
+    perform define_interaction('Minoxidil', 'Alprazolam', '', 'moderate');
+    perform define_interaction('Minoxidil', 'Amisulpride', '', 'moderate');
+    perform define_interaction('Minoxidil', 'Amitriptyline', '', 'moderate');
+    perform define_interaction('Minoxidil', 'Aripiprazole', '', 'moderate');
+    perform define_interaction('Naltrexone', 'Acarbose', '', 'moderate');
+    perform define_interaction('Naltrexone', 'Acitretin', '', 'moderate');
+    perform define_interaction('Naltrexone', 'Alectinib', '', 'moderate');
+    perform define_interaction('Naltrexone', 'Amiodarone', '', 'moderate');
+    perform define_interaction('Naltrexone', 'Atorvastatin', '', 'moderate');
+    perform define_interaction('Naproxen', 'Acebutolol', '', 'moderate');
+    perform define_interaction('Naproxen', 'Amikacin', '', 'moderate');
+    perform define_interaction('Naproxen', 'Amlodipine', '', 'moderate');
+    perform define_interaction('Naproxen', 'Anagrelide', '', 'moderate');
+    perform define_interaction('Neomycin', 'Acarbose', '', 'moderate');
+    perform define_interaction('Neomycin', 'Amikacin', '', 'moderate');
+    perform define_interaction('Olanzapine', 'Acarbose', '', 'moderate');
+    perform define_interaction('Olanzapine', 'Acebutolol', '', 'moderate');
+    perform define_interaction('Olanzapine', 'Alfuzosin', '', 'moderate');
+    perform define_interaction('Olanzapine', 'Alprazolam', '', 'moderate');
+    perform define_interaction('Olanzapine', 'Amantadine', '', 'moderate');
+    perform define_interaction('Olanzapine', 'Amiodarone', '', 'moderate');
+    perform define_interaction('Olanzapine', 'Amisulpride', '', 'moderate');
+    perform define_interaction('Olanzapine', 'Amitriptyline', '', 'moderate');
+    perform define_interaction('Olanzapine', 'Amlodipine', '', 'moderate');
+    perform define_interaction('Olanzapine', 'Anagrelide', '', 'moderate');
+    perform define_interaction('Olanzapine', 'Aripiprazole', '', 'moderate');
+    perform define_interaction('Omeprazole', 'Alprazolam', '', 'moderate');
+    perform define_interaction('Omeprazole', 'Amikacin', '', 'moderate');
+    perform define_interaction('Omeprazole', 'Anagrelide', '', 'moderate');
+    perform define_interaction('Omeprazole', 'Atorvastatin', '', 'moderate');
+    perform define_interaction('Oxycodone', 'Acebutolol', '', 'moderate');
+    perform define_interaction('Oxycodone', 'Adalimumab', '', 'moderate');
+    perform define_interaction('Oxycodone', 'Alfuzosin', '', 'moderate');
+    perform define_interaction('Oxycodone', 'Almotriptan', '', 'moderate');
+    perform define_interaction('Oxycodone', 'Alprazolam', '', 'major');
+    perform define_interaction('Oxycodone', 'Amiodarone', '', 'major');
+    perform define_interaction('Oxycodone', 'Amitriptyline', '', 'moderate');
+    perform define_interaction('Oxycodone', 'Amlodipine', '', 'moderate');
+    perform define_interaction('Oxycodone', 'Aripiprazole', '', 'major');
+    perform define_interaction('Palonosetron', 'Adenosine', '', 'moderate');
+    perform define_interaction('Palonosetron', 'Alfuzosin', '', 'moderate');
+    perform define_interaction('Palonosetron', 'Almotriptan', '', 'major');
+    perform define_interaction('Palonosetron', 'Amiodarone', '', 'major');
+    perform define_interaction('Palonosetron', 'Amisulpride', '', 'major');
+    perform define_interaction('Palonosetron', 'Amitriptyline', '', 'major');
+    perform define_interaction('Palonosetron', 'Anagrelide', '', 'major');
+    perform define_interaction('Palonosetron', 'Aripiprazole', '', 'moderate');
+    perform define_interaction('Pantoprazole', 'Amikacin', '', 'moderate');
+    perform define_interaction('Pantoprazole', 'Atorvastatin', '', 'moderate');
+    perform define_interaction('Pentoxifylline', 'Acebutolol', '', 'moderate');
+    perform define_interaction('Pentoxifylline', 'Alfuzosin', '', 'moderate');
+    perform define_interaction('Pentoxifylline', 'Amlodipine', '', 'moderate');
+    perform define_interaction('Pentoxifylline', 'Anagrelide', '', 'moderate');
+    perform define_interaction('Perindopril', 'Alfuzosin', '', 'moderate');
+    perform define_interaction('Perindopril', 'Allopurinol', '', 'major');
+    perform define_interaction('Perindopril', 'Alprazolam', '', 'moderate');
+    perform define_interaction('Perindopril', 'Amisulpride', '', 'moderate');
+    perform define_interaction('Perindopril', 'Amitriptyline', '', 'moderate');
+    perform define_interaction('Perindopril', 'Amlodipine', '', 'minor');
+    perform define_interaction('Perindopril', 'Aripiprazole', '', 'moderate');
+    perform define_interaction('Phenylephrine', 'Acarbose', '', 'moderate');
+    perform define_interaction('Phenylephrine', 'Acebutolol', '', 'moderate');
+    perform define_interaction('Phenylephrine', 'Amitriptyline', '', 'major');
+    perform define_interaction('Prednisolone', 'Acarbose', '', 'moderate');
+    perform define_interaction('Prednisolone', 'Acebutolol', '', 'moderate');
+    perform define_interaction('Prednisolone', 'Adalimumab', '', 'major');
+    perform define_interaction('Prednisolone', 'Alprazolam', '', 'minor');
+    perform define_interaction('Prednisolone', 'Amlodipine', '', 'moderate');
+    perform define_interaction('Prilocaine', 'Alprazolam', '', 'moderate');
+    perform define_interaction('Prilocaine', 'Amiodarone', '', 'moderate');
+    perform define_interaction('Pseudoephedrine', 'Acarbose', '', 'moderate');
+    perform define_interaction('Pseudoephedrine', 'Acebutolol', '', 'moderate');
+    perform define_interaction('Pseudoephedrine', 'Alfuzosin', '', 'moderate');
+    perform define_interaction('Quinapril', 'Alfuzosin', '', 'moderate');
+    perform define_interaction('Quinapril', 'Allopurinol', '', 'major');
+    perform define_interaction('Quinapril', 'Alprazolam', '', 'moderate');
+    perform define_interaction('Quinapril', 'Amisulpride', '', 'moderate');
+    perform define_interaction('Quinapril', 'Amitriptyline', '', 'moderate');
+    perform define_interaction('Quinapril', 'Amlodipine', '', 'minor');
+    perform define_interaction('Quinapril', 'Aripiprazole', '', 'moderate');
+    perform define_interaction('Ramipril', 'Alfuzosin', '', 'moderate');
+    perform define_interaction('Ramipril', 'Allopurinol', '', 'major');
+    perform define_interaction('Ramipril', 'Alprazolam', '', 'moderate');
+    perform define_interaction('Ramipril', 'Amisulpride', '', 'moderate');
+    perform define_interaction('Ramipril', 'Amitriptyline', '', 'moderate');
+    perform define_interaction('Ramipril', 'Amlodipine', '', 'minor');
+    perform define_interaction('Ramipril', 'Aripiprazole', '', 'moderate');
+    perform define_interaction('Riociguat', 'Acebutolol', '', 'moderate');
+    perform define_interaction('Riociguat', 'Alfuzosin', '', 'moderate');
+    perform define_interaction('Riociguat', 'Amiodarone', '', 'moderate');
+    perform define_interaction('Riociguat', 'Amlodipine', '', 'moderate');
+    perform define_interaction('Ropinirole', 'Alprazolam', '', 'moderate');
+    perform define_interaction('Ropinirole', 'Amiodarone', '', 'moderate');
+    perform define_interaction('Ropinirole', 'Amisulpride', '', 'major');
+    perform define_interaction('Ropinirole', 'Amitriptyline', '', 'moderate');
+    perform define_interaction('Ropinirole', 'Anagrelide', '', 'moderate');
+    perform define_interaction('Ropinirole', 'Aripiprazole', '', 'moderate');
+    perform define_interaction('Salmeterol', 'Acarbose', '', 'moderate');
+    perform define_interaction('Salmeterol', 'Acebutolol', '', 'moderate');
+    perform define_interaction('Salmeterol', 'Alfuzosin', '', 'moderate');
+    perform define_interaction('Salmeterol', 'Amiodarone', '', 'moderate');
+    perform define_interaction('Salmeterol', 'Amisulpride', '', 'moderate');
+    perform define_interaction('Salmeterol', 'Amitriptyline', '', 'moderate');
+    perform define_interaction('Salmeterol', 'Anagrelide', '', 'moderate');
+    perform define_interaction('Salmeterol', 'Aripiprazole', '', 'moderate');
+    perform define_interaction('Solifenacin', 'Adenosine', '', 'moderate');
+    perform define_interaction('Solifenacin', 'Alfuzosin', '', 'moderate');
+    perform define_interaction('Solifenacin', 'Amantadine', '', 'moderate');
+    perform define_interaction('Solifenacin', 'Amiodarone', '', 'major');
+    perform define_interaction('Solifenacin', 'Amisulpride', '', 'major');
+    perform define_interaction('Solifenacin', 'Amitriptyline', '', 'moderate');
+    perform define_interaction('Solifenacin', 'Anagrelide', '', 'major');
+    perform define_interaction('Solifenacin', 'Aripiprazole', '', 'moderate');
+    perform define_interaction('Tacrolimus', 'Acarbose', '', 'moderate');
+    perform define_interaction('Tacrolimus', 'Adalimumab', '', 'major');
+    perform define_interaction('Tacrolimus', 'Adenosine', '', 'moderate');
+    perform define_interaction('Tacrolimus', 'Alfuzosin', '', 'moderate');
+    perform define_interaction('Tacrolimus', 'Almotriptan', '', 'moderate');
+    perform define_interaction('Tacrolimus', 'Alprazolam', '', 'moderate');
+    perform define_interaction('Tacrolimus', 'Amikacin', '', 'major');
+    perform define_interaction('Tacrolimus', 'Amiodarone', '', 'major');
+    perform define_interaction('Tacrolimus', 'Amisulpride', '', 'major');
+    perform define_interaction('Tacrolimus', 'Amitriptyline', '', 'moderate');
+    perform define_interaction('Tacrolimus', 'Amlodipine', '', 'moderate');
+    perform define_interaction('Tacrolimus', 'Anagrelide', '', 'major');
+    perform define_interaction('Tacrolimus', 'Aripiprazole', '', 'moderate');
+    perform define_interaction('Tacrolimus', 'Atorvastatin', '', 'moderate');
+    perform define_interaction('Tadalafil', 'Acebutolol', '', 'minor');
+    perform define_interaction('Tadalafil', 'Alfuzosin', '', 'moderate');
+    perform define_interaction('Tadalafil', 'Amiodarone', '', 'moderate');
+    perform define_interaction('Tadalafil', 'Amlodipine', '', 'minor');
+    perform define_interaction('Tamsulosin', 'Alfuzosin', '', 'moderate');
+    perform define_interaction('Tamsulosin', 'Alprazolam', '', 'moderate');
+    perform define_interaction('Tamsulosin', 'Amiodarone', '', 'moderate');
+    perform define_interaction('Tamsulosin', 'Amisulpride', '', 'moderate');
+    perform define_interaction('Tamsulosin', 'Amitriptyline', '', 'moderate');
+    perform define_interaction('Tamsulosin', 'Aripiprazole', '', 'moderate');
+    perform define_interaction('Telmisartan', 'Alprazolam', '', 'moderate');
+    perform define_interaction('Telmisartan', 'Amisulpride', '', 'moderate');
+    perform define_interaction('Telmisartan', 'Amitriptyline', '', 'moderate');
+    perform define_interaction('Telmisartan', 'Aripiprazole', '', 'moderate');
+    perform define_interaction('Ticlopidine', 'Anagrelide', '', 'moderate');
+    perform define_interaction('Ticlopidine', 'Aripiprazole', '', 'moderate');
+    perform define_interaction('Timolol', 'Alectinib', '', 'moderate');
+    perform define_interaction('Timolol', 'Alfuzosin', '', 'moderate');
+    perform define_interaction('Timolol', 'Alprazolam', '', 'moderate');
+    perform define_interaction('Timolol', 'Amiodarone', '', 'moderate');
+    perform define_interaction('Timolol', 'Amisulpride', '', 'moderate');
+    perform define_interaction('Timolol', 'Amitriptyline', '', 'moderate');
+    perform define_interaction('Timolol', 'Amlodipine', '', 'moderate');
+    perform define_interaction('Timolol', 'Aripiprazole', '', 'moderate');
+    perform define_interaction('Tramadol', 'Adenosine', '', 'moderate');
+    perform define_interaction('Tramadol', 'Alfuzosin', '', 'moderate');
+    perform define_interaction('Tramadol', 'Almotriptan', '', 'major');
+    perform define_interaction('Tramadol', 'Alprazolam', '', 'major');
+    perform define_interaction('Tramadol', 'Amantadine', '', 'major');
+    perform define_interaction('Tramadol', 'Amiodarone', '', 'major');
+    perform define_interaction('Tramadol', 'Amisulpride', '', 'major');
+    perform define_interaction('Tramadol', 'Amitriptyline', '', 'major');
+    perform define_interaction('Tramadol', 'Anagrelide', '', 'major');
+    perform define_interaction('Tramadol', 'Aripiprazole', '', 'major');
+    perform define_interaction('Tretinoin', 'Acitretin', '', 'major');
+    perform define_interaction('Triprolidine', 'Alprazolam', '', 'moderate');
+    perform define_interaction('Triprolidine', 'Amantadine', '', 'moderate');
+    perform define_interaction('Triprolidine', 'Amitriptyline', '', 'moderate');
+    perform define_interaction('Triprolidine', 'Aripiprazole', '', 'moderate');
+    perform define_interaction('Venlafaxine', 'Adenosine', '', 'moderate');
+    perform define_interaction('Venlafaxine', 'Alfuzosin', '', 'moderate');
+    perform define_interaction('Venlafaxine', 'Almotriptan', '', 'major');
+    perform define_interaction('Venlafaxine', 'Alprazolam', '', 'moderate');
+    perform define_interaction('Venlafaxine', 'Amiodarone', '', 'major');
+    perform define_interaction('Venlafaxine', 'Amisulpride', '', 'major');
+    perform define_interaction('Venlafaxine', 'Amitriptyline', '', 'major');
+    perform define_interaction('Venlafaxine', 'Anagrelide', '', 'major');
+    perform define_interaction('Venlafaxine', 'Aripiprazole', '', 'moderate');
+    perform define_interaction('Fluoxetine', 'Escitalopram', '', 'major');
+end; $$;
+
+
+insert into prescribed_medicine (medicine_id, prescription_id, quantity) values 
+(146, 13, 2),
+(527, 10, 4),
+(245, 79, 2),
+(264, 73, 3),
+(317, 49, 2),
+(156, 10, 5),
+(332, 20, 2),
+(328, 35, 1),
+(209, 31, 3),
+(283, 63, 5),
+(440, 2, 3),
+(455, 20, 1),
+(128, 37, 4),
+(259, 37, 1),
+(328, 66, 3),
+(241, 56, 1),
+(409, 36, 4),
+(496, 7, 2),
+(327, 62, 1),
+(112, 5, 1),
+(482, 16, 3),
+(404, 5, 2),
+(255, 50, 3),
+(344, 74, 4),
+(209, 11, 5),
+(152, 13, 1),
+(435, 33, 2),
+(127, 28, 1),
+(184, 5, 5),
+(413, 93, 4),
+(7, 14, 3),
+(497, 60, 3),
+(495, 51, 2),
+(11, 81, 2),
+(334, 46, 1),
+(35, 10, 5),
+(13, 14, 5),
+(78, 72, 4),
+(71, 81, 3),
+(397, 72, 4),
+(83, 40, 4),
+(167, 74, 2),
+(159, 11, 1),
+(465, 63, 1),
+(449, 92, 5),
+(513, 86, 3),
+(157, 5, 2),
+(439, 26, 5),
+(531, 15, 3),
+(280, 65, 3),
+(113, 83, 4),
+(187, 68, 5),
+(165, 42, 5),
+(158, 14, 1),
+(480, 33, 5),
+(242, 11, 1),
+(370, 21, 1),
+(188, 78, 2),
+(332, 61, 5),
+(118, 68, 4),
+(413, 68, 3),
+(206, 92, 5),
+(247, 81, 5),
+(507, 93, 5),
+(20, 46, 4),
+(232, 16, 1),
+(297, 25, 1),
+(360, 40, 5),
+(45, 23, 2),
+(320, 3, 1),
+(163, 9, 4),
+(219, 23, 4),
+(522, 49, 4),
+(317, 14, 5),
+(544, 8, 2),
+(521, 20, 4),
+(376, 47, 4),
+(395, 18, 2),
+(374, 12, 5),
+(390, 34, 5),
+(26, 23, 3),
+(29, 28, 1),
+(499, 81, 2),
+(271, 35, 1),
+(92, 3, 1),
+(205, 46, 2),
+(174, 59, 3),
+(192, 57, 2),
+(29, 23, 2),
+(146, 39, 3),
+(481, 85, 1),
+(349, 41, 3),
+(65, 44, 5),
+(555, 90, 3),
+(227, 20, 1),
+(35, 7, 2),
+(551, 59, 1),
+(493, 2, 1),
+(94, 21, 5),
+(454, 96, 3),
+(272, 31, 1),
+(294, 77, 5),
+(188, 60, 1),
+(275, 82, 1),
+(487, 12, 1),
+(405, 17, 1),
+(81, 85, 1),
+(110, 11, 3),
+(440, 3, 3),
+(439, 46, 2),
+(115, 65, 3),
+(240, 74, 5),
+(501, 56, 3),
+(47, 36, 1),
+(176, 94, 4),
+(115, 76, 1),
+(246, 9, 4),
+(453, 55, 3),
+(213, 83, 2),
+(196, 94, 4),
+(327, 90, 2),
+(197, 8, 4),
+(141, 66, 5),
+(71, 57, 5),
+(511, 5, 2),
+(336, 61, 3),
+(250, 52, 4),
+(160, 5, 4),
+(245, 93, 2),
+(261, 75, 3),
+(357, 57, 2),
+(409, 32, 4),
+(436, 6, 4),
+(242, 78, 5),
+(186, 62, 1),
+(52, 29, 5),
+(144, 74, 1),
+(353, 66, 3),
+(531, 35, 3),
+(520, 18, 1),
+(33, 35, 4),
+(118, 55, 3),
+(540, 62, 3),
+(454, 89, 1),
+(273, 21, 4),
+(506, 26, 4),
+(145, 39, 1),
+(328, 90, 1),
+(351, 56, 2),
+(444, 23, 3),
+(73, 94, 3),
+(429, 19, 5),
+(307, 17, 3),
+(452, 45, 5),
+(257, 95, 2),
+(244, 71, 4),
+(23, 4, 2),
+(364, 22, 4),
+(547, 93, 5),
+(67, 24, 5),
+(56, 92, 5),
+(448, 44, 2),
+(57, 53, 3),
+(10, 88, 3),
+(97, 47, 4),
+(311, 45, 1),
+(481, 79, 5),
+(236, 67, 2),
+(403, 89, 3),
+(109, 39, 3),
+(490, 5, 4),
+(75, 7, 4),
+(297, 10, 3),
+(481, 79, 2),
+(221, 2, 1),
+(146, 92, 1),
+(147, 16, 2),
+(536, 22, 5),
+(75, 39, 2),
+(471, 35, 3),
+(161, 95, 5),
+(115, 12, 4),
+(339, 46, 2),
+(474, 10, 1),
+(82, 48, 4),
+(380, 45, 1),
+(120, 49, 5),
+(109, 66, 1),
+(210, 91, 5),
+(544, 60, 5),
+(207, 17, 5),
+(68, 13, 1),
+(544, 50, 4),
+(189, 23, 4),
+(451, 32, 4),
+(196, 96, 5),
+(217, 14, 2),
+(479, 37, 1),
+(548, 27, 4),
+(447, 88, 3),
+(212, 16, 3),
+(97, 91, 2),
+(125, 37, 4),
+(443, 33, 1),
+(509, 86, 2),
+(309, 32, 1),
+(506, 43, 1),
+(308, 30, 5),
+(478, 42, 2),
+(519, 30, 5),
+(209, 92, 4),
+(277, 24, 5),
+(126, 91, 4),
+(80, 24, 1),
+(370, 56, 1),
+(467, 52, 4),
+(187, 48, 5),
+(557, 14, 4),
+(115, 76, 1),
+(199, 34, 2),
+(460, 49, 4),
+(354, 69, 3),
+(501, 16, 2),
+(50, 39, 4),
+(486, 17, 1),
+(540, 88, 1),
+(548, 18, 4),
+(340, 39, 1),
+(121, 95, 5),
+(541, 9, 2),
+(84, 46, 4),
+(422, 41, 3),
+(107, 29, 5),
+(500, 10, 3),
+(38, 56, 2),
+(420, 32, 4),
+(546, 26, 5),
+(262, 92, 4),
+(296, 78, 4),
+(254, 88, 5),
+(99, 51, 2),
+(171, 27, 2),
+(379, 23, 3),
+(469, 32, 3),
+(70, 16, 1),
+(343, 81, 1),
+(128, 52, 4),
+(185, 85, 1),
+(175, 2, 3),
+(116, 85, 4),
+(178, 70, 5),
+(564, 41, 3),
+(559, 69, 4),
+(195, 75, 3),
+(538, 57, 5),
+(17, 16, 4),
+(553, 62, 2),
+(557, 47, 3),
+(286, 78, 4),
+(476, 7, 2),
+(64, 63, 5),
+(521, 10, 5),
+(78, 76, 3),
+(459, 47, 1),
+(239, 29, 1),
+(532, 10, 3),
+(215, 43, 5),
+(38, 21, 5),
+(107, 44, 2),
+(137, 93, 1),
+(32, 22, 2),
+(25, 28, 2),
+(259, 41, 4),
+(145, 94, 5),
+(317, 91, 1),
+(64, 60, 2),
+(138, 88, 4),
+(84, 10, 1),
+(482, 96, 2),
+(311, 26, 1),
+(290, 50, 3),
+(385, 21, 1),
+(376, 89, 2),
+(431, 71, 2),
+(343, 92, 3),
+(147, 35, 5),
+(493, 91, 4),
+(397, 84, 4),
+(399, 28, 3),
+(55, 83, 3),
+(181, 66, 4),
+(429, 70, 2),
+(399, 74, 4),
+(390, 90, 4),
+(240, 13, 1),
+(393, 15, 5),
+(561, 76, 3),
+(475, 22, 3),
+(96, 69, 2),
+(33, 76, 1),
+(16, 84, 5),
+(58, 82, 1),
+(318, 41, 5),
+(292, 53, 3),
+(90, 39, 2),
+(116, 88, 1),
+(4, 90, 4),
+(469, 62, 5),
+(449, 14, 1),
+(31, 49, 1),
+(399, 4, 4),
+(371, 46, 2),
+(92, 90, 1),
+(284, 39, 1),
+(135, 40, 1),
+(466, 15, 2),
+(165, 29, 5),
+(320, 45, 4),
+(555, 44, 4),
+(519, 38, 3),
+(523, 61, 4),
+(200, 48, 1),
+(279, 75, 3),
+(532, 56, 3),
+(127, 92, 4),
+(367, 2, 4),
+(79, 56, 5),
+(52, 70, 1),
+(559, 84, 1),
+(113, 25, 4),
+(69, 65, 3),
+(88, 95, 2),
+(360, 79, 3),
+(307, 74, 1),
+(146, 20, 4),
+(442, 16, 5),
+(283, 80, 2),
+(535, 23, 2),
+(457, 78, 3),
+(340, 81, 2),
+(556, 7, 3),
+(140, 21, 3),
+(314, 15, 2),
+(364, 58, 4),
+(72, 30, 3),
+(268, 45, 4),
+(260, 44, 1),
+(145, 67, 3),
+(439, 35, 5),
+(51, 20, 4),
+(106, 27, 4),
+(453, 89, 1),
+(324, 51, 1),
+(194, 83, 4),
+(128, 1, 3),
+(98, 68, 5),
+(134, 3, 2),
+(339, 64, 3),
+(427, 70, 3),
+(456, 70, 4),
+(416, 70, 5),
+(88, 66, 2),
+(458, 42, 2),
+(141, 69, 2),
+(445, 41, 5),
+(196, 55, 5),
+(445, 27, 1),
+(522, 50, 1),
+(36, 76, 3),
+(248, 42, 4),
+(363, 43, 2),
+(456, 37, 5),
+(515, 68, 5),
+(523, 38, 1),
+(230, 45, 3),
+(272, 95, 5),
+(482, 84, 3),
+(312, 94, 1),
+(474, 71, 2),
+(233, 16, 1),
+(444, 52, 2),
+(58, 33, 5),
+(276, 95, 4),
+(59, 24, 5),
+(357, 73, 3),
+(59, 6, 4),
+(44, 45, 4),
+(250, 85, 3),
+(206, 79, 3),
+(458, 34, 5),
+(316, 1, 3),
+(38, 29, 2),
+(85, 86, 4),
+(163, 14, 4),
+(102, 89, 4),
+(421, 16, 1),
+(469, 1, 4),
+(165, 8, 4),
+(383, 46, 4),
+(361, 89, 3),
+(54, 34, 4),
+(527, 77, 2),
+(192, 89, 2),
+(232, 72, 3),
+(91, 85, 3),
+(286, 38, 3),
+(127, 23, 3),
+(333, 66, 1),
+(519, 62, 5),
+(226, 46, 2),
+(531, 7, 5),
+(286, 70, 5),
+(440, 75, 2),
+(215, 71, 4),
+(429, 4, 3),
+(197, 25, 2),
+(528, 24, 3),
+(227, 92, 5),
+(500, 55, 4),
+(91, 23, 4),
+(499, 58, 3),
+(302, 88, 2),
+(516, 49, 3),
+(134, 40, 2),
+(429, 50, 2),
+(442, 6, 5),
+(509, 50, 2),
+(206, 90, 4),
+(498, 60, 3),
+(450, 43, 5),
+(9, 65, 4),
+(294, 24, 5),
+(475, 75, 3),
+(193, 53, 2),
+(122, 19, 2),
+(320, 60, 1),
+(269, 66, 3),
+(289, 19, 4),
+(230, 12, 1),
+(505, 39, 5),
+(45, 8, 2),
+(400, 35, 3),
+(379, 65, 2),
+(436, 13, 3),
+(197, 56, 5),
+(454, 4, 1),
+(524, 38, 2),
+(392, 74, 1),
+(100, 19, 1),
+(65, 9, 5),
+(387, 63, 3),
+(416, 45, 2),
+(139, 40, 2),
+(436, 3, 4),
+(277, 10, 2),
+(325, 92, 4),
+(193, 85, 5),
+(149, 80, 1),
+(152, 19, 5),
+(454, 27, 1),
+(92, 43, 1),
+(249, 65, 3),
+(354, 53, 4),
+(199, 15, 3),
+(293, 55, 2),
+(276, 63, 1),
+(358, 44, 4),
+(287, 88, 3),
+(264, 61, 5),
+(525, 27, 1),
+(270, 71, 5),
+(279, 46, 4),
+(426, 28, 1),
+(395, 57, 3),
+(490, 29, 1),
+(349, 5, 5),
+(379, 95, 2),
+(119, 20, 1),
+(16, 70, 2),
+(447, 18, 3),
+(248, 87, 3),
+(410, 11, 2),
+(346, 3, 4),
+(221, 6, 5),
+(116, 2, 3),
+(304, 19, 4),
+(239, 12, 2),
+(289, 95, 3),
+(32, 53, 4),
+(508, 37, 2),
+(474, 12, 1),
+(311, 65, 1),
+(50, 25, 2),
+(536, 39, 2),
+(213, 4, 4),
+(326, 28, 3),
+(19, 56, 1),
+(352, 92, 5),
+(128, 21, 4),
+(445, 8, 1),
+(20, 89, 4),
+(152, 37, 3),
+(52, 18, 4),
+(299, 18, 3),
+(330, 23, 2),
+(241, 2, 5),
+(287, 51, 3),
+(355, 70, 2),
+(4, 58, 1),
+(552, 28, 5),
+(414, 9, 1),
+(332, 50, 2),
+(239, 59, 1),
+(58, 52, 3),
+(235, 93, 4),
+(247, 46, 2),
+(547, 84, 4),
+(461, 91, 1),
+(263, 8, 2),
+(350, 17, 4),
+(256, 23, 1),
+(496, 87, 3),
+(21, 14, 4),
+(369, 3, 5),
+(234, 47, 5),
+(461, 76, 3),
+(462, 8, 4),
+(419, 44, 5),
+(499, 12, 1),
+(43, 56, 2),
+(154, 82, 4),
+(214, 88, 2),
+(338, 16, 2),
+(23, 30, 4),
+(344, 89, 2),
+(356, 53, 4),
+(128, 47, 4),
+(333, 61, 5),
+(173, 2, 4),
+(131, 19, 3),
+(128, 65, 1),
+(210, 27, 2),
+(12, 59, 1),
+(155, 4, 1),
+(446, 58, 2),
+(547, 48, 2),
+(400, 32, 1),
+(277, 82, 5),
+(288, 32, 1),
+(202, 12, 2),
+(287, 38, 4),
+(547, 7, 2),
+(310, 1, 4),
+(479, 63, 5),
+(202, 35, 3),
+(202, 59, 4),
+(457, 23, 2),
+(45, 19, 3),
+(484, 35, 2),
+(84, 20, 5),
+(93, 83, 5),
+(7, 35, 5),
+(213, 69, 2),
+(271, 75, 4),
+(400, 2, 4),
+(329, 67, 2),
+(445, 63, 4),
+(6, 61, 2),
+(49, 55, 1),
+(114, 73, 1),
+(55, 17, 1),
+(207, 60, 1),
+(299, 80, 4),
+(135, 7, 2),
+(322, 26, 4),
+(199, 85, 5),
+(449, 21, 1),
+(127, 35, 2),
+(529, 56, 5),
+(429, 84, 5),
+(241, 24, 3),
+(431, 28, 1),
+(381, 44, 3),
+(289, 31, 5),
+(141, 18, 2),
+(416, 77, 4),
+(371, 4, 4),
+(406, 85, 5),
+(410, 30, 4),
+(166, 43, 1),
+(471, 87, 5),
+(148, 3, 1),
+(5, 12, 1),
+(334, 39, 4),
+(55, 79, 5),
+(560, 87, 3),
+(148, 49, 1),
+(260, 64, 1),
+(289, 37, 1),
+(147, 36, 2),
+(382, 45, 1),
+(28, 27, 3),
+(436, 38, 4),
+(524, 20, 3),
+(116, 60, 1),
+(398, 52, 4),
+(97, 15, 5),
+(424, 7, 1),
+(307, 27, 5),
+(402, 13, 1),
+(58, 31, 4),
+(137, 83, 3),
+(63, 35, 2),
+(490, 57, 2),
+(413, 34, 4),
+(51, 55, 5),
+(474, 30, 4),
+(281, 27, 5),
+(292, 80, 1),
+(501, 74, 3),
+(336, 1, 5),
+(56, 50, 4),
+(107, 63, 5),
+(151, 66, 2),
+(475, 68, 3),
+(221, 26, 2),
+(190, 23, 2),
+(317, 2, 4),
+(11, 34, 3),
+(35, 82, 1),
+(437, 78, 4),
+(87, 64, 1),
+(116, 82, 1),
+(64, 44, 1),
+(245, 23, 4),
+(105, 50, 5),
+(231, 70, 1),
+(284, 39, 2),
+(352, 58, 4),
+(22, 41, 4),
+(88, 21, 1),
+(269, 55, 2),
+(70, 14, 1),
+(285, 72, 2),
+(280, 79, 4),
+(502, 38, 4),
+(347, 39, 2),
+(138, 33, 2),
+(448, 38, 4),
+(353, 20, 4),
+(202, 44, 2),
+(558, 67, 5),
+(103, 28, 1),
+(36, 68, 1),
+(75, 43, 2),
+(298, 12, 3),
+(171, 59, 3),
+(506, 51, 2),
+(102, 67, 1),
+(432, 11, 4),
+(553, 33, 5),
+(182, 37, 2),
+(473, 18, 1),
+(257, 56, 5),
+(543, 66, 4),
+(418, 89, 4),
+(33, 73, 3),
+(535, 10, 1),
+(117, 22, 2),
+(336, 64, 4),
+(35, 94, 4),
+(39, 64, 5),
+(288, 29, 2),
+(353, 12, 2),
+(307, 81, 5),
+(363, 30, 1),
+(8, 9, 2),
+(42, 61, 2),
+(376, 62, 1),
+(355, 35, 4),
+(558, 2, 5),
+(457, 93, 1),
+(530, 41, 1),
+(501, 13, 4),
+(58, 51, 4),
+(350, 64, 4),
+(539, 93, 2),
+(373, 31, 2),
+(474, 78, 4),
+(124, 50, 4),
+(111, 38, 5),
+(318, 51, 2),
+(135, 28, 4),
+(460, 12, 4),
+(228, 50, 5),
+(90, 25, 2),
+(146, 93, 2),
+(446, 25, 3),
+(441, 69, 3),
+(63, 57, 4),
+(272, 26, 4),
+(429, 44, 4),
+(226, 32, 5),
+(527, 71, 5),
+(273, 30, 4),
+(115, 61, 1),
+(126, 39, 5),
+(224, 2, 1),
+(273, 55, 4),
+(452, 94, 5),
+(240, 37, 5),
+(421, 65, 5),
+(33, 61, 2),
+(8, 70, 2),
+(257, 59, 4),
+(138, 44, 3),
+(70, 56, 1),
+(108, 23, 1),
+(534, 93, 2),
+(13, 53, 3),
+(323, 78, 3),
+(454, 32, 4),
+(401, 92, 3),
+(198, 76, 5),
+(32, 71, 5),
+(400, 47, 1),
+(75, 30, 2),
+(146, 66, 4),
+(314, 42, 2),
+(384, 30, 5),
+(87, 12, 3),
+(558, 26, 4),
+(22, 52, 3),
+(133, 73, 3),
+(344, 49, 2),
+(324, 83, 4),
+(321, 33, 5),
+(286, 83, 5),
+(388, 28, 2),
+(22, 86, 4),
+(377, 56, 4),
+(409, 30, 1),
+(380, 55, 5),
+(464, 85, 2),
+(447, 81, 3),
+(368, 53, 2),
+(165, 44, 2),
+(434, 56, 2),
+(324, 8, 1),
+(385, 60, 1),
+(243, 86, 3),
+(143, 57, 1),
+(468, 4, 5),
+(540, 70, 2),
+(453, 71, 3),
+(35, 95, 3),
+(202, 62, 5),
+(252, 72, 3),
+(47, 24, 2),
+(539, 57, 1),
+(519, 85, 2),
+(159, 75, 4),
+(111, 81, 3),
+(478, 80, 5),
+(273, 19, 5),
+(132, 8, 5),
+(266, 20, 4),
+(261, 3, 4),
+(213, 43, 2),
+(522, 60, 2),
+(264, 9, 4),
+(417, 13, 2),
+(516, 80, 5),
+(273, 43, 4),
+(334, 88, 5),
+(517, 77, 2),
+(452, 17, 2),
+(305, 90, 5),
+(390, 79, 2),
+(24, 7, 5),
+(293, 27, 1),
+(491, 19, 2),
+(494, 8, 3),
+(83, 22, 3),
+(379, 60, 2),
+(474, 68, 4),
+(167, 55, 4),
+(532, 56, 4),
+(314, 12, 5),
+(25, 73, 5),
+(514, 92, 4),
+(161, 3, 5),
+(140, 31, 1),
+(242, 77, 1),
+(184, 12, 4),
+(30, 96, 2),
+(450, 72, 3),
+(146, 52, 5),
+(250, 21, 1),
+(242, 22, 5),
+(289, 36, 5),
+(287, 96, 3),
+(9, 4, 4),
+(413, 37, 5),
+(135, 4, 3),
+(151, 25, 5),
+(232, 94, 1),
+(407, 37, 2),
+(270, 74, 1),
+(382, 63, 2),
+(336, 39, 4),
+(33, 16, 3),
+(94, 49, 3),
+(545, 89, 2),
+(515, 71, 3),
+(251, 45, 5),
+(32, 21, 4),
+(313, 6, 5),
+(359, 44, 1),
+(535, 54, 3),
+(85, 85, 3),
+(305, 16, 3),
+(31, 67, 1),
+(163, 72, 5),
+(310, 17, 3),
+(315, 16, 4),
+(74, 9, 1),
+(434, 49, 1),
+(519, 94, 3),
+(288, 37, 4),
+(455, 89, 4),
+(315, 37, 3),
+(236, 88, 1),
+(206, 5, 3),
+(548, 68, 3),
+(92, 94, 4),
+(171, 90, 5),
+(205, 45, 1),
+(338, 76, 5),
+(302, 74, 5),
+(438, 86, 3),
+(224, 81, 2),
+(516, 94, 5),
+(113, 79, 2),
+(197, 29, 5),
+(403, 68, 5),
+(285, 10, 1),
+(242, 9, 4),
+(100, 25, 1),
+(235, 44, 4),
+(362, 76, 1),
+(48, 73, 3),
+(448, 1, 5),
+(400, 88, 3),
+(403, 7, 5),
+(446, 82, 5),
+(125, 79, 3),
+(237, 16, 2),
+(140, 46, 2),
+(485, 22, 5),
+(320, 58, 5),
+(93, 57, 3),
+(53, 79, 4),
+(42, 40, 3),
+(480, 18, 2),
+(73, 36, 5),
+(161, 63, 2),
+(16, 25, 1),
+(325, 34, 4),
+(39, 29, 5),
+(328, 63, 1),
+(532, 33, 4),
+(555, 56, 5),
+(387, 36, 2),
+(320, 67, 2),
+(411, 6, 1),
+(79, 5, 1),
+(320, 11, 4),
+(148, 26, 1),
+(91, 73, 5),
+(448, 19, 4),
+(434, 28, 4),
+(448, 73, 4),
+(465, 70, 4),
+(473, 67, 3),
+(120, 16, 3),
+(66, 64, 4),
+(263, 85, 2),
+(42, 24, 4),
+(404, 34, 1),
+(542, 2, 1),
+(268, 28, 3),
+(524, 35, 3),
+(281, 39, 3),
+(367, 94, 2),
+(540, 88, 4),
+(256, 63, 3),
+(249, 42, 5),
+(64, 27, 5),
+(235, 32, 3),
+(413, 34, 5),
+(322, 31, 3),
+(135, 22, 3),
+(448, 9, 1),
+(181, 19, 4),
+(370, 41, 4),
+(172, 17, 5),
+(266, 78, 1),
+(531, 84, 1),
+(350, 2, 3),
+(344, 82, 4),
+(315, 75, 4),
+(192, 66, 1),
+(360, 91, 4),
+(385, 66, 1),
+(358, 91, 2),
+(493, 23, 2),
+(204, 28, 1),
+(114, 15, 4),
+(548, 74, 4),
+(267, 92, 1),
+(347, 34, 2),
+(351, 17, 3),
+(71, 26, 2),
+(302, 54, 3),
+(445, 10, 3),
+(493, 56, 2),
+(443, 54, 1),
+(474, 70, 1),
+(2, 95, 2),
+(365, 35, 3),
+(222, 41, 1),
+(460, 8, 2),
+(337, 33, 1),
+(377, 48, 4),
+(54, 13, 2),
+(321, 18, 2),
+(396, 79, 2),
+(554, 44, 5),
+(369, 7, 3),
+(66, 3, 2),
+(160, 87, 1),
+(559, 71, 5),
+(303, 83, 3),
+(454, 66, 5),
+(117, 82, 4),
+(539, 13, 4),
+(192, 93, 1),
+(201, 58, 5),
+(357, 53, 5),
+(348, 55, 5),
+(318, 12, 1),
+(410, 45, 1),
+(427, 45, 2),
+(21, 10, 3),
+(175, 66, 2),
+(307, 59, 2),
+(90, 8, 1),
+(549, 29, 2),
+(234, 87, 3),
+(373, 65, 2),
+(538, 70, 1),
+(119, 81, 4),
+(187, 80, 5),
+(517, 76, 4),
+(67, 77, 4),
+(5, 30, 2),
+(254, 27, 2),
+(241, 30, 3),
+(215, 4, 4),
+(353, 61, 5),
+(260, 60, 3),
+(89, 33, 3),
+(181, 65, 1),
+(259, 3, 4),
+(358, 7, 5),
+(395, 15, 2),
+(39, 84, 1),
+(100, 2, 2),
+(189, 15, 3),
+(317, 55, 4),
+(404, 48, 3),
+(220, 69, 1),
+(416, 45, 3),
+(402, 62, 3),
+(396, 71, 2),
+(341, 2, 3),
+(322, 72, 1),
+(370, 5, 1),
+(224, 59, 2),
+(379, 42, 2),
+(340, 85, 5),
+(25, 87, 3),
+(358, 33, 4),
+(188, 22, 4),
+(499, 9, 1),
+(189, 93, 3),
+(74, 49, 3),
+(107, 74, 5),
+(265, 85, 2),
+(334, 63, 3);
+
+-- sprawdzenie, czy przepisane leki nie kolidują ze sobą dla "lekarz "i "aptekarz
+-- Aciprex (Escitalopram, ssri)
+-- Andepin (Fluoxetine, ssri)
+select distinct interaction.intensity, interaction.description
+from substance_interaction interaction
+join active_substance s1 on s1.active_substance_id = interaction.substance_one
+join active_substance s2 on s2.active_substance_id = interaction.substance_two
+join medicine_substance_map map1 on s1.active_substance_id = map1.active_substance_id
+join medicine_substance_map map2 on s2.active_substance_id = map2.active_substance_id
+join medicine med1 on med1.medicine_id = map1.medicine_id
+join medicine med2 on med2.medicine_id = map2.medicine_id
+where med1.trade_name = 'Aciprex'
+  and med2.trade_name = 'Andepin';
+
+commit;
+
+```
+## Zapytania testowe 
+
+```sql
+-- wyszukiwanie leków po nazwach handlowych, międzynarodowych i danej jednostce chorobowej dla aktora "aptekarz"
+select *
+from medicine
+where trade_name like '%Aciprex%';
+
+
+-- wystawienie erecept dla aktora "lekarz"
+with inserted_prescription as (
+        insert into prescription(expiration_date, client_id, prescription_type) values(
+            '2022-06-01',
+            (select client_id from client where firstname='Jan' and surname='Kozak'),
+            'Rp'
+        ) returning prescription_id
+    )
+insert into prescribed_medicine(prescription_id, medicine_id, quantity)
+select
+    inserted_prescription.prescription_id,
+    (
+        select medicine_id
+        from medicine
+        where trade_name='Aciprex' and dosage='10 mg' and pack_size='28 szt. '
+    ),
+    3 quantity
+from inserted_prescription;
+
+
+-- badanie stanu liczbowego poszczególnych leków dla aktora "aptekarz"
+select quantity
+from medicine_in_pharmacy
+join medicine using(medicine_id)
+where pharmacy_id = 1
+  and medicine.trade_name='Aciprex';
+
+-- dodawanie leków przy dostawie dla aktora "dostawca"
+insert into medicine_in_pharmacy(pharmacy_id, medicine_id, quantity)
+    values(
+        1,
+        (select medicine_id from medicine where trade_name='Aciprex' and dosage='10 mg' and pack_size='28 szt. '),
+        10
+    )
+on conflict (pharmacy_id, medicine_id) do update 
+  set quantity = medicine_in_pharmacy.quantity + 10;
+
+-- dodawanie do listy zamówień z magazynu dla aktora "aptekarz"
+insert into warehouse_order_item(warehouse_order_id, quantity, medicine_id) values(1, 10, 5);
+
+---- usuwanie już dostarczonych leków z listy zamówionych dla aktora "dostawca"
+update warehouse_order
+set order_status = 'delivered'
+where warehouse_order_id = 106;
+
+-- w przypadku braku dostępności leku sprawdzanie czy lek jest dostępny w innej aptece dla aktora "aptekarz"
+select pharmacy_name, quantity, medicine.trade_name, medicine.dosage, medicine.pack_size
+from medicine_in_pharmacy 
+join pharmacy using(pharmacy_id)
+join medicine using(medicine_id)
+where medicine_id = 1 and quantity > 0;
+
+--
+---- usuwanie sprzedanych leków z listy zasobów "aptekarz"
+--begin;
+    update medicine_in_pharmacy
+    set quantity = quantity - 1
+    where pharmacy_id = 1 and medicine_id = 2;
+
+    delete from medicine_in_pharmacy
+    where pharmacy_id = 1 and quantity <= 0;
+--commit;
+
+
+-- w przypadku braku dostępności leku sprawdzanie zamienników które mogą być na stanie dla aktora "aptekarz"
+select quantity, medicine.*
+from medicine_in_pharmacy 
+join medicine using(medicine_id)
+join medicine_substance_map using(medicine_id)
+join active_substance using(active_substance_id)
+where pharmacy_id = 1
+  and quantity > 0
+  and active_substance_id in (
+      select active_substance_id
+      from medicine
+      join medicine_substance_map using(medicine_id)
+      where trade_name='Apap');
+
+---- sprawdzanie jakie leki jeszcze są do wydania na erecepcie dla aktora "aptekarz"
+select quantity, medicine.* from prescribed_medicine 
+join prescription using(prescription_id)
+join medicine using(medicine_id)
+where expiration_date > current_date
+  and quantity > 0
+  and client_id = (select client_id from client where firstname='Jan' and surname='Kozak');
+
+-- zaznaczanie leków jako już wydanych (całościowo albo część dawki) na erecepcie dla aktora "aptekarz"
+update prescribed_medicine
+set quantity = quantity - 1
+where prescription_id = 88
+  and medicine_id = (select medicine_id from medicine where trade_name='Absenor' and dosage='300 mg' and pack_size='100 szt. ');
+
+
+-- sprawdzanie listy leków łagodzących konkretne dolegliwości dla aktora "aptekarz"
+select medicine_id from medicine 
+where recommendations like 'bol brzucha';
+
+
+-- wyszukiwanie dostępnych leków w aptece dla aktora "klient"
+select medicine.*, quantity
+from medicine_in_pharmacy
+join medicine using(medicine_id)
+where quantity > 0
+  and pharmacy_id = (
+    select pharmacy_id
+    from pharmacy
+    where pharmacy_name='APTEKA OGÓLNODOSTĘPNA "POD PODWÓJNYM ZŁOTYM ORŁEM" SPÓŁKA JAWNA'
+  );
+
+--
+---- sprawdzanie zawartości swojej erecepty dla aktora "klient"
+select expiration_date, prescription.prescription_type, quantity, medicine.trade_name, medicine.dosage, medicine.pack_size
+from prescription 
+join prescribed_medicine using(prescription_id)
+join medicine using(medicine_id)
+where client_id = (select client_id from client where firstname='Jan' and surname='Kozak');
+
+-- sprawdzanie ile jeszcze leków zostało do wydania z erecepty dla aktora "klient"
+select expiration_date, prescription.prescription_type, quantity, medicine.trade_name, medicine.dosage, medicine.pack_size
+from prescription 
+join prescribed_medicine using(prescription_id)
+join medicine using(medicine_id)
+where client_id = (select client_id from client where firstname='Jan' and surname='Kozak')
+  and quantity > 0;
+
+-- dodawanie informacji o wydaniu leku na receptę Rpw do książki narkotycznej dla aktora "aptekarz"
+insert into psychotropy_evidence(client_id, active_substance_id, quantity, dispensed_date, pharmacy_id)
+    values(
+        (select client_id from client where firstname='Jan' and surname='Kozak'),
+        (select active_substance_id from active_substance where international_name='Oxycodone'),
+        2,
+        current_date,
+        (
+          select pharmacy_id
+          from pharmacy
+          where pharmacy_name='APTEKA OGÓLNODOSTĘPNA "POD PODWÓJNYM ZŁOTYM ORŁEM" SPÓŁKA JAWNA'
+        )
+    );
+```
+
+## Wnioski
